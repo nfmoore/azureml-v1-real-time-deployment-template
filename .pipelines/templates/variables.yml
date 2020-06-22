@@ -1,0 +1,22 @@
+variables:
+  # COMMON
+  RM_SERVICE_CONNECTION: "AzureResourceManagerConnection"
+  RESOURCE_GROUP: "sandbox-web-service-deployment-template"
+  WORKSPACE: "amlworkspace"
+  MODEL_NAME: "cvd-model"
+  EXPERIMENT_NAME: "cvd-exp"
+  RUN_METADATA_ARTIFACT: "run-metadata"
+  MODEL_METADATA_ARTIFACT: "model-metadata"
+  # TRAIN
+  DATASET_NAME: "cardiovascular-disease"
+  AML_COMPUTE_CLUSTER: "tc-cpu"
+  CONDA_DEPENDENCIES_FILE: "environment/conda_dependencies.yml"
+  SOURCE_DIRECTORY: "scripts"
+  ENTRY_SCRIPT: "train.py"
+  # DEPLOY
+  AKS_CLUSTER: "aks-ic-devtest"
+  ACI_SERVICE_NAME: "cvd-model-aci"
+  AKS_SERVICE_NAME: "cvd-model-aks"
+  AKS_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aks_deployment_config.yml
+  ACI_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aci_deployment_config.yml
+  INFERENCE_CONFIG: $(Build.SourcesDirectory)/config/inference_config.yml

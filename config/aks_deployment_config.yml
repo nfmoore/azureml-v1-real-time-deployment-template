@@ -1,0 +1,40 @@
+computeType: AKS
+
+autoScaler:
+  autoscaleEnabled: True
+  minReplicas: 1
+  maxReplicas: 3
+  refreshPeriodInSeconds: 1
+  targetUtilization: 70
+
+dataCollection:
+  storageEnabled: False
+
+authEnabled: False
+
+containerResourceRequirements:
+  cpu: 1
+  memoryInGB: 0.5
+
+appInsightsEnabled: False
+
+scoringTimeoutMs: 60000
+
+maxConcurrentRequestsPerContainer: 1
+
+maxQueueWaitMs: 500
+
+numReplicas:
+
+keys:
+  primaryKey:
+  secondaryKey:
+
+gpuCores:
+
+livenessProbeRequirements:
+  periodSeconds:
+  initialDelaySeconds:
+  timeoutSeconds:
+  successThreshold:
+  failureThreshold:

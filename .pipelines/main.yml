@@ -1,0 +1,73 @@
+name: Build Release Pipeline - $(Build.DefinitionName) - $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+trigger:
+  - master
+pool:
+  vmImage: "ubuntu-latest"
+variables:
+  - template: ./templates/variables.yml
+
+stages:
+  - stage: TrainModel
+    displayName: Train Model
+    jobs:
+      - template: ./templates/train.yml
+        parameters:
+          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          resource_group: ${{ variables.RESOURCE_GROUP }}
+          workspace_name: ${{ variables.WORKSPACE }}
+          model_name: ${{ variables.MODEL_NAME }}
+          experiment_name: ${{ variables.EXPERIMENT_NAME }}
+          run_metadata_artifact: ${{ variables.RUN_METADATA_ARTIFACT }}
+          dataset_name: ${{ variables.DATASET_NAME }}
+          aml_compute_cluster: ${{ variables.AML_COMPUTE_CLUSTER }}
+          conda_dependencies_file: ${{ variables.CONDA_DEPENDENCIES_FILE }}
+          source_directory: ${{ variables.SOURCE_DIRECTORY }}
+          entry_script: ${{ variables.ENTRY_SCRIPT }}
+
+  - stage: RegisterModel
+    displayName: Register Model
+    jobs:
+      - deployment: Approval
+        displayName: Model Registration Approval
+        environment: "Test"
+      - template: ./templates/register.yml
+        parameters:
+          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          resource_group: ${{ variables.RESOURCE_GROUP }}
+          workspace_name: ${{ variables.WORKSPACE }}
+          model_name: ${{ variables.MODEL_NAME }}
+          experiment_name: ${{ variables.EXPERIMENT_NAME }}
+          run_metadata_artifact: ${{ variables.RUN_METADATA_ARTIFACT }}
+          model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
+
+  - stage: DeployToTest
+    displayName: Test Environment Deployment (ACI)
+    jobs:
+      - template: ./templates/deploy.yml
+        parameters:
+          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          resource_group: ${{ variables.RESOURCE_GROUP }}
+          workspace_name: ${{ variables.WORKSPACE }}
+          service_name: ${{ variables.ACI_SERVICE_NAME }}
+          model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
+          ic: ${{ variables.INFERENCE_CONFIG }}
+          dc: ${{ variables.ACI_DEPLOYMENT_CONFIG }}
+          compute_type: aci
+
+  - stage: DeployToProd
+    displayName: Production Environment Deployment (AKS)
+    jobs:
+      - deployment: Approval
+        displayName: Production Deployment Approval
+        environment: "Production"
+      - template: ./templates/deploy.yml
+        parameters:
+          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          resource_group: ${{ variables.RESOURCE_GROUP }}
+          workspace_name: ${{ variables.WORKSPACE }}
+          service_name: ${{ variables.AKS_SERVICE_NAME }}
+          model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
+          compute_target: ${{ variables.AKS_CLUSTER }}
+          ic: ${{ variables.INFERENCE_CONFIG }}
+          dc: ${{ variables.AKS_DEPLOYMENT_CONFIG }}
+          compute_type: aks

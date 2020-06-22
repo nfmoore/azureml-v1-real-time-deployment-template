@@ -1,0 +1,44 @@
+parameters:
+  output_metadata_file: "model.json"
+
+jobs:
+  - job: RegisterJob
+    displayName: AML Model Registration
+
+    steps:
+      - task: AzureCLI@2
+        displayName: Install Azure ML CLI
+        inputs:
+          scriptType: bash
+          azureSubscription: ${{ parameters.rm_service_connection }}
+          scriptLocation: inlineScript
+          inlineScript: az extension add -n azure-cli-ml
+
+      - task: DownloadBuildArtifacts@0
+        displayName: Download Run Metadata Artifact
+        inputs:
+          source: current
+          artifactName: ${{ parameters.run_metadata_artifact }}
+          downloadPath: $(Pipeline.Workspace)
+
+      - task: AzureCLI@2
+        displayName: Register Model
+        inputs:
+          scriptType: bash
+          azureSubscription: ${{ parameters.rm_service_connection }}
+          scriptLocation: inlineScript
+          inlineScript: |
+            az ml model register \
+            --name ${{ parameters.model_name }} \
+            --asset-path outputs/${{ parameters.model_name }} \
+            --experiment-name ${{ parameters.experiment_name }} \
+            --output-metadata-file ${{ parameters.output_metadata_file }} \
+            --resource-group ${{ parameters.resource_group }} \
+            --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
+            --workspace-name ${{ parameters.workspace_name }} \
+
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Model Metadata Artifact
+        inputs:
+          pathToPublish: $(System.DefaultWorkingDirectory)/${{ parameters.output_metadata_file }}
+          artifactName: ${{ parameters.model_metadata_artifact }}
