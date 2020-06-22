@@ -1,7 +1,7 @@
 name: base_env
 
 dependencies:
-  - python=3.6.*
+  - python=3.6.2
   - pip
   - pip:
       - azureml-sdk[explain,automl,notebooks]==1.0.83
