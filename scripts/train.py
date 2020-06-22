@@ -15,14 +15,16 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 def load_data(dataset_name, run):
     # Retreive dataset
     if run._run_id.startswith("_OfflineRun"):
-        dataset = Dataset.get_by_name(
-            workspace=run.experiment.workspace, name=dataset_name)
-    else:
+        run = None
+
+    if run is None:
         workspace = Workspace.from_config()
         dataset = Dataset.get_by_name(workspace, name=dataset_name)
+    else:
+        workspace = run.experiment.workspace
 
     # Convert dataset to pandas dataframe
-    dataset = Dataset.get_by_name(workspace, name='cardiovascular-disease')
+    dataset = Dataset.get_by_name(workspace, name=dataset_name)
     df = dataset.to_pandas_dataframe()
 
     # Rename features
