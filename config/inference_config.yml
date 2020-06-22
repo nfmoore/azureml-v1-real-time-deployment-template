@@ -1,11 +1,9 @@
-entry_script: scripts/score.py
+entryScript: scripts/score.py
 runtime: python
-conda_file: environment/conda_dependencies.yml
-extra_docker_file_steps:
-source_directory:
-enable_gpu: False
-description:
-base_image:
-base_image_registry:
-cuda_version:
-environment:
+condaFile: environment/conda_dependencies.yml
+extraDockerfileSteps:
+schemaFile:
+sourceDirectory:
+enableGpu: False
+baseImage:
+baseImageRegistry:
