@@ -137,7 +137,7 @@ def main():
 
     # Save the model to the outputs directory for capture
     os.makedirs('./outputs', exist_ok=True)
-    joblib.dump(value=model, filename='./outputs/{}.pkl'.format(model_name))
+    joblib.dump(value=model, filename='./outputs/{}'.format(model_name))
 
 
 if __name__ == "__main__":
