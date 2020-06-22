@@ -66,7 +66,7 @@ def preprocess_data(df, run):
     df['bmi'] = df.weight / (df.height / 100) ** 2
 
     # Log summary statistics for data
-    run.log_table("Data Description", df.describe().to_dict())
+    # run.log_table("Data Description", df.describe().to_dict())
 
     return df
 
@@ -102,10 +102,10 @@ def train_model(df, run):
     cv_results = cross_validate(pipeline, X, y, cv=10, return_train_score=True)
 
     # Log performance metrics for data
-    for metric in cv_results.keys():
-        run.log_row(
-            "Performance Metrics", metric=metric.replace('_', ' '),
-            mean=cv_results[metric].mean(), std=cv_results[metric].std())
+    # for metric in cv_results.keys():
+    #     run.log_row(
+    #         "Performance Metrics", metric=metric.replace('_', ' '),
+    #         mean=cv_results[metric].mean(), std=cv_results[metric].std())
 
     # Fit model
     pipeline.fit(X, y)
