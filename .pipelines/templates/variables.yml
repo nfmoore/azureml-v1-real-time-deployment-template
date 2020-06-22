@@ -1,6 +1,6 @@
 variables:
   # COMMON
-  RM_SERVICE_CONNECTION: "AzureResourceManagerConnection"
+  RM_SERVICE_CONNECTION: "azure-resource-connection"
   RESOURCE_GROUP: "sandbox-web-service-deployment-template"
   WORKSPACE: "amlworkspace"
   MODEL_NAME: "cvd-model"
