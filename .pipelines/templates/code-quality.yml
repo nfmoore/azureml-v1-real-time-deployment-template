@@ -13,7 +13,7 @@ jobs:
           source activate code-quality
           pip install flake8 pytest pytest-azurepipelines pytest-cov
           python -m flake8
-          pytest tests/ --cov my_project --cov-report html
+          pytest tests/ --cov scripts --cov-report html
         displayName: Run Linting, Unit Tests, and  Code Coverage
 # - task: UsePythonVersion@0
 #   inputs:
