@@ -9,6 +9,8 @@ from tests.fixtures import data_int, data_raw
 from tests.mocks import (MockDataset, MockPandasDataFrameDataset,
                          MockRunContext, MockWorkspace)
 
+print(os.path.dirname(os.path.abspath(__file__)))
+
 
 @patch('scripts.train.Workspace', MockWorkspace())
 @patch('scripts.train.Dataset', MockDataset())
