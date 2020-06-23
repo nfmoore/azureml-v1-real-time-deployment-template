@@ -3,33 +3,42 @@ jobs:
     displayName: Run Linting, Unit Tests and Code Coverage
 
     steps:
-      - bash: echo "##vso[task.prependpath]$CONDA/bin"
+      - task: Bash@3
         displayName: Add Conda to PATH
+        inputs:
+          scripts: |
+            echo "##vso[task.prependpath]$CONDA/bin"
 
-      - script: |
-          conda env create \
-          --file $(Build.SourcesDirectory)/${{ parameters.conda_dependencies_file}} \
-          --name code-quality \
-          --quiet
+      - task: Bash@3
         displayName: Create Anaconda Environment
+        inputs:
+          scripts: |
+            conda env create \
+            --file $(Build.SourcesDirectory)/${{ parameters.conda_dependencies_file}} \
+            --name code-quality \
+            --quiet
 
-      - bash: |
-          source activate code-quality
-          pip install flake8 pytest pytest-azurepipelines pytest-cov --quiet
-          python -m flake8 --output-file lint-testresults.xml --format junit-xml
-          pytest tests --cov . --cov-report xml --junitxml junit/test-results.xml --doctest-modules
+      - task: Bash@3
         displayName: Run Linting, Unit Tests, and  Code Coverage
-      # - task: PublishTestResults@2
-      #   displayName: "Publish Test Results"
-      #   condition: succeededOrFailed()
-      #   inputs:
-      #     testResultsFiles: "**/test-*.xml"
-      #     testRunTitle: "Publish test results for Python $(python.version)"
-      # - task: PublishCodeCoverageResults@1
-      #   displayName: "Publish Coverage Report"
-      #   condition: succeededOrFailed()
-      #   inputs:
-      #     codeCoverageTool: Cobertura
-      #     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
-      #     reportDirectory: "$(System.DefaultWorkingDirectory)/**/htmlcov"
-      #     failIfCoverageEmpty: true
+        inputs:
+          scripts: |
+            source activate code-quality
+            pip install flake8 pytest pytest-cov --quiet
+            python -m flake8 --output-file lint-testresults.xml --format junit-xml
+            pytest tests --cov . --cov-report xml --junitxml junit/test-results.xml
+
+      - task: PublishTestResults@2
+        displayName: "Publish Test Results"
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFiles: "**/test-*.xml"
+          testRunTitle: "Publish test results for Python $(python.version)"
+
+      - task: PublishCodeCoverageResults@1
+        displayName: "Publish Coverage Report"
+        condition: succeededOrFailed()
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
+          reportDirectory: "$(System.DefaultWorkingDirectory)/**/htmlcov"
+          failIfCoverageEmpty: true
