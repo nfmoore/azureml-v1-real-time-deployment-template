@@ -6,12 +6,14 @@ jobs:
       - task: Bash@3
         displayName: Add Conda to PATH
         inputs:
+          targetType: "inline"
           scripts: |
             echo "##vso[task.prependpath]$CONDA/bin"
 
       - task: Bash@3
         displayName: Create Anaconda Environment
         inputs:
+          targetType: "inline"
           scripts: |
             conda env create \
             --file $(Build.SourcesDirectory)/${{ parameters.conda_dependencies_file}} \
@@ -21,6 +23,7 @@ jobs:
       - task: Bash@3
         displayName: Run Linting, Unit Tests, and  Code Coverage
         inputs:
+          targetType: "inline"
           scripts: |
             source activate code-quality
             pip install flake8 pytest pytest-cov --quiet
