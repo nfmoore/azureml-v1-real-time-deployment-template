@@ -25,12 +25,10 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            ls
             source activate code-quality
-            ls
             python3 -m pip install flake8 pytest pytest-cov --quiet
             python3 -m flake8 --output-file lint-testresults.xml --format junit-xml
-            python3 -m pytest tests --cov ${{ parameters.source_directory}} --cov-report xml --junitxml junit/test-results.xml
+            conda run pytest tests --cov ${{ parameters.source_directory}} --cov-report xml --junitxml junit/test-results.xml
 
       - task: PublishTestResults@2
         displayName: "Publish Test Results"
