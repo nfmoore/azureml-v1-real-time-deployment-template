@@ -14,7 +14,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 def load_data(dataset_name, run):
     # Retreive dataset
-    if run._run_id.startswith("_OfflineRun"):
+    if run._run_id.startswith('_OfflineRun'):
         run = None
 
     if run is None:
