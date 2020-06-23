@@ -15,10 +15,26 @@ jobs:
 
       - bash: |
           source activate code-quality
-          pip install flake8 pytest pytest-azurepipelines pytest-cov --quiet
-          python -m flake8
-          pytest tests/ --cov . --cov-report html --junitxml junit/test-results.xml --doctest-modules
+          pip install flake8 pytest pytest-cov --quiet
+          python -m flake8 --output-file lint-testresults.xml --format junit-xml
+          pytest tests --cov . --cov-report html --junitxml junit/test-results.xml --doctest-modules
         displayName: Run Linting, Unit Tests, and  Code Coverage
+
+      - task: PublishTestResults@2
+        displayName: "Publish Test Results"
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFiles: "**/test-*.xml"
+          testRunTitle: "Publish test results for Python $(python.version)"
+
+      - task: PublishCodeCoverageResults@1
+        displayName: "Publish Coverage Report"
+        condition: succeededOrFailed()
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
+          reportDirectory: "$(System.DefaultWorkingDirectory)/**/htmlcov"
+          failIfCoverageEmpty: true
 # - task: UsePythonVersion@0
 #   inputs:
 #     versionSpec: "3.6"
