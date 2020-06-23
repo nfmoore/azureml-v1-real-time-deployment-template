@@ -3,41 +3,48 @@ jobs:
     displayName: Run Linting, Unit Tests and Code Coverage
 
     steps:
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: "3.6"
+      - bash: echo "##vso[task.prependpath]$CONDA/bin"
+        displayName: Add Conda to PATH
 
-      - script: |
-          python3 -m pip install flake8 pytest pytest-cov numpy pandas
-        displayName: "Install Dependencies"
+      - script: conda env create --quiet --file environment/conda_dependencies.yml
+        displayName: Create Anaconda Environment
 
-      - script: |
-          python3 -m flake8 \
-          --output-file=lint-testresults.xml \
-          --format junit-xml
-        displayName: "Run Linting"
-
-      - script: |
-          python3 -m pytest tests \
-          --doctest-modules \
-          --junitxml=junit/test-results.xml \
-          --cov=. \
-          --cov-report=xml \
-          --cov-report=html
-        displayName: "Run Unit Tests"
-
-      - task: PublishTestResults@2
-        displayName: "Publish Test Results"
-        condition: succeededOrFailed()
-        inputs:
-          testResultsFiles: "**/test-*.xml"
-          testRunTitle: "Publish test results for Python $(python.version)"
-
-      - task: PublishCodeCoverageResults@1
-        displayName: "Publish Coverage Report"
-        condition: succeededOrFailed()
-        inputs:
-          codeCoverageTool: Cobertura
-          summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
-          reportDirectory: "$(System.DefaultWorkingDirectory)/**/htmlcov"
-          failIfCoverageEmpty: true
+      - bash: |
+          source activate env-from-yaml
+          pip install flake8 pytest pytest-azurepipelines pytest-cov
+          python -m flake8
+          pytest tests/ --cov my_project --cov-report html
+        displayName: Run Linting, Unit Tests, and  Code Coverage
+# - task: UsePythonVersion@0
+#   inputs:
+#     versionSpec: "3.6"
+# - script: |
+#     python3 -m pip install flake8 pytest pytest-cov numpy pandas
+#   displayName: "Install Dependencies"
+# - script: |
+#     python3 -m flake8 \
+#     --output-file=lint-testresults.xml \
+#     --format junit-xml
+#   displayName: "Run Linting"
+# - script: |
+#     python3 -m pytest tests \
+#     --doctest-modules \
+#     --junitxml=junit/test-results.xml \
+#     --cov=. \
+#     --cov-report=xml \
+#     --cov-report=html
+#   displayName: "Run Unit Tests"
+# - task: PublishTestResults@2
+#   displayName: "Publish Test Results"
+#   condition: succeededOrFailed()
+#   inputs:
+#     testResultsFiles: "**/test-*.xml"
+#     testRunTitle: "Publish test results for Python $(python.version)"
+# - task: PublishCodeCoverageResults@1
+#   displayName: "Publish Coverage Report"
+#   condition: succeededOrFailed()
+#   inputs:
+#     codeCoverageTool: Cobertura
+#     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
+#     reportDirectory: "$(System.DefaultWorkingDirectory)/**/htmlcov"
+#     failIfCoverageEmpty: true
