@@ -3,6 +3,14 @@ jobs:
     displayName: Run Linting, Unit Tests and Code Coverage
 
     steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "3.6"
+
+      - script: |
+          python -m pip install  flake8 pytest  pytest-cov
+        displayName: "Install Dependencies"
+
       - script: |
           flake8 \
           --output-file=lint-testresults.xml \
