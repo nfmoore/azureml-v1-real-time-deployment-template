@@ -7,8 +7,6 @@ from scripts.score import process_data, run
 from tests.fixtures import data_int
 from tests.mocks import MockModel
 
-print(os.path.dirname(os.path.abspath(__file__)))
-
 
 def test_process_data():
     # Generate payload
