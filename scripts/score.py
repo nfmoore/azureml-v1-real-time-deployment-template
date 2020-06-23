@@ -34,7 +34,7 @@ def init():
     model_path = Model.get_model_path(
         os.getenv('AZUREML_MODEL_DIR').split('/')[-2])
 
-    # deserialize the model file back into a sklearn model
+    # Deserialize the model file back into a sklearn model
     model = joblib.load(model_path)
 
 
@@ -61,11 +61,13 @@ def process_data(input_df):
 @output_schema(StandardPythonParameterType(output_sample))
 def run(data):
     try:
-        input_df = pd.DataFrame(input_sample)
+        # Preprocess payload and get model prediction
+        input_df = pd.DataFrame(data)
         X = process_data(input_df)
         proba = model.predict_proba(X)
+
+        # Return model prediction in response body
         result = {'predict_proba': proba.tolist()}
         return result
-    except Exception as e:
-        error = str(e)
-        return error
+    except Exception as error:
+        return {'error': str(error)}

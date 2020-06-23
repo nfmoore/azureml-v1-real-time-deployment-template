@@ -13,6 +13,7 @@ stages:
       - template: ./templates/code-quality.yml
         parameters:
           conda_dependencies_file: ${{ variables.CONDA_DEPENDENCIES_FILE }}
+          source_directory: ${{ variables.SOURCE_DIRECTORY }}
 
   - stage: TrainModel
     displayName: Train Model
