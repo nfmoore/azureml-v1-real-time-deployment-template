@@ -5,12 +5,10 @@ import numpy as np
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
+from fixtures import data_int, data_raw
+from mocks import (MockDataset, MockPandasDataFrameDataset, MockRunContext,
+                   MockWorkspace)
 from scripts.train import load_data, preprocess_data, train_model
-from tests.fixtures import data_int, data_raw
-from tests.mocks import (MockDataset, MockPandasDataFrameDataset,
-                         MockRunContext, MockWorkspace)
-
-print(os.path.dirname(os.path.abspath(__file__)))
 
 
 @patch('scripts.train.Workspace', MockWorkspace())

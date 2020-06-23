@@ -3,9 +3,9 @@ from unittest.mock import patch
 import numpy as np
 import pandas as pd
 
+from fixtures import data_int
+from mocks import MockModel
 from scripts.score import process_data, run
-from tests.fixtures import data_int
-from tests.mocks import MockModel
 
 
 def test_process_data():
