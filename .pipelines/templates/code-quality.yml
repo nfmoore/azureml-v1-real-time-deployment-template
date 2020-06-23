@@ -18,27 +18,26 @@ jobs:
         displayName: "Run Linting"
 
       - script: |
-          python3 -m pytest . \
-          --cov=scripts \
-          --cov-report=html \
+          python3 -m pytest tests \
+          --doctest-modules \
+          --junitxml=junit/test-results.xml \
+          --cov=. \
           --cov-report=xml \
-          --junitxml=unit-testresults.xml
-        condition: succeededOrFailed()
+          --cov-report=html
         displayName: "Run Unit Tests"
 
       - task: PublishTestResults@2
+        displayName: "Publish Test Results"
         condition: succeededOrFailed()
         inputs:
-          testResultsFiles: "*-testresults.xml"
-          testRunTitle: "Linting & Unit Tests"
-          failTaskOnFailedTests: true
-        displayName: "Publish Test Results"
+          testResultsFiles: "**/test-*.xml"
+          testRunTitle: "Publish test results for Python $(python.version)"
 
       - task: PublishCodeCoverageResults@1
         displayName: "Publish Coverage Report"
         condition: succeededOrFailed()
         inputs:
           codeCoverageTool: Cobertura
-          summaryFileLocation: "coverage.xml"
-          reportDirectory: "htmlcov"
+          summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
+          reportDirectory: "$(System.DefaultWorkingDirectory)/**/htmlcov"
           failIfCoverageEmpty: true
