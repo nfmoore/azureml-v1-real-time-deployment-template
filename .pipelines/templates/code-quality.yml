@@ -8,17 +8,17 @@ jobs:
           versionSpec: "3.6"
 
       - script: |
-          python -m pip install  flake8 pytest  pytest-cov
+          python3 -m pip install flake8 pytest pytest-cov
         displayName: "Install Dependencies"
 
       - script: |
-          flake8 \
+          python3 -m flake8 \
           --output-file=lint-testresults.xml \
           --format junit-xml
         displayName: "Run Linting"
 
       - script: |
-          python -m pytest . \
+          python3 -m pytest . \
           --cov=scripts \
           --cov-report=html \
           --cov-report=xml \

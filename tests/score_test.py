@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 df_fixture = [{
     'age': 50.391780821917806,
@@ -38,4 +37,5 @@ def test_process_data():
     np.testing.assert_almost_equal('height' not in X.columns.tolist(), True)
     np.testing.assert_almost_equal('weight' not in X.columns.tolist(), True)
     np.testing.assert_almost_equal(
-        df_fixture[0]['weight'] / (df_fixture[0]['height'] / 100) ** 2, X.iloc[0].bmi)
+        df_fixture[0]['weight'] / (df_fixture[0]['height'] / 100) ** 2,
+        X.iloc[0].bmi)
