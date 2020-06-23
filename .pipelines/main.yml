@@ -7,8 +7,8 @@ variables:
   - template: ./templates/variables.yml
 
 stages:
-  - stage: TrainModel
-    displayName: Train Model
+  - stage:  CodeQuality
+    displayName: Code Quality
     jobs:
       - template: ./templates/code-quality.yml
 
