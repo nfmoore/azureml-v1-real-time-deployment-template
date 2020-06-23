@@ -7,10 +7,12 @@ variables:
   - template: ./templates/variables.yml
 
 stages:
-  - stage:  CodeQuality
+  - stage: CodeQuality
     displayName: Code Quality
     jobs:
       - template: ./templates/code-quality.yml
+        parameters:
+          conda_dependencies_file: ${{ variables.CONDA_DEPENDENCIES_FILE }}
 
   - stage: TrainModel
     displayName: Train Model

@@ -6,14 +6,18 @@ jobs:
       - bash: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: Add Conda to PATH
 
-      - script: conda env create --quiet --name code-quality --file $(Build.SourcesDirectory)/environments/conda_dependencies.yml
+      - script: |
+          conda env create \
+          --file $(Build.SourcesDirectory)/${{ parameters.conda_dependencies_file}} \
+          --name code-quality \
+          --quiet
         displayName: Create Anaconda Environment
 
       - bash: |
           source activate code-quality
-          pip install flake8 pytest pytest-azurepipelines pytest-cov
+          pip install flake8 pytest pytest-azurepipelines pytest-cov --quiet
           python -m flake8
-          pytest tests/ --cov scripts --cov-report html
+          pytest tests/ --cov . --cov-report html --nunitxml
         displayName: Run Linting, Unit Tests, and  Code Coverage
 # - task: UsePythonVersion@0
 #   inputs:
