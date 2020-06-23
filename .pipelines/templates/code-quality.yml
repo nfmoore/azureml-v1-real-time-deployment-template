@@ -17,7 +17,7 @@ jobs:
           source activate code-quality
           pip install flake8 pytest pytest-cov --quiet
           python -m flake8 --output-file lint-testresults.xml --format junit-xml
-          pytest tests --cov . --cov-report html --junitxml junit/test-results.xml --doctest-modules
+          pytest tests --cov . --cov-report html --cov-report xml --junitxml junit/test-results.xml --doctest-modules
         displayName: Run Linting, Unit Tests, and  Code Coverage
 
       - task: PublishTestResults@2
