@@ -10,7 +10,7 @@ variables:
   # TRAIN
   DATASET_NAME: "cardiovascular-disease"
   AML_COMPUTE_CLUSTER: "tc-cpu"
-  CONDA_DEPENDENCIES_FILE: "environment/conda_dependencies.yml"
+  CONDA_DEPENDENCIES_FILE: "environments/conda_dependencies.yml"
   SOURCE_DIRECTORY: "scripts"
   ENTRY_SCRIPT: "train.py"
   # DEPLOY

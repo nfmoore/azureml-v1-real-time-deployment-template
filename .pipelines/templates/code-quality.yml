@@ -6,7 +6,7 @@ jobs:
       - bash: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: Add Conda to PATH
 
-      - script: conda env create --quiet --file $(Build.SourcesDirectory)/environment/conda_dependencies.yml
+      - script: conda env create --quiet --file $(Build.SourcesDirectory)/environments/conda_dependencies.yml
         displayName: Create Anaconda Environment
 
       - bash: |
