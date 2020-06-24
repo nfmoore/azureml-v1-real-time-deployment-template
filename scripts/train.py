@@ -19,8 +19,13 @@ def load_data(dataset_name, run):
         workspace = Workspace.from_config()
         dataset = Dataset.get_by_name(workspace, name=dataset_name)
     else:
+        workspace = run.experiment.workspace
+        dataset = Dataset.get_by_name(workspace, name=dataset_name)
         print('before', run.input_datasets)
-        dataset = run.input_datasets[dataset_name]
+        try:
+            run.input_datasets['cardiovascular-disease']
+        except Exception:
+            print('exception')
         print('after', run.input_datasets)
         print('run', run.get_details())
 
