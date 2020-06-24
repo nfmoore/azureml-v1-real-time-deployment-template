@@ -1,4 +1,4 @@
-name: Build Release Pipeline - $(SourceBranchName) - $(Date:yyyyMMdd):$(Rev:.r) -
+name: Build Release Pipeline - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r)
 pool:
   vmImage: "ubuntu-latest"
 variables:
@@ -36,10 +36,10 @@ stages:
           entry_script: ${{ variables.ENTRY_SCRIPT }}
 
   - stage:
-    displayName: Register Model & Test Environment Deployment
+    displayName: Register Model & Test Deployment
     jobs:
       - deployment: Approval
-        displayName: Model Registration & Production Deployment Approval
+        displayName: Model Registration & Test Deployment Approval
         environment: Test
       - template: ./templates/register.yml
         parameters:
@@ -62,7 +62,7 @@ stages:
           compute_type: aci
 
   - stage:
-    displayName: Production Environment Deployment
+    displayName: Production Deployment
     jobs:
       - deployment: Approval
         displayName: Production Deployment Approval
