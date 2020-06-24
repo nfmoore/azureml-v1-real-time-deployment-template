@@ -1,4 +1,4 @@
-name: Build Release Pipeline - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r)
+name: Build Release Pipeline - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r) -
 pool:
   vmImage: "ubuntu-latest"
 variables:
