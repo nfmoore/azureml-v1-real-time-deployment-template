@@ -17,13 +17,9 @@ containerResourceRequirements:
   memoryInGB: 0.5
 
 appInsightsEnabled: False
-
 scoringTimeoutMs: 60000
-
 maxConcurrentRequestsPerContainer: 1
-
 maxQueueWaitMs: 500
-
 numReplicas:
 
 keys:
