@@ -2,12 +2,12 @@ jobs:
   - job: CodeQuality
     displayName: Run Linting, Unit Tests and Code Coverage
 
-  steps:
+    steps:
       - task: UsePythonVersion@0
         displayName: Use Python 3.6
         inputs:
-          versionSpec: '$(python.version)'
-          
+          versionSpec: "$(python.version)"
+
       - task: Bash@3
         displayName: Install Dependencies
         inputs:
