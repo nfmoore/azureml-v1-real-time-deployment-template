@@ -17,13 +17,14 @@ def load_data(dataset_name, run):
     # Retreive dataset
     if run._run_id.startswith('OfflineRun'):
         workspace = Workspace.from_config()
-        print('workspace from config')
+        dataset = Dataset.get_by_name(workspace, name=dataset_name)
     else:
-        workspace = run.experiment.workspace
-        print('workspace from experiment')
+        print('before', run.input_datasets)
+        dataset = run.input_datasets[dataset_name]
+        print('after', run.input_datasets)
+        print('run', run.get_details())
 
     # Convert dataset to pandas dataframe
-    dataset = Dataset.get_by_name(workspace, name='cardiovascular-disease')
     df = dataset.to_pandas_dataframe()
 
     # Rename features
