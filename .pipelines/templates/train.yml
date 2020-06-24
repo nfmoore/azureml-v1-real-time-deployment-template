@@ -1,36 +1,35 @@
 jobs:
-  - job: TrainJob
-    displayName: AML Model Training
+  displayName: AML Model Training
 
-    steps:
-      - task: AzureCLI@2
-        displayName: Install Azure ML CLI
-        inputs:
-          scriptType: bash
-          azureSubscription: ${{ parameters.rm_service_connection }}
-          scriptLocation: inlineScript
-          inlineScript: "az extension add -n azure-cli-ml"
+  steps:
+    - task: AzureCLI@2
+      displayName: Install Azure ML CLI
+      inputs:
+        scriptType: bash
+        azureSubscription: ${{ parameters.rm_service_connection }}
+        scriptLocation: inlineScript
+        inlineScript: "az extension add -n azure-cli-ml"
 
-      - task: AzureCLI@2
-        displayName: "Train Model"
-        inputs:
-          scriptType: bash
-          azureSubscription: ${{ parameters.rm_service_connection }}
-          scriptLocation: inlineScript
-          inlineScript: |
-            az ml run submit-script \
-            --workspace-name ${{ parameters.workspace_name }} \
-            --resource-group ${{ parameters.resource_group }} \
-            --experiment-name ${{ parameters.experiment_name }} \
-            --conda-dependencies ${{ parameters.conda_dependencies_file }} \
-            --target ${{ parameters.aml_compute_cluster }} \
-            --source-directory ${{ parameters.source_directory }} \
-            --output-metadata-file run.json ${{ parameters.entry_script }} \
-            --MODEL_NAME ${{ parameters.model_name }} \
-            --DATASET_NAME ${{ parameters.dataset_name }}
+    - task: AzureCLI@2
+      displayName: "Train Model"
+      inputs:
+        scriptType: bash
+        azureSubscription: ${{ parameters.rm_service_connection }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          az ml run submit-script \
+          --workspace-name ${{ parameters.workspace_name }} \
+          --resource-group ${{ parameters.resource_group }} \
+          --experiment-name ${{ parameters.experiment_name }} \
+          --conda-dependencies ${{ parameters.conda_dependencies_file }} \
+          --target ${{ parameters.aml_compute_cluster }} \
+          --source-directory ${{ parameters.source_directory }} \
+          --output-metadata-file run.json ${{ parameters.entry_script }} \
+          --MODEL_NAME ${{ parameters.model_name }} \
+          --DATASET_NAME ${{ parameters.dataset_name }}
 
-      - task: PublishBuildArtifacts@1
-        displayName: Publish Run Metadata Artifact
-        inputs:
-          pathToPublish: $(System.DefaultWorkingDirectory)/run.json
-          artifactName: ${{ parameters.run_metadata_artifact }}
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Run Metadata Artifact
+      inputs:
+        pathToPublish: $(System.DefaultWorkingDirectory)/run.json
+        artifactName: ${{ parameters.run_metadata_artifact }}

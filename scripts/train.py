@@ -7,24 +7,23 @@ from azureml.core import Dataset, Run, Workspace
 from scipy import stats
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
-# from sklearn.model_selection import cross_validate
+from sklearn.model_selection import cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
 def load_data(dataset_name, run):
-    # Retreive dataset
-    if run._run_id.startswith('_OfflineRun'):
-        run = None
 
-    if run is None:
+    # Retreive dataset
+    if run._run_id.startswith('OfflineRun'):
         workspace = Workspace.from_config()
-        # dataset = Dataset.get_by_name(workspace, name=dataset_name)
+        print('workspace from config')
     else:
         workspace = run.experiment.workspace
+        print('workspace from experiment')
 
     # Convert dataset to pandas dataframe
-    dataset = Dataset.get_by_name(workspace, name=dataset_name)
+    dataset = Dataset.get_by_name(workspace, name='cardiovascular-disease')
     df = dataset.to_pandas_dataframe()
 
     # Rename features
@@ -65,13 +64,10 @@ def preprocess_data(df, run):
     # Create feature for Body Mass Index (indicator of heart health)
     df['bmi'] = df.weight / (df.height / 100) ** 2
 
-    # Log summary statistics for data
-    # run.log_table("Data Description", df.describe().to_dict())
-
     return df
 
 
-def train_model(df, run, return_results=True):
+def train_model(df, run, log_results=True):
     # Define categorical / numeric features
     categorical_features = ['gender', 'cholesterol',
                             'glucose', 'smoker', 'alcoholic', 'active']
@@ -98,20 +94,26 @@ def train_model(df, run, return_results=True):
     pipeline = Pipeline(
         steps=[('preprocessor', preprocessor), ('classifier', classifier)])
 
-    if return_results:
-        pass
+    if log_results:
         # Train / evaluate performance of logistic regression classifier
-        # cv_results = cross_validate(
-        #     pipeline, X, y, cv=10, return_train_score=True)
+        cv_results = cross_validate(
+            pipeline, X, y, cv=10, return_train_score=True)
+
+        # Log average train / test accuracy
+        run.log('Average Train Acccuracy',
+                round(cv_results['train_score'].mean(), 4))
+        run.log('Average Test Acccuracy',
+                round(cv_results['test_score'].mean(), 4))
 
         # Log performance metrics for data
-        # for metric in cv_results.keys():
-        #     run.log_row(
-        #         "Performance Metrics", metric=metric.replace('_', ' '),
-        #         mean=cv_results[metric].mean(), std=cv_results[metric].std())
+        for metric in cv_results.keys():
+            run.log_row(
+                "K-Fold CV Metrics",
+                metric=metric.replace('_', ' '),
+                mean='{:.2%}'.format(cv_results[metric].mean()),
+                std='{:.2%}'.format(cv_results[metric].std()))
 
-        # Fit model
-
+    # Fit model
     pipeline.fit(X, y)
 
     return pipeline
@@ -120,7 +122,7 @@ def train_model(df, run, return_results=True):
 def getRuntimeArgs():
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--MODEL_NAME',  default='cvd-model')
+    parser.add_argument('--MODEL_NAME',  default='model')
     parser.add_argument('--DATASET_NAME', default='cardiovascular-disease')
     args = parser.parse_args()
 

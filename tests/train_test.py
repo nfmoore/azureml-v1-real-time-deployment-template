@@ -93,7 +93,7 @@ def test_train_model():
     # Train model
     input_df = pd.DataFrame(data_intermediate.copy())
     df = preprocess_data(input_df, run)
-    model = train_model(df, run, return_results=False)
+    model = train_model(df, run, log_results=False)
 
     # Should return an sklearn pipeline
     assert type(model) == Pipeline

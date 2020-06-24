@@ -1,13 +1,16 @@
-name: Build Release Pipeline - $(Build.DefinitionName) - $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
-trigger:
-  - master
+name: Build Release Pipeline - $(SourceBranchName) - $(Date:yyyyMMdd):$(Rev:.r) -
 pool:
   vmImage: "ubuntu-latest"
 variables:
   - template: ./templates/variables.yml
+pr: none
+trigger:
+  branches:
+    include:
+      - master
 
 stages:
-  - stage: CodeQuality
+  - stage:
     displayName: Code Quality
     jobs:
       - template: ./templates/code-quality.yml
@@ -15,7 +18,7 @@ stages:
           test_dependencies_file: ${{ variables.TEST_DEPENDENCIES_FILE }}
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
 
-  - stage: TrainModel
+  - stage:
     displayName: Train Model
     jobs:
       - template: ./templates/train.yml
@@ -32,12 +35,12 @@ stages:
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
           entry_script: ${{ variables.ENTRY_SCRIPT }}
 
-  - stage: RegisterModel
-    displayName: Register Model
+  - stage:
+    displayName: Register Model & Test Environment Deployment
     jobs:
       - deployment: Approval
-        displayName: Model Registration Approval
-        environment: "Test"
+        displayName: Model Registration & Production Deployment Approval
+        environment: Test
       - template: ./templates/register.yml
         parameters:
           rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
@@ -47,10 +50,6 @@ stages:
           experiment_name: ${{ variables.EXPERIMENT_NAME }}
           run_metadata_artifact: ${{ variables.RUN_METADATA_ARTIFACT }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
-
-  - stage: DeployToTest
-    displayName: Test Environment Deployment (ACI)
-    jobs:
       - template: ./templates/deploy.yml
         parameters:
           rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
@@ -58,16 +57,16 @@ stages:
           workspace_name: ${{ variables.WORKSPACE }}
           service_name: ${{ variables.ACI_SERVICE_NAME }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
-          ic: ${{ variables.INFERENCE_CONFIG }}
-          dc: ${{ variables.ACI_DEPLOYMENT_CONFIG }}
+          inference_config: ${{ variables.INFERENCE_CONFIG }}
+          deployment_config: ${{ variables.ACI_DEPLOYMENT_CONFIG }}
           compute_type: aci
 
-  - stage: DeployToProd
-    displayName: Production Environment Deployment (AKS)
+  - stage:
+    displayName: Production Environment Deployment
     jobs:
       - deployment: Approval
         displayName: Production Deployment Approval
-        environment: "Production"
+        environment: Production
       - template: ./templates/deploy.yml
         parameters:
           rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
@@ -76,6 +75,6 @@ stages:
           service_name: ${{ variables.AKS_SERVICE_NAME }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
           compute_target: ${{ variables.AKS_CLUSTER }}
-          ic: ${{ variables.INFERENCE_CONFIG }}
-          dc: ${{ variables.AKS_DEPLOYMENT_CONFIG }}
+          inference_config: ${{ variables.INFERENCE_CONFIG }}
+          deployment_config: ${{ variables.AKS_DEPLOYMENT_CONFIG }}
           compute_type: aks

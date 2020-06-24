@@ -1,48 +1,47 @@
 jobs:
-  - job: CodeQuality
-    displayName: Run Linting, Unit Tests and Code Coverage
+  displayName: Run Linting, Unit Tests and Code Coverage
 
-    steps:
-      - task: UsePythonVersion@0
-        displayName: Use Python 3.6
-        inputs:
-          versionSpec: 3.6
+  steps:
+    - task: UsePythonVersion@0
+      displayName: Use Python 3.6
+      inputs:
+        versionSpec: 3.6
 
-      - task: Bash@3
-        displayName: Install Dependencies
-        inputs:
-          targetType: "inline"
-          script: |
-            pip3 install -r ${{ parameters.test_dependencies_file }}
+    - task: Bash@3
+      displayName: Install Dependencies
+      inputs:
+        targetType: "inline"
+        script: |
+          pip3 install -r ${{ parameters.test_dependencies_file }}
 
-      - task: Bash@3
-        displayName: Run Linting
-        inputs:
-          targetType: "inline"
-          script: |
-            python3 -m flake8 --output-file lint-testresults.xml --format junit-xml
+    - task: Bash@3
+      displayName: Run Linting
+      inputs:
+        targetType: "inline"
+        script: |
+          python3 -m flake8 --output-file lint-testresults.xml --format junit-xml
 
-      - task: Bash@3
-        displayName: Run Unit Tests and  Code Coverage
-        inputs:
-          targetType: "inline"
-          script: |
-            python3 -m pytest tests \
-            --cov ${{ parameters.source_directory}} \
-            --cov-report xml \
-            --junitxml junit/test-results.xml
+    - task: Bash@3
+      displayName: Run Unit Tests and  Code Coverage
+      inputs:
+        targetType: "inline"
+        script: |
+          python3 -m pytest tests \
+          --cov ${{ parameters.source_directory}} \
+          --cov-report xml \
+          --junitxml junit/test-results.xml
 
-      - task: PublishTestResults@2
-        displayName: "Publish Test Results"
-        condition: succeededOrFailed()
-        inputs:
-          testResultsFiles: "**/test-*.xml"
-          testRunTitle: "Publish test results for Python $(python.version)"
+    - task: PublishTestResults@2
+      displayName: "Publish Test Results"
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: "**/test-*.xml"
+        testRunTitle: "Publish test results for Python $(python.version)"
 
-      - task: PublishCodeCoverageResults@1
-        displayName: "Publish Coverage Report"
-        condition: succeededOrFailed()
-        inputs:
-          codeCoverageTool: Cobertura
-          summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
-          failIfCoverageEmpty: true
+    - task: PublishCodeCoverageResults@1
+      displayName: "Publish Coverage Report"
+      condition: succeededOrFailed()
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
+        failIfCoverageEmpty: true

@@ -3,8 +3,8 @@ variables:
   RM_SERVICE_CONNECTION: "azure-resource-connection"
   RESOURCE_GROUP: "sandbox-web-service-deployment-template"
   WORKSPACE: "amlworkspace"
-  MODEL_NAME: "cvd-model"
-  EXPERIMENT_NAME: "cvd-exp"
+  MODEL_NAME: "model"
+  EXPERIMENT_NAME: "cardiovascular-disease-experiment"
   RUN_METADATA_ARTIFACT: "run-metadata"
   MODEL_METADATA_ARTIFACT: "model-metadata"
   # TRAIN

@@ -19,7 +19,7 @@ class MockPandasDataFrameDataset:
 
 
 class MockRunContext:
-    _run_id = '_OfflineRun'
+    _run_id = 'OfflineRun'
 
     @staticmethod
     def log_row(name, description=None, **kwargs):
