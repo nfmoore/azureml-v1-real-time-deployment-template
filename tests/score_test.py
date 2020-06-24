@@ -1,16 +1,15 @@
 from unittest.mock import patch
 
-import numpy as np
 import pandas as pd
 
 from scripts.score import process_data, run
-from tests.fixtures import data_int
+from tests.fixtures import data_intermediate
 from tests.mocks import MockModel
 
 
 def test_process_data():
     # Generate payload
-    payload = data_int[0]
+    payload = data_intermediate[0]
     payload.pop('cardiovascular_disease', None)
 
     # Apply preprocessing
@@ -37,7 +36,7 @@ def test_process_data():
 @patch('scripts.score.model', MockModel())
 def test_run():
     # Generate payload
-    payload = data_int[0]
+    payload = data_intermediate[0]
     payload.pop('cardiovascular_disease', None)
 
     # Return prediction
@@ -47,7 +46,7 @@ def test_run():
     # Should return a dictionary
     assert type(result) == dict
 
-    # Should return dictionary with key of 'predict_proba' and value equal to a list of '<probabilities>'
+    # Should return valid response payload
     assert 'predict_proba' in result.keys()
     assert type(result['predict_proba']) == list
     assert result['predict_proba'] == prediction_probabilities

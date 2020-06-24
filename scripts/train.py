@@ -7,7 +7,7 @@ from azureml.core import Dataset, Run, Workspace
 from scipy import stats
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_validate
+# from sklearn.model_selection import cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
@@ -99,9 +99,10 @@ def train_model(df, run, return_results=True):
         steps=[('preprocessor', preprocessor), ('classifier', classifier)])
 
     if return_results:
+        pass
         # Train / evaluate performance of logistic regression classifier
-        cv_results = cross_validate(
-            pipeline, X, y, cv=10, return_train_score=True)
+        # cv_results = cross_validate(
+        #     pipeline, X, y, cv=10, return_train_score=True)
 
         # Log performance metrics for data
         # for metric in cv_results.keys():
@@ -109,7 +110,8 @@ def train_model(df, run, return_results=True):
         #         "Performance Metrics", metric=metric.replace('_', ' '),
         #         mean=cv_results[metric].mean(), std=cv_results[metric].std())
 
-    # Fit model
+        # Fit model
+
     pipeline.fit(X, y)
 
     return pipeline

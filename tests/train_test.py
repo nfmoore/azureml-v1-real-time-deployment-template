@@ -5,9 +5,8 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 
 from scripts.train import load_data, preprocess_data, train_model
-from tests.fixtures import data_int, data_raw
-from tests.mocks import (MockDataset, MockPandasDataFrameDataset,
-                         MockRunContext, MockWorkspace)
+from tests.fixtures import data_intermediate
+from tests.mocks import MockDataset, MockRunContext, MockWorkspace
 
 
 @patch('scripts.train.Workspace', MockWorkspace())
@@ -17,7 +16,7 @@ def test_load_data():
     run = MockRunContext()
 
     # Define target dataframe and returned dataframe after loading data
-    target_df = pd.DataFrame(data_int)
+    target_df = pd.DataFrame(data_intermediate)
     return_df = load_data(None, run)
 
     # Should return desired number of columns
@@ -37,7 +36,7 @@ def test_preprocess_data():
     run = MockRunContext()
 
     # Return dataframe after processing data
-    input_df = pd.DataFrame(data_int.copy())
+    input_df = pd.DataFrame(data_intermediate.copy())
     df = preprocess_data(input_df, run)
 
     # Should return a dataframe with the same rows and an additional columns
@@ -52,7 +51,7 @@ def test_preprocess_data_nulls():
     run = MockRunContext()
 
     # Create dataset with additional record with null
-    data_with_null = data_int.copy()
+    data_with_null = data_intermediate.copy()
     null_record = data_with_null[0]
     null_record['age'] = np.nan
     data_with_null.append(null_record)
@@ -73,7 +72,7 @@ def test_preprocess_data_duplicates():
     run = MockRunContext()
 
     # Create dataset with additional duplicate record
-    data_with_dup = data_int.copy()
+    data_with_dup = data_intermediate.copy()
     data_with_dup.append(data_with_dup[0])
 
     # Return dataframe after processing data
@@ -92,7 +91,7 @@ def test_train_model():
     run = MockRunContext()
 
     # Train model
-    input_df = pd.DataFrame(data_int.copy())
+    input_df = pd.DataFrame(data_intermediate.copy())
     df = preprocess_data(input_df, run)
     model = train_model(df, run, return_results=False)
 
