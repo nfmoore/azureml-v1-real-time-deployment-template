@@ -12,7 +12,7 @@ stages:
     jobs:
       - template: ./templates/code-quality.yml
         parameters:
-          conda_dependencies_file: ${{ variables.CONDA_DEPENDENCIES_FILE }}
+          test_dependencies_file: ${{ variables.TEST_DEPENDENCIES_FILE }}
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
 
   - stage: TrainModel

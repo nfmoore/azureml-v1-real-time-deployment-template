@@ -13,15 +13,24 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            pip3 install -r $(Build.SourcesDirectory)/environments/test_dependencies.txt
+            pip3 install -r ${{ parameters.test_dependencies_file }}
 
       - task: Bash@3
-        displayName: Run Linting, Unit Tests, and  Code Coverage
+        displayName: Run Linting
         inputs:
           targetType: "inline"
           script: |
             python3 -m flake8 --output-file lint-testresults.xml --format junit-xml
-            python3 -m pytest tests --cov ${{ parameters.source_directory}} --cov-report xml --junitxml junit/test-results.xml
+
+      - task: Bash@3
+        displayName: Run Unit Tests and  Code Coverage
+        inputs:
+          targetType: "inline"
+          script: |
+            python3 -m pytest tests \
+            --cov ${{ parameters.source_directory}} \
+            --cov-report xml \
+            --junitxml junit/test-results.xml
 
       - task: PublishTestResults@2
         displayName: "Publish Test Results"
@@ -37,48 +46,3 @@ jobs:
           codeCoverageTool: Cobertura
           summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
           failIfCoverageEmpty: true
-    # steps:
-    #   - task: Bash@3
-    #     displayName: Add Conda to PATH
-    #     inputs:
-    #       targetType: "inline"
-    #       script: |
-    #         echo "##vso[task.prependpath]$CONDA/bin"
-
-    #   - task: Bash@3
-    #     displayName: Create Anaconda Environment
-    #     inputs:
-    #       targetType: "inline"
-    #       script: |
-    #         conda env create \
-    #         --file $(Build.SourcesDirectory)/${{ parameters.conda_dependencies_file}} \
-    #         --name code-quality \
-    #         --quiet
-
-    #   - task: Bash@3
-    #     displayName: Run Linting, Unit Tests, and  Code Coverage
-    #     inputs:
-    #       targetType: "inline"
-    #       script: |
-    #         source activate code-quality
-    #         conda install flake8 pytest pytest-cov --name code-quality --quiet
-    #         # python -m pip install flake8 pytest pytest-cov --quiet
-    #         # python -m flake8 --output-file lint-testresults.xml --format junit-xml
-    #         # python -m pytest tests --cov ${{ parameters.source_directory}} --cov-report xml --junitxml junit/test-results.xml
-    #         python -m flake8 --output-file lint-testresults.xml --format junit-xml
-    #         python -m pytest tests --cov ${{ parameters.source_directory}} --cov-report xml --junitxml junit/test-results.xml
-
-    #   - task: PublishTestResults@2
-    #     displayName: "Publish Test Results"
-    #     condition: succeededOrFailed()
-    #     inputs:
-    #       testResultsFiles: "**/test-*.xml"
-    #       testRunTitle: "Publish test results for Python $(python.version)"
-
-    #   - task: PublishCodeCoverageResults@1
-    #     displayName: "Publish Coverage Report"
-    #     condition: succeededOrFailed()
-    #     inputs:
-    #       codeCoverageTool: Cobertura
-    #       summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
-    #       failIfCoverageEmpty: true
