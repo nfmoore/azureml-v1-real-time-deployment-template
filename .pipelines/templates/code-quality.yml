@@ -6,7 +6,7 @@ jobs:
       - task: UsePythonVersion@0
         displayName: Use Python 3.6
         inputs:
-          versionSpec: "$(python.version)"
+          versionSpec: 3.6
 
       - task: Bash@3
         displayName: Install Dependencies
