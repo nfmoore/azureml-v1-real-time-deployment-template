@@ -14,12 +14,12 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 def load_data(dataset_name, run):
     # Retreive dataset
-    if run._run_id.startswith("_OfflineRun"):
+    if run._run_id.startswith('_OfflineRun'):
         run = None
 
     if run is None:
         workspace = Workspace.from_config()
-        dataset = Dataset.get_by_name(workspace, name=dataset_name)
+        # dataset = Dataset.get_by_name(workspace, name=dataset_name)
     else:
         workspace = run.experiment.workspace
 
@@ -71,7 +71,7 @@ def preprocess_data(df, run):
     return df
 
 
-def train_model(df, run):
+def train_model(df, run, return_results=True):
     # Define categorical / numeric features
     categorical_features = ['gender', 'cholesterol',
                             'glucose', 'smoker', 'alcoholic', 'active']
@@ -98,19 +98,21 @@ def train_model(df, run):
     pipeline = Pipeline(
         steps=[('preprocessor', preprocessor), ('classifier', classifier)])
 
-    # Train / evaluate performance of logistic regression classifier
-    cv_results = cross_validate(pipeline, X, y, cv=10, return_train_score=True)
+    if return_results:
+        # Train / evaluate performance of logistic regression classifier
+        cv_results = cross_validate(
+            pipeline, X, y, cv=10, return_train_score=True)
 
-    # Log performance metrics for data
-    # for metric in cv_results.keys():
-    #     run.log_row(
-    #         "Performance Metrics", metric=metric.replace('_', ' '),
-    #         mean=cv_results[metric].mean(), std=cv_results[metric].std())
+        # Log performance metrics for data
+        # for metric in cv_results.keys():
+        #     run.log_row(
+        #         "Performance Metrics", metric=metric.replace('_', ' '),
+        #         mean=cv_results[metric].mean(), std=cv_results[metric].std())
 
     # Fit model
     pipeline.fit(X, y)
 
-    return pipeline, cv_results
+    return pipeline
 
 
 def getRuntimeArgs():
@@ -127,13 +129,13 @@ def main():
     # Retrieve current service context for logging metrics and uploading files
     run = Run.get_context(allow_offline=True)
 
-    # Retrieve
+    # Retrieve model name and dataset name from runtime arguments
     model_name, dataset_name = getRuntimeArgs()
 
     # Load data, pre-process data, train and evaluate model
     df = load_data(dataset_name, run)
     df = preprocess_data(df, run)
-    model, cv_results = train_model(df, run)
+    model = train_model(df, run)
 
     # Save the model to the outputs directory for capture
     os.makedirs('./outputs', exist_ok=True)

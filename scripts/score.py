@@ -8,9 +8,8 @@ from inference_schema.parameter_types.standard_py_parameter_type import \
     StandardPythonParameterType
 from inference_schema.schema_decorators import input_schema, output_schema
 
-# Inference_schema generates a schema for your web service
-# It then creates an OpenAPI (Swagger) specification for the web service
-# at http://<scoring_base_url>/swagger.json
+model = None
+
 input_sample = [{
     'age': 50.391780821917806,
     'gender': 'female',
@@ -27,17 +26,15 @@ input_sample = [{
 }]
 output_sample = {'predict_proba': [[0.7581071779416333, 0.24189282205836665]]}
 
-model = None
-
 
 def init():
     global model
 
     # Retreive path to model folder
     model_path = Model.get_model_path(
-        os.getenv("AZUREML_MODEL_DIR").split('/')[-2])
+        os.getenv('AZUREML_MODEL_DIR').split('/')[-2])
 
-    # deserialize the model file back into a sklearn model
+    # Deserialize the model file back into a sklearn model
     model = joblib.load(model_path)
 
 
@@ -64,11 +61,13 @@ def process_data(input_df):
 @output_schema(StandardPythonParameterType(output_sample))
 def run(data):
     try:
-        input_df = pd.DataFrame(input_sample)
+        # Preprocess payload and get model prediction
+        input_df = pd.DataFrame(data)
         X = process_data(input_df)
         proba = model.predict_proba(X)
-        result = {"predict_proba": proba.tolist()}
+
+        # Return model prediction in response body
+        result = {'predict_proba': proba.tolist()}
         return result
-    except Exception as e:
-        error = str(e)
-        return error
+    except Exception as error:
+        return {'error': str(error)}
