@@ -26,29 +26,10 @@ def test_load_data():
     # Should contain all desired renamed columns
     assert set(return_df.columns) == set(target_df.columns)
 
-    # Should change values of 'active' column
-    assert set(return_df.active.unique().tolist()) <= set(
-        target_df.active.unique().tolist())
-
-    # Should change values of 'alcoholic' column
-    assert set(return_df.alcoholic.unique().tolist()) <= set(
-        target_df.alcoholic.unique().tolist())
-
-    # Should change values of 'cholesterol' column
-    assert set(return_df.cholesterol.unique().tolist()) <= set(
-        target_df.cholesterol.unique().tolist())
-
-    # Should change values of 'gender' column
-    assert set(return_df.gender.unique().tolist()) <= set(
-        target_df.gender.unique().tolist())
-
-    # Should change values of 'glucose' column
-    assert set(return_df.glucose.unique().tolist()) <= set(
-        target_df.glucose.unique().tolist())
-
-    # Should change values of 'smoker' column
-    assert set(return_df.smoker.unique().tolist()) <= set(
-        target_df.smoker.unique().tolist())
+    # Should change values of categorical columns
+    for column in target_df.columns:
+        assert set(return_df[column].unique().tolist()) <= set(
+            target_df[column].unique().tolist())
 
 
 def test_preprocess_data():
@@ -87,7 +68,7 @@ def test_preprocess_data_nulls():
     assert 'bmi' in df.columns.tolist()
 
 
-def test_preprocess_data_dups():
+def test_preprocess_data_duplicates():
     # Mock run context
     run = MockRunContext()
 
