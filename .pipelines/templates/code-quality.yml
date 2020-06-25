@@ -20,7 +20,7 @@ jobs:
         inputs:
           targetType: inline
           script: |
-            python3 -m flake8 --output-file lint/test-results.xml --format junit-xml
+            python3 -m flake8 --output-file lint-testresults.xml --format junit-xml
 
       - task: Bash@3
         displayName: Run Unit Tests and  Code Coverage
