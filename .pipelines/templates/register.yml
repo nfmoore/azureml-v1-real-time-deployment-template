@@ -39,9 +39,12 @@ jobs:
             --model-framework-version ${{ parameters.model_framework_version }} \
             --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
             --workspace-name ${{ parameters.workspace_name }} \
-            --model-framework "$(parameters.model_framework)" \
-            --model-framework-version "$(parameters.model_framework_version)" \
-            --description "$(parameters.model_description)"
+            --model-framework "ScikitLearn" \
+            --model-framework-version "0.22.*" \
+            --description "Model to determine the likelihood of cardiovascular disease for an individual"
+            # --model-framework "$(parameters.model_framework)" \
+            # --model-framework-version "$(parameters.model_framework_version)" \
+            # --description "$(parameters.model_description)"
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Model Metadata Artifact
