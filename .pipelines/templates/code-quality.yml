@@ -11,21 +11,21 @@ jobs:
       - task: Bash@3
         displayName: Install Dependencies
         inputs:
-          targetType: "inline"
+          targetType: inline
           script: |
-            pip3 install -r ${{ parameters.test_dependencies_file }}
+            pip3 install -r ${{ parameters.dependencies_file }}
 
       - task: Bash@3
         displayName: Run Linting
         inputs:
-          targetType: "inline"
+          targetType: inline
           script: |
-            python3 -m flake8 --output-file lint-testresults.xml --format junit-xml
+            python3 -m flake8 --output-file lint/test-results.xml --format junit-xml
 
       - task: Bash@3
         displayName: Run Unit Tests and  Code Coverage
         inputs:
-          targetType: "inline"
+          targetType: inline
           script: |
             python3 -m pytest tests \
             --cov ${{ parameters.source_directory}} \
@@ -33,16 +33,16 @@ jobs:
             --junitxml junit/test-results.xml
 
       - task: PublishTestResults@2
-        displayName: "Publish Test Results"
+        displayName: Publish Test Results
         condition: succeededOrFailed()
         inputs:
-          testResultsFiles: "**/test-*.xml"
-          testRunTitle: "Publish test results for Python $(python.version)"
+          testResultsFiles: $(System.DefaultWorkingDirectory)/**/test-*.xml
+          testRunTitle: Publish test results for Python $(python.version)
 
       - task: PublishCodeCoverageResults@1
-        displayName: "Publish Coverage Report"
+        displayName: Publish Coverage Report
         condition: succeededOrFailed()
         inputs:
           codeCoverageTool: Cobertura
-          summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
+          summaryFileLocation: $(System.DefaultWorkingDirectory)/**/coverage.xml
           failIfCoverageEmpty: true

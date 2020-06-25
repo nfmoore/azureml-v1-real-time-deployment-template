@@ -1,23 +1,26 @@
 variables:
   # COMMON
-  RM_SERVICE_CONNECTION: "azure-resource-connection"
-  RESOURCE_GROUP: "sandbox-web-service-deployment-template"
-  WORKSPACE: "amlworkspace"
-  MODEL_NAME: "model"
-  EXPERIMENT_NAME: "cardiovascular-disease-experiment"
-  RUN_METADATA_ARTIFACT: "run-metadata"
-  MODEL_METADATA_ARTIFACT: "model-metadata"
-  # TRAIN
-  DATASET_NAME: "cardiovascular-disease"
-  AML_COMPUTE_CLUSTER: "tc-cpu"
-  CONDA_DEPENDENCIES_FILE: "environments/conda_dependencies.yml"
-  TEST_DEPENDENCIES_FILE: "environments/test_dependencies.txt"
-  SOURCE_DIRECTORY: "scripts"
-  ENTRY_SCRIPT: "train.py"
-  # DEPLOY
-  AKS_CLUSTER: "aks-ic-devtest"
-  ACI_SERVICE_NAME: "cvd-model-aci"
-  AKS_SERVICE_NAME: "cvd-model-aks"
+  RM_SERVICE_CONNECTION: azure-resource-connection
+  RESOURCE_GROUP: sandbox-web-service-deployment-template
+  WORKSPACE: amlworkspace
+  MODEL_NAME: cardiovascular-disease-model
+  EXPERIMENT_NAME: cardiovascular-disease-experiment
+  RUN_METADATA_ARTIFACT: run-metadata
+  MODEL_METADATA_ARTIFACT: model-metadata
+  # CONFIG
   AKS_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aks_deployment_config.yml
   ACI_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aci_deployment_config.yml
   INFERENCE_CONFIG: $(Build.SourcesDirectory)/config/inference_config.yml
+  # ENVIRONMENTS
+  CONDA_DEPENDENCIES_TRAIN_FILE: environments/conda_dependencies_train.yml
+  CONDA_DEPENDENCIES_SCORE_FILE: environments/conda_dependencies_score.yml
+  DEPENDENCIES_TEST_FILE: environments/dependencies_test.txt
+  # TRAIN
+  DATASET_NAME: cardiovascular-disease
+  AML_COMPUTE_CLUSTER: tc-cpu
+  SOURCE_DIRECTORY: scripts
+  ENTRY_SCRIPT: train.py
+  # DEPLOY
+  AKS_CLUSTER: aks-ic-devtest
+  ACI_SERVICE_NAME: cvd-model-aci
+  AKS_SERVICE_NAME: cvd-model-aks

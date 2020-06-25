@@ -2,7 +2,7 @@ parameters:
   compute_target_cli:
 
 jobs:
-  - job: DeployJob
+  - job: DeployModel
     displayName: ${{ upper( parameters.compute_type ) }} Deployment
 
     variables:

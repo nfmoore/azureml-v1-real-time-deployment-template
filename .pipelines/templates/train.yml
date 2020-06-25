@@ -1,5 +1,5 @@
 jobs:
-  - job: TrainJob
+  - job: TrainModel
     displayName: AML Model Training
 
     steps:

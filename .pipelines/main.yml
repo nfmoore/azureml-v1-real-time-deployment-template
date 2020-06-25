@@ -1,4 +1,4 @@
-name: Build Release Pipeline - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r) -
+name: main pipeline - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r) -
 pool:
   vmImage: "ubuntu-latest"
 variables:
@@ -15,7 +15,7 @@ stages:
     jobs:
       - template: ./templates/code-quality.yml
         parameters:
-          test_dependencies_file: ${{ variables.TEST_DEPENDENCIES_FILE }}
+          dependencies_file: ${{ variables.DEPENDENCIES_TEST_FILE }}
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
 
   - stage:
@@ -31,7 +31,7 @@ stages:
           run_metadata_artifact: ${{ variables.RUN_METADATA_ARTIFACT }}
           dataset_name: ${{ variables.DATASET_NAME }}
           aml_compute_cluster: ${{ variables.AML_COMPUTE_CLUSTER }}
-          conda_dependencies_file: ${{ variables.CONDA_DEPENDENCIES_FILE }}
+          conda_dependencies_file: ${{ variables.CONDA_DEPENDENCIES_TRAIN_FILE }}
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
           entry_script: ${{ variables.ENTRY_SCRIPT }}
 

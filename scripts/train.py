@@ -21,13 +21,6 @@ def load_data(dataset_name, run):
     else:
         workspace = run.experiment.workspace
         dataset = Dataset.get_by_name(workspace, name=dataset_name)
-        print('before', run.input_datasets)
-        try:
-            run.input_datasets['cardiovascular-disease']
-        except Exception:
-            print('exception')
-        print('after', run.input_datasets)
-        print('run', run.get_details())
 
     # Convert dataset to pandas dataframe
     df = dataset.to_pandas_dataframe()

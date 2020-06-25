@@ -1,0 +1,10 @@
+pandas==0.23.*
+numpy==1.16.*
+scipy==1.4.*
+scikit-learn==0.20.*
+joblib==0.14.*
+pytest==5.4.*
+pytest-cov==2.10.*
+flake8==3.8.*
+azureml-sdk==1.6.*
+inference-schema[numpy-support]==1.0.*

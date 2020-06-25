@@ -1,6 +1,6 @@
 entryScript: scripts/score.py
 runtime: python
-condaFile: environments/conda_dependencies.yml
+condaFile: environments/conda_dependencies_score.yml
 extraDockerfileSteps:
 schemaFile:
 sourceDirectory:

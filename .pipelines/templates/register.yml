@@ -2,7 +2,7 @@ parameters:
   output_metadata_file: "model.json"
 
 jobs:
-  - job: RegisterJob
+  - job: RegisterModel
     displayName: AML Model Registration
 
     steps:
