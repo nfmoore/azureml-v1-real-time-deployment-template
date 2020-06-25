@@ -38,4 +38,7 @@ jobs:
             --model-metadata-file $(Pipeline.Workspace)/${{ parameters.model_metadata_artifact }}/model.json \
             --overwrite \
             --resource-group ${{ parameters.resource_group }} \
-            --workspace-name ${{ parameters.workspace_name }}
+            --workspace-name ${{ parameters.workspace_name }} \
+            --model-framework "$(parameters.model_framework)" \
+            --model-framework-version "$(parameters.model_framework_version)" \
+            --description "$(parameters.model_description)"

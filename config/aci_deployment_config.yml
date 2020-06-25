@@ -4,7 +4,7 @@ containerResourceRequirements:
   cpu: 1
   memoryInGB: 0.5
 
-location:
+location: australiaeast
 authEnabled: False
 sslEnabled: False
 appInsightsEnabled: False
