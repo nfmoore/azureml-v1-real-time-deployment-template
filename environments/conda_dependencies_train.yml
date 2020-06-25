@@ -2,7 +2,7 @@ name: base_env
 
 dependencies:
   - python=3.7.*
-  - pandas=1.01.*
+  - pandas=1.0.*
   - numpy=1.18.*
   - scipy=1.4.*
   - scikit-learn=0.22.*
