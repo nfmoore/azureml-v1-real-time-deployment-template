@@ -20,10 +20,6 @@ variables:
   AML_COMPUTE_CLUSTER: computecluster
   SOURCE_DIRECTORY: scripts
   ENTRY_SCRIPT: train.py
-  # REGISTER
-  MODEL_DESCRIPTION: "Model to determine the likelihood of cardiovascular disease for an individual"
-  MODEL_FRAMEWORK: "ScikitLearn"
-  MODEL_FRAMEWORK_VERSION: "0.22.*"
   # DEPLOY
   ACI_COMPUTE_TARGET: amlaci
   AKS_COMPUTE_TARGET: amlaks

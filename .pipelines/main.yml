@@ -52,9 +52,6 @@ stages:
           workspace_name: ${{ variables.WORKSPACE }}
           model_name: ${{ variables.MODEL_NAME }}
           experiment_name: ${{ variables.EXPERIMENT_NAME }}
-          model_description: ${{ variables.MODEL_DESCRIPTION }}
-          model_framework: ${{ variables.MODEL_FRAMEWORK }}
-          model_framework_version: ${{ variables.MODEL_FRAMEWORK_VERSION }}
           run_metadata_artifact: ${{ variables.RUN_METADATA_ARTIFACT }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
 
