@@ -27,7 +27,7 @@ stages:
     jobs:
       - template: ./templates/train.yml
         parameters:
-          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          service_connection: ${{ variables.SERVICE_CONNECTION }}
           resource_group: ${{ variables.RESOURCE_GROUP }}
           workspace_name: ${{ variables.WORKSPACE }}
           model_name: ${{ variables.MODEL_NAME }}
@@ -40,27 +40,32 @@ stages:
           entry_script: ${{ variables.ENTRY_SCRIPT }}
 
   - stage:
-    displayName: Register Model & Test Deployment
+    displayName: Register Model
     jobs:
       - deployment: Approval
         displayName: Model Registration & Test Deployment Approval
         environment: Test
       - template: ./templates/register.yml
         parameters:
-          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          service_connection: ${{ variables.SERVICE_CONNECTION }}
           resource_group: ${{ variables.RESOURCE_GROUP }}
           workspace_name: ${{ variables.WORKSPACE }}
           model_name: ${{ variables.MODEL_NAME }}
           experiment_name: ${{ variables.EXPERIMENT_NAME }}
           run_metadata_artifact: ${{ variables.RUN_METADATA_ARTIFACT }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
+
+  - stage:
+    displayName: Test Deployment
+    jobs:
       - template: ./templates/deploy.yml
         parameters:
-          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          service_connection: ${{ variables.SERVICE_CONNECTION }}
           resource_group: ${{ variables.RESOURCE_GROUP }}
           workspace_name: ${{ variables.WORKSPACE }}
-          service_name: ${{ variables.ACI_SERVICE_NAME }}
+          service_name: ${{ variables.ACI_SERVICE_ENDPOINT_NAME }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
+          compute_target: ${{ variables.ACI_COMPUTE_TARGET }}
           inference_config: ${{ variables.INFERENCE_CONFIG }}
           deployment_config: ${{ variables.ACI_DEPLOYMENT_CONFIG }}
           compute_type: aci
@@ -73,12 +78,12 @@ stages:
         environment: Production
       - template: ./templates/deploy.yml
         parameters:
-          rm_service_connection: ${{ variables.RM_SERVICE_CONNECTION }}
+          service_connection: ${{ variables.SERVICE_CONNECTION }}
           resource_group: ${{ variables.RESOURCE_GROUP }}
           workspace_name: ${{ variables.WORKSPACE }}
-          service_name: ${{ variables.AKS_SERVICE_NAME }}
+          service_name: ${{ variables.AKS_SERVICE_ENDPOINT_NAME }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
-          compute_target: ${{ variables.AKS_CLUSTER }}
+          compute_target: ${{ variables.AKS_COMPUTE_TARGET }}
           inference_config: ${{ variables.INFERENCE_CONFIG }}
           deployment_config: ${{ variables.AKS_DEPLOYMENT_CONFIG }}
           compute_type: aks

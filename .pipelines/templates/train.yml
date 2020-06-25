@@ -7,7 +7,7 @@ jobs:
         displayName: Install Azure ML CLI
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.rm_service_connection }}
+          azureSubscription: ${{ parameters.service_connection }}
           scriptLocation: inlineScript
           inlineScript: "az extension add -n azure-cli-ml"
 
@@ -15,7 +15,7 @@ jobs:
         displayName: "Train Model"
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.rm_service_connection }}
+          azureSubscription: ${{ parameters.service_connection }}
           scriptLocation: inlineScript
           inlineScript: |
             az ml run submit-script \

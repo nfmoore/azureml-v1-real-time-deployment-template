@@ -1,7 +1,7 @@
 variables:
   # COMMON
-  RM_SERVICE_CONNECTION: azure-resource-connection
-  RESOURCE_GROUP: sandbox-web-service-deployment-template
+  SERVICE_CONNECTION: azure-service-connection
+  RESOURCE_GROUP: sandbox-real-time-deployment-template
   WORKSPACE: amlworkspace
   MODEL_NAME: cardiovascular-disease-model
   EXPERIMENT_NAME: cardiovascular-disease-experiment
@@ -16,11 +16,12 @@ variables:
   CONDA_DEPENDENCIES_SCORE_FILE: environments/conda_dependencies_score.yml
   DEPENDENCIES_TEST_FILE: environments/dependencies_test.txt
   # TRAIN
-  DATASET_NAME: cardiovascular-disease
-  AML_COMPUTE_CLUSTER: tc-cpu
+  DATASET_NAME: cardiovascular_disease_dataset
+  AML_COMPUTE_CLUSTER: computecluster
   SOURCE_DIRECTORY: scripts
   ENTRY_SCRIPT: train.py
   # DEPLOY
-  AKS_CLUSTER: aks-ic-devtest
-  ACI_SERVICE_NAME: cvd-model-aci
-  AKS_SERVICE_NAME: cvd-model-aks
+  ACI_COMPUTE_TARGET: amlaci
+  AKS_COMPUTE_TARGET: amlaks
+  ACI_SERVICE_ENDPOINT_NAME: cardiovascular-disease-endpoint-aci
+  AKS_SERVICE_ENDPOINT_NAME: cardiovascular-disease-endpoint-aks
