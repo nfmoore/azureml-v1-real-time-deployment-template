@@ -31,10 +31,10 @@ jobs:
             az ml model register \
             --name ${{ parameters.model_name }} \
             --asset-path outputs/model \
-            --experiment-name ${{ parameters.experiment_name }} \
-            --output-metadata-file ${{ parameters.output_metadata_file }} \
+            # --experiment-name ${{ parameters.experiment_name }} \
+            # --output-metadata-file ${{ parameters.output_metadata_file }} \
             --resource-group ${{ parameters.resource_group }} \
-            --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
+            # --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
             --workspace-name ${{ parameters.workspace_name }} \
             --model-framework ScikitLearn \
             --model-framework-version "0.22.*" \
