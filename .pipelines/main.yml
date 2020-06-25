@@ -3,11 +3,15 @@ pool:
   vmImage: "ubuntu-latest"
 variables:
   - template: ./templates/variables.yml
-pr: none
 trigger:
   branches:
     include:
       - master
+      - releases/*
+    exclude:
+      - docs/*
+      - LICENSE
+      - README.md
 
 stages:
   - stage:
