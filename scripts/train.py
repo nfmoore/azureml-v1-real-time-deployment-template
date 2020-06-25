@@ -121,11 +121,10 @@ def train_model(df, run, log_results=True):
 def getRuntimeArgs():
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--MODEL_NAME',  default='model')
-    parser.add_argument('--DATASET_NAME', default='cardiovascular-disease')
+    parser.add_argument('--DATASET_NAME', required=True)
     args = parser.parse_args()
 
-    return args.MODEL_NAME, args.DATASET_NAME
+    return args.DATASET_NAME
 
 
 def main():
@@ -133,7 +132,7 @@ def main():
     run = Run.get_context(allow_offline=True)
 
     # Retrieve model name and dataset name from runtime arguments
-    model_name, dataset_name = getRuntimeArgs()
+    dataset_name = getRuntimeArgs()
 
     # Load data, pre-process data, train and evaluate model
     df = load_data(dataset_name, run)
@@ -142,7 +141,7 @@ def main():
 
     # Save the model to the outputs directory for capture
     os.makedirs('./outputs', exist_ok=True)
-    joblib.dump(value=model, filename='./outputs/{}'.format(model_name))
+    joblib.dump(value=model, filename='./outputs/model')
 
 
 if __name__ == "__main__":

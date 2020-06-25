@@ -26,7 +26,6 @@ jobs:
             --target ${{ parameters.aml_compute_cluster }} \
             --source-directory ${{ parameters.source_directory }} \
             --output-metadata-file run.json ${{ parameters.entry_script }} \
-            --MODEL_NAME ${{ parameters.model_name }} \
             --DATASET_NAME ${{ parameters.dataset_name }}
 
       - task: PublishBuildArtifacts@1
