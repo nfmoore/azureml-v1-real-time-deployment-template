@@ -52,7 +52,6 @@ stages:
           workspace_name: ${{ variables.WORKSPACE }}
           model_name: ${{ variables.MODEL_NAME }}
           experiment_name: ${{ variables.EXPERIMENT_NAME }}
-          dataset_name: ${{ variables.DATASET_NAME }}
           model_description: ${{ variables.MODEL_DESCRIPTION }}
           model_framework: ${{ variables.MODEL_FRAMEWORK }}
           model_framework_version: ${{ variables.MODEL_FRAMEWORK_VERSION }}

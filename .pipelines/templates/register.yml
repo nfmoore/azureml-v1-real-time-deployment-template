@@ -37,7 +37,6 @@ jobs:
             --description "${{ parameters.model_description }}" \
             --model-framework ${{ parameters.model_framework }} \
             --model-framework-version ${{ parameters.model_framework_version }} \
-            --sample-input-dataset-id ${{ parameters.dataset_name }} \
             --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
             --workspace-name ${{ parameters.workspace_name }} \
 
