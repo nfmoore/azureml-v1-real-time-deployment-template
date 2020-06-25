@@ -31,17 +31,14 @@ jobs:
             az ml model register \
             --name ${{ parameters.model_name }} \
             --asset-path outputs/model \
-            # --experiment-name ${{ parameters.experiment_name }} \
-            # --output-metadata-file ${{ parameters.output_metadata_file }} \
+            --experiment-name ${{ parameters.experiment_name }} \
+            --output-metadata-file ${{ parameters.output_metadata_file }} \
             --resource-group ${{ parameters.resource_group }} \
             --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
             --workspace-name ${{ parameters.workspace_name }} \
             --model-framework ScikitLearn \
             --model-framework-version "0.22.*" \
             --description "Model to determine the likelihood of cardiovascular disease for an individual"
-            # --model-framework "$(parameters.model_framework)" \
-            # --model-framework-version "$(parameters.model_framework_version)" \
-            # --description "$(parameters.model_description)"
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Model Metadata Artifact
