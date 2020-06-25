@@ -1,11 +1,11 @@
 name: base_env
 
 dependencies:
-  - python=3.6.*
-  - pandas==0.23.*
-  - numpy==1.16.*
-  - joblib==0.14.*
-  - pip
+  - python=3.7.*
+  - pandas=1.01.*
+  - numpy=1.18.*
+  - joblib=0.14.*
+  - pip=20.0.*
   - pip:
       - azureml-sdk==1.6.*
       - azureml-defaults==1.6.*
