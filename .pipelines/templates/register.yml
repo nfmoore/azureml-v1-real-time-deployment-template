@@ -34,9 +34,6 @@ jobs:
             --experiment-name ${{ parameters.experiment_name }} \
             --output-metadata-file ${{ parameters.output_metadata_file }} \
             --resource-group ${{ parameters.resource_group }} \
-            --description "${{ parameters.model_description }}" \
-            --model-framework ${{ parameters.model_framework }} \
-            --model-framework-version ${{ parameters.model_framework_version }} \
             --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
             --workspace-name ${{ parameters.workspace_name }} \
             --model-framework "ScikitLearn" \
