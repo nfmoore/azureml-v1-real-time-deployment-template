@@ -27,5 +27,5 @@ variables:
   # DEPLOY
   ACI_COMPUTE_TARGET: amlaci
   AKS_COMPUTE_TARGET: amlaks
-  ACI_SERVICE_ENDPOINT_NAME: cardiovascular-disease-endpoint-aci
-  AKS_SERVICE_ENDPOINT_NAME: cardiovascular-disease-endpoint-aks
+  ACI_SERVICE_ENDPOINT_NAME: cardiovascular-disease-aci
+  AKS_SERVICE_ENDPOINT_NAME: cardiovascular-disease-aks
