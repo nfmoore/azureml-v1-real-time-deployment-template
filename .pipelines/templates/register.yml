@@ -39,6 +39,9 @@ jobs:
             --model-framework-version ${{ parameters.model_framework_version }} \
             --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
             --workspace-name ${{ parameters.workspace_name }} \
+            --model-framework "$(parameters.model_framework)" \
+            --model-framework-version "$(parameters.model_framework_version)" \
+            --description "$(parameters.model_description)"
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Model Metadata Artifact
