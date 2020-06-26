@@ -5,6 +5,8 @@ jobs:
     variables:
       ${{ if ne( parameters.compute_target, '' ) }}:
         compute_target_cli: --compute-target ${{ parameters.compute_target }}
+      ${{ if ne( parameters.location, '' ) }}:
+        location_cli: --location ${{ parameters.location }}
 
     steps:
       - task: AzureCLI@2
@@ -30,9 +32,10 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml model deploy \
+            ${{ variables.compute_target_cli }} \
+            ${{ variables.location_cli }} \
             --name ${{ parameters.service_name }} \
             --compute-type ${{ parameters.compute_type }} \
-            --compute-target ${{ parameters.compute_target }} \
             --deploy-config-file ${{ parameters.deployment_config }} \
             --inference-config-file ${{ parameters.inference_config }} \
             --model-metadata-file $(Pipeline.Workspace)/${{ parameters.model_metadata_artifact }}/model.json \

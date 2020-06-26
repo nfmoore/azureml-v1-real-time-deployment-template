@@ -54,6 +54,7 @@ stages:
           experiment_name: ${{ variables.EXPERIMENT_NAME }}
           run_metadata_artifact: ${{ variables.RUN_METADATA_ARTIFACT }}
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
+          location: ${{ variables.LOCATION }}
 
   - stage:
     displayName: Test Deployment

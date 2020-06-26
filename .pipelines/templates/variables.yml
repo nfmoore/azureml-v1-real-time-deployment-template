@@ -7,6 +7,7 @@ variables:
   EXPERIMENT_NAME: cardiovascular-disease-experiment
   RUN_METADATA_ARTIFACT: run-metadata
   MODEL_METADATA_ARTIFACT: model-metadata
+  LOCATION: australiaeast
   # CONFIG
   AKS_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aks_deployment_config.yml
   ACI_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aci_deployment_config.yml
