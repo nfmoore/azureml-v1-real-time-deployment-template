@@ -1,0 +1,9 @@
+entryScript: scripts/score.py
+runtime: python
+condaFile: environments/conda_dependencies_score.yml
+extraDockerfileSteps:
+schemaFile:
+sourceDirectory:
+enableGpu: False
+baseImage:
+baseImageRegistry:
