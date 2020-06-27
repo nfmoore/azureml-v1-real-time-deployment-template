@@ -9,11 +9,8 @@ variables:
   - name: workspace_name
     value: amlworkspace
 
-  - name: model_name
-    value: cardiovascular_disease_model
-
-  - name: experiment_name
-    value: cardiovascular_disease_experiment
+  - name: project_name
+    value: cardiovascular_disease
 
   # CONFIG
   - name: aks_deployment_config

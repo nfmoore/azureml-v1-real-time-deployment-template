@@ -30,7 +30,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml model register \
-            --name $MODEL_NAME \
+            --name "${$PROJECT_NAME}-model" \
             --asset-path outputs/model \
             --experiment-name $EXPERIMENT_NAME \
             --output-metadata-file model.json \

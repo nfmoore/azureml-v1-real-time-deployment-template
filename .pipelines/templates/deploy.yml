@@ -38,7 +38,7 @@ jobs:
           inlineScript: |
             az ml model deploy \
             --name $SERVICE_NAME \
-            --compute-type "$($COMPUTE_TYPE) " \
+            --compute-type $(compute_type) \
             --deploy-config-file $DEPLOYMENT_CONFIG \
             --inference-config-file $INFERENCE_CONFIG \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
