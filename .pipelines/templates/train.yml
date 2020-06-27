@@ -27,7 +27,7 @@ jobs:
             --resource-group $RESOURCE_GROUP \
             --experiment-name $EXPERIMENT_NAME \
             --conda-dependencies $DEPENDENCIES_TRAIN \
-            --target $AML_COMPUTE_TARGET \
+            --target $COMPUTE_TARGET_NAME \
             --source-directory scripts \
             --output-metadata-file run.json train.py \
             --DATASET_NAME $DATASET_NAME

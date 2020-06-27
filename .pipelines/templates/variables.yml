@@ -39,7 +39,7 @@ variables:
   - name: dataset_name
     value: cardiovascular_disease_dataset
 
-  - name: compute_name
+  - name: compute_target_name
     value: computecluster
   # DEPLOY
   - name: aci_compute_target
