@@ -13,7 +13,8 @@ jobs:
       - name: inference_config
         value: ${{ parameters.inference_config }}
       - ${{ if ne( parameters.compute_target, '' ) }}:
-          compute_target_cli: --compute-target ${{ parameters.compute_target }}
+          name: compute_target_cli
+          value: --compute-target ${{ parameters.compute_target }}
 
     steps:
       - task: AzureCLI@2
