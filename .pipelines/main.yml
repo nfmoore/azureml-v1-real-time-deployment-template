@@ -34,7 +34,6 @@ stages:
           compute_type: aci
           service_name: $(aci_service_endpoint_name)
           deployment_config: $(aci_deployment_config)
-          inference_config: $(inference_config)
           compute_target: ""
 
   - stage: deploy_production
@@ -50,4 +49,3 @@ stages:
           compute_target: $(aks_compute_target)
           service_name: $(aks_service_endpoint_name)
           deployment_config: $(aks_deployment_config)
-          inference_config: $(inference_config)
