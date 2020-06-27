@@ -47,5 +47,5 @@ jobs:
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
             --workspace-name $WORKSPACE_NAME \
             --resource-group $RESOURCE_GROUP \
-            --compute-target $COMPUTE_TARGET \
+            --compute-target $[variables.compute_target] \
             --overwrite
