@@ -25,7 +25,7 @@ jobs:
             az ml run submit-script \
             --workspace-name $WORKSPACE_NAME \
             --resource-group $RESOURCE_GROUP \
-            --experiment-name "${$PROJECT_NAME}-experiment" \
+            --experiment-name "$($PROJECT_NAME)-experiment" \
             --conda-dependencies $DEPENDENCIES_TRAIN \
             --target $COMPUTE_TARGET_NAME \
             --source-directory scripts \
