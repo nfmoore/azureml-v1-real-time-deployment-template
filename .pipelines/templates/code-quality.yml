@@ -1,9 +1,9 @@
-variables:
-  - template: ./variables.yml
-
 jobs:
   - job: code_quality
     displayName: Code Quality
+
+    variables:
+      - template: ./variables.yml
 
     steps:
       - task: UsePythonVersion@0

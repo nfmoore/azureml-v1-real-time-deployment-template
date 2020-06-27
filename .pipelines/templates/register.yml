@@ -1,10 +1,10 @@
-variables:
-  - template: ./variables.yml
-
 jobs:
   - job: register_model
     displayName: Register Model
     dependsOn: train_model
+
+    variables:
+      - template: ./variables.yml
 
     steps:
       - task: AzureCLI@2
