@@ -1,27 +1,48 @@
 variables:
   # COMMON
-  SERVICE_CONNECTION: azure-service-connection
-  RESOURCE_GROUP: sandbox-real-time-deployment-template
-  WORKSPACE: amlworkspace
-  MODEL_NAME: cardiovascular-disease-model
-  EXPERIMENT_NAME: cardiovascular-disease-experiment
-  RUN_METADATA_ARTIFACT: run-metadata
-  MODEL_METADATA_ARTIFACT: model-metadata
+  - name: SERVICE_CONNECTION
+    value: azure-service-connection
+  - name: RESOURCE_GROUP
+    value: sandbox-real-time-deployment-template
+  - name: WORKSPACE_NAME
+    value: amlworkspace
+  - name: MODEL_NAME
+    value: cardiovascular-disease-model
+  - name: EXPERIMENT_NAME
+    value: cardiovascular-disease-experiment
+  - name: RUN_METADATA_ARTIFACT
+    value: run-metadata
+  - name: MODEL_METADATA_ARTIFACT
+    value: model-metadata
   # CONFIG
-  AKS_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aks_deployment_config.yml
-  ACI_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aci_deployment_config.yml
-  INFERENCE_CONFIG: $(Build.SourcesDirectory)/config/inference_config.yml
+  - name: AKS_DEPLOYMENT_CONFIG
+    value: $(Build.SourcesDirectory)/config/aks_deployment_config.yml
+  - name: ACI_DEPLOYMENT_CONFIG
+    value: $(Build.SourcesDirectory)/config/aci_deployment_config.yml
+  - name: INFERENCE_CONFIG
+    value: $(Build.SourcesDirectory)/config/inference_config.yml
   # ENVIRONMENTS
-  CONDA_DEPENDENCIES_TRAIN_FILE: environments/conda_dependencies_train.yml
-  CONDA_DEPENDENCIES_SCORE_FILE: environments/conda_dependencies_score.yml
-  DEPENDENCIES_TEST_FILE: environments/dependencies_test.txt
+  - name: CONDA_DEPENDENCIES_TRAIN_FILE
+    value: environments/conda_dependencies_train.yml
+  - name: CONDA_DEPENDENCIES_SCORE_FILE
+    value: environments/conda_dependencies_score.yml
+  - name: DEPENDENCIES_TEST_FILE
+    value: environments/dependencies_test.txt
   # TRAIN
-  DATASET_NAME: cardiovascular_disease_dataset
-  AML_COMPUTE_CLUSTER: computecluster
-  SOURCE_DIRECTORY: scripts
-  ENTRY_SCRIPT: train.py
+  - name: DATASET_NAME
+    value: cardiovascular_disease_dataset
+  - name: AML_COMPUTE_TARGET
+    value: computecluster
+  - name: SOURCE_DIRECTORY
+    value: scripts
+  - name: ENTRY_SCRIPT
+    value: train.py
   # DEPLOY
-  ACI_COMPUTE_TARGET: amlaci
-  AKS_COMPUTE_TARGET: amlaks
-  ACI_SERVICE_ENDPOINT_NAME: cardiovascular-disease-aci
-  AKS_SERVICE_ENDPOINT_NAME: cardiovascular-disease-aks
+  - name: ACI_COMPUTE_TARGET
+    value: amlaci
+  - name: AKS_COMPUTE_TARGET
+    value: amlaks
+  - name: ACI_SERVICE_ENDPOINT_NAME
+    value: cardiovascular-disease-aci
+  - name: AKS_SERVICE_ENDPOINT_NAME
+    value: cardiovascular-disease-aks

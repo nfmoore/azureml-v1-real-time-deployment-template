@@ -1,3 +1,6 @@
+variables:
+  - template: ./variables.yml
+
 jobs:
   - job: code_quality
     displayName: Code Quality
@@ -13,7 +16,7 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            pip3 install -r ${{ parameters.dependencies_file }}
+            pip3 install -r $DEPENDENCIES_TEST_FILE
 
       - task: Bash@3
         displayName: Run Linting
@@ -28,7 +31,7 @@ jobs:
           targetType: "inline"
           script: |
             python3 -m pytest tests \
-            --cov ${{ parameters.source_directory}} \
+            --cov $SOURCE_DIRECTORY \
             --cov-report xml \
             --junitxml junit/test-results.xml
 

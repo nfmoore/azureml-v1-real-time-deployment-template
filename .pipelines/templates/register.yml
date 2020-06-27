@@ -1,5 +1,5 @@
-parameters:
-  output_metadata_file: "model.json"
+variables:
+  - template: ./variables.yml
 
 jobs:
   - job: register_model
@@ -11,7 +11,7 @@ jobs:
         displayName: Install Azure ML CLI
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.service_connection }}
+          azureSubscription: $(SERVICE_CONNECTION)
           scriptLocation: inlineScript
           inlineScript: az extension add -n azure-cli-ml
 
@@ -19,27 +19,27 @@ jobs:
         displayName: Download Run Metadata Artifact
         inputs:
           source: current
-          artifactName: ${{ parameters.run_metadata_artifact }}
+          artifactName: run-metadata
           downloadPath: $(Pipeline.Workspace)
 
       - task: AzureCLI@2
         displayName: Register Model
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.service_connection }}
+          azureSubscription: $(SERVICE_CONNECTION)
           scriptLocation: inlineScript
           inlineScript: |
             az ml model register \
-            --name ${{ parameters.model_name }} \
+            --name $MODEL_NAME \
             --asset-path outputs/model \
-            --experiment-name ${{ parameters.experiment_name }} \
-            --output-metadata-file ${{ parameters.output_metadata_file }} \
-            --resource-group ${{ parameters.resource_group }} \
-            --run-metadata-file $(Pipeline.Workspace)/${{ parameters.run_metadata_artifact }}/run.json \
-            --workspace-name ${{ parameters.workspace_name }}
+            --experiment-name $EXPERIMENT_NAME \
+            --output-metadata-file model.json \
+            --resource-group $RESOURCE_GROUP \
+            --run-metadata-file $(Pipeline.Workspace)/run-metadata/run.json \
+            --workspace-name $WORKSPACE_NAME \
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Model Metadata Artifact
         inputs:
-          pathToPublish: $(System.DefaultWorkingDirectory)/${{ parameters.output_metadata_file }}
-          artifactName: ${{ parameters.model_metadata_artifact }}
+          pathToPublish: $(System.DefaultWorkingDirectory)/model.json
+          artifactName: model-metadata
