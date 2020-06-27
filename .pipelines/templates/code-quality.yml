@@ -1,6 +1,6 @@
 jobs:
-  - job: CodeQuality
-    displayName: Run Linting, Unit Tests and Code Coverage
+  - job: code_quality
+    displayName: Code Quality
 
     steps:
       - task: UsePythonVersion@0

@@ -14,8 +14,8 @@ trigger:
       - README.md
 
 stages:
-  - stage: build
-    displayName: Build
+  - stage: model_build
+    displayName: Model Build
     jobs:
       - template: ./templates/code-quality.yml
         parameters:
@@ -45,7 +45,7 @@ stages:
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
           location: ${{ variables.LOCATION }}
 
-  - stage: deploy-test
+  - stage: deploy_test
     displayName: Test Deployment
     jobs:
       - deployment: Approval
@@ -63,7 +63,7 @@ stages:
           deployment_config: ${{ variables.ACI_DEPLOYMENT_CONFIG }}
           compute_type: aci
 
-  - stage: deploy-production
+  - stage: deploy_production
     displayName: Production Deployment
     jobs:
       - deployment: Approval

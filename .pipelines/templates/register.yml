@@ -2,8 +2,8 @@ parameters:
   output_metadata_file: "model.json"
 
 jobs:
-  - job: RegisterModel
-    displayName: AML Model Registration
+  - job: register_model
+    displayName: Register Model
 
     steps:
       - task: AzureCLI@2

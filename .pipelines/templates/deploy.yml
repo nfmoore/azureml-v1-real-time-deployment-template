@@ -1,5 +1,5 @@
 jobs:
-  - job: DeployModel
+  - job: deploy_model
     displayName: ${{ upper( parameters.compute_type ) }} Deployment
 
     variables:

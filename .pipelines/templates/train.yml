@@ -1,6 +1,6 @@
 jobs:
-  - job: TrainModel
-    displayName: AML Model Training
+  - job: train_model
+    displayName: Train Model
 
     steps:
       - task: AzureCLI@2
