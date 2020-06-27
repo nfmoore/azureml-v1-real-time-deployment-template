@@ -41,7 +41,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml model register \
-            --name $(project_name)-model \ \
+            --name $(project_name)-model \
             --asset-path outputs/model \
             --experiment-name $(project_name)-experiment \
             --output-metadata-file model.json \
