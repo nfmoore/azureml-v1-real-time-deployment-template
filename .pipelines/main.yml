@@ -14,17 +14,13 @@ trigger:
       - README.md
 
 stages:
-  - stage:
-    displayName: Code Quality
+  - stage: build
+    displayName: Build
     jobs:
       - template: ./templates/code-quality.yml
         parameters:
           dependencies_file: ${{ variables.DEPENDENCIES_TEST_FILE }}
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
-
-  - stage:
-    displayName: Train Model
-    jobs:
       - template: ./templates/train.yml
         parameters:
           service_connection: ${{ variables.SERVICE_CONNECTION }}
@@ -38,13 +34,6 @@ stages:
           conda_dependencies_file: ${{ variables.CONDA_DEPENDENCIES_TRAIN_FILE }}
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
           entry_script: ${{ variables.ENTRY_SCRIPT }}
-
-  - stage:
-    displayName: Register Model
-    jobs:
-      - deployment: Approval
-        displayName: Model Registration & Test Deployment Approval
-        environment: Test
       - template: ./templates/register.yml
         parameters:
           service_connection: ${{ variables.SERVICE_CONNECTION }}
@@ -56,9 +45,12 @@ stages:
           model_metadata_artifact: ${{ variables.MODEL_METADATA_ARTIFACT }}
           location: ${{ variables.LOCATION }}
 
-  - stage:
+  - stage: deploy-test
     displayName: Test Deployment
     jobs:
+      - deployment: Approval
+        displayName: Test Deployment Approval
+        environment: Test
       - template: ./templates/deploy.yml
         parameters:
           service_connection: ${{ variables.SERVICE_CONNECTION }}
@@ -71,7 +63,7 @@ stages:
           deployment_config: ${{ variables.ACI_DEPLOYMENT_CONFIG }}
           compute_type: aci
 
-  - stage:
+  - stage: deploy-production
     displayName: Production Deployment
     jobs:
       - deployment: Approval

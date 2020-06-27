@@ -118,7 +118,7 @@ def train_model(df, run, log_results=True):
     return pipeline
 
 
-def getRuntimeArgs():
+def parse_args():
     # Parse command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--DATASET_NAME', required=True)
@@ -132,7 +132,7 @@ def main():
     run = Run.get_context(allow_offline=True)
 
     # Retrieve model name and dataset name from runtime arguments
-    dataset_name = getRuntimeArgs()
+    dataset_name = parse_args()
 
     # Load data, pre-process data, train and evaluate model
     df = load_data(dataset_name, run)
