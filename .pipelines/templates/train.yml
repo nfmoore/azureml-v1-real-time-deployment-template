@@ -16,6 +16,17 @@ jobs:
           inlineScript: "az extension add -n azure-cli-ml"
 
       - task: AzureCLI@2
+        displayName: Set Default Workspace
+        inputs:
+          scriptType: bash
+          azureSubscription: $(service_connection)
+          scriptLocation: inlineScript
+          inlineScript: |
+            az ml folder attach \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group) \
+
+      - task: AzureCLI@2
         displayName: "Train Model"
         inputs:
           scriptType: bash
@@ -23,14 +34,12 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml run submit-script \
-            --workspace-name $WORKSPACE_NAME \
-            --resource-group $RESOURCE_GROUP \
             --experiment-name $(project_name)-experiment \
-            --conda-dependencies $DEPENDENCIES_TRAIN \
-            --target $COMPUTE_TARGET_NAME \
+            --conda-dependencies $(dependencies_train) \
+            --target $(compute_target_name) \
             --source-directory scripts \
             --output-metadata-file run.json train.py \
-            --DATASET_NAME $DATASET_NAME
+            --DATASET_NAME $(dataset_name)
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Run Metadata Artifact

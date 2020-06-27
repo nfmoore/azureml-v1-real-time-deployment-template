@@ -13,9 +13,6 @@ jobs:
       - name: compute_target
         value: ${{ parameters.compute_target }}
 
-        # ${{ if ne( parameters.compute_target, '' ) }}:
-        #   compute_target_cli: --compute-target ${{ parameters.compute_target }}
-
     steps:
       - task: AzureCLI@2
         displayName: Install Azure ML CLI
@@ -33,6 +30,17 @@ jobs:
           downloadPath: $(Pipeline.Workspace)
 
       - task: AzureCLI@2
+        displayName: Set Default Workspace
+        inputs:
+          scriptType: bash
+          azureSubscription: $(service_connection)
+          scriptLocation: inlineScript
+          inlineScript: |
+            az ml folder attach \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group) \
+
+      - task: AzureCLI@2
         displayName: Deploy to ${{ upper( parameters.compute_type ) }}
         inputs:
           scriptType: bash
@@ -40,12 +48,10 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml model deploy \
-            --name $SERVICE_NAME \
-            --compute-type "$(compute_type)" \
-            --deploy-config-file $DEPLOYMENT_CONFIG \
-            --inference-config-file $INFERENCE_CONFIG \
+            --name $(service_name) \
+            --compute-type $(compute_type) \
+            --deploy-config-file $(deployment_config) \
+            --inference-config-file $(inference_config) \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
-            --workspace-name $WORKSPACE_NAME \
-            --resource-group $RESOURCE_GROUP \
             --compute-target $[variables.compute_target] \
             --overwrite
