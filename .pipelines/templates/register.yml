@@ -32,7 +32,7 @@ jobs:
             az ml model register \
             --name $(project_name)-model \ \
             --asset-path outputs/model \
-            --experiment-name $EXPERIMENT_NAME \
+            --experiment-name --experiment-name $(project_name)-experiment \
             --output-metadata-file model.json \
             --resource-group $RESOURCE_GROUP \
             --run-metadata-file $(Pipeline.Workspace)/run-metadata/run.json \
