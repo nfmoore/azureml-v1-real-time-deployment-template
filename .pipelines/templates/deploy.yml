@@ -3,15 +3,20 @@ jobs:
     displayName: ${{ upper( parameters.compute_type ) }} Deployment
 
     variables:
-      ${{ if ne( parameters.compute_target, '' ) }}:
-        compute_target_cli: --compute-target ${{ parameters.compute_target }}
+      - template: ./variables.yml
+        service_name: ${{ parameters.service_name }}
+        compute_type: ${{ parameters.compute_type }}
+        deployment_config: ${{ parameters.deployment_config }}
+        inference_config: ${{ parameters.inference_config }}
+        ${{ if ne( parameters.compute_target, '' ) }}:
+          compute_target_cli: --compute-target ${{ parameters.compute_target }}
 
     steps:
       - task: AzureCLI@2
         displayName: Install Azure ML CLI
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.service_connection }}
+          azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: az extension add -n azure-cli-ml
 
@@ -19,23 +24,23 @@ jobs:
         displayName: Download Model Metadata Artifact
         inputs:
           source: current
-          artifactName: ${{ parameters.model_metadata_artifact }}
+          artifactName: model-metadata
           downloadPath: $(Pipeline.Workspace)
 
       - task: AzureCLI@2
         displayName: Deploy to ${{ upper( parameters.compute_type ) }}
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.service_connection }}
+          azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
             az ml model deploy \
-            ${{ variables.compute_target_cli }} \
-            --name ${{ parameters.service_name }} \
-            --compute-type ${{ parameters.compute_type }} \
-            --deploy-config-file ${{ parameters.deployment_config }} \
-            --inference-config-file ${{ parameters.inference_config }} \
-            --model-metadata-file $(Pipeline.Workspace)/${{ parameters.model_metadata_artifact }}/model.json \
-            --resource-group ${{ parameters.resource_group }} \
-            --workspace-name ${{ parameters.workspace_name }} \
+            --name $SERVICE_NAME \
+            --compute-type $COMPUTE_TYPE \
+            --deploy-config-file $DEPLOYMENT_CONFIG \
+            --inference-config-file $INFERENCE_CONFIG \
+            --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
+            --workspace-name $WORKSPACE_NAME \
+            --resource-group $RESOURCE_GROUP \
+            $(compute_target_cli) \
             --overwrite

@@ -16,7 +16,7 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            pip3 install -r $DEPENDENCIES_TEST_FILE
+            pip3 install -r $DEPENDENCIES_TEST
 
       - task: Bash@3
         displayName: Run Linting
@@ -31,7 +31,7 @@ jobs:
           targetType: "inline"
           script: |
             python3 -m pytest tests \
-            --cov $SOURCE_DIRECTORY \
+            --cov scripts \
             --cov-report xml \
             --junitxml junit/test-results.xml
 

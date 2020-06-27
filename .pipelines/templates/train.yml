@@ -11,7 +11,7 @@ jobs:
         displayName: Install Azure ML CLI
         inputs:
           scriptType: bash
-          azureSubscription: $(SERVICE_CONNECTION)
+          azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: "az extension add -n azure-cli-ml"
 
@@ -19,17 +19,17 @@ jobs:
         displayName: "Train Model"
         inputs:
           scriptType: bash
-          azureSubscription: $(SERVICE_CONNECTION)
+          azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
             az ml run submit-script \
             --workspace-name $WORKSPACE_NAME \
             --resource-group $RESOURCE_GROUP \
             --experiment-name $EXPERIMENT_NAME \
-            --conda-dependencies $CONDA_DEPENDENCIES_TRAIN_FILE \
+            --conda-dependencies $DEPENDENCIES_TRAIN \
             --target $AML_COMPUTE_TARGET \
-            --source-directory $SOURCE_DIRECTORY \
-            --output-metadata-file run.json $ENTRY_SCRIPT \
+            --source-directory scripts \
+            --output-metadata-file run.json train.py \
             --DATASET_NAME $DATASET_NAME
 
       - task: PublishBuildArtifacts@1
