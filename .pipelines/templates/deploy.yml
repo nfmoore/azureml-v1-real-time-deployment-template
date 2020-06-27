@@ -10,8 +10,6 @@ jobs:
         value: ${{ parameters.compute_type }}
       - name: deployment_config
         value: ${{ parameters.deployment_config }}
-      - name: inference_config
-        value: ${{ parameters.inference_config }}
       - name: compute_target
         value: ${{ parameters.compute_target }}
 
@@ -40,7 +38,7 @@ jobs:
           inlineScript: |
             az ml model deploy \
             --name $SERVICE_NAME \
-            --compute-type $COMPUTE_TYPE \
+            --compute-type "$($COMPUTE_TYPE)" \
             --deploy-config-file $DEPLOYMENT_CONFIG \
             --inference-config-file $INFERENCE_CONFIG \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
