@@ -4,10 +4,14 @@ jobs:
 
     variables:
       - template: ./variables.yml
-        service_name: ${{ parameters.service_name }}
-        compute_type: ${{ parameters.compute_type }}
-        deployment_config: ${{ parameters.deployment_config }}
-        inference_config: ${{ parameters.inference_config }}
+      - name: service_name
+        value: ${{ parameters.service_name }}
+      - name: compute_type
+        value: ${{ parameters.compute_type }}
+      - name: deployment_config
+        value: ${{ parameters.deployment_config }}
+      - name: inference_config
+        value: ${{ parameters.inference_config }}
         ${{ if ne( parameters.compute_target, '' ) }}:
           compute_target_cli: --compute-target ${{ parameters.compute_target }}
 
