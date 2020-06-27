@@ -22,6 +22,7 @@ stages:
           dependencies_file: ${{ variables.DEPENDENCIES_TEST_FILE }}
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
       - template: ./templates/train.yml
+        deplendsOn: code_quality
         parameters:
           service_connection: ${{ variables.SERVICE_CONNECTION }}
           resource_group: ${{ variables.RESOURCE_GROUP }}
@@ -35,6 +36,7 @@ stages:
           source_directory: ${{ variables.SOURCE_DIRECTORY }}
           entry_script: ${{ variables.ENTRY_SCRIPT }}
       - template: ./templates/register.yml
+        deplendsOn: train_model
         parameters:
           service_connection: ${{ variables.SERVICE_CONNECTION }}
           resource_group: ${{ variables.RESOURCE_GROUP }}
