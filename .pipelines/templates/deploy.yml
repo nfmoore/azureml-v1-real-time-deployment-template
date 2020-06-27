@@ -13,8 +13,7 @@ jobs:
       - name: inference_config
         value: ${{ parameters.inference_config }}
       - name: compute_target
-        value: --compute-target ${{ parameters.compute_target }}
-        default: ""
+        value: ${{ parameters.compute_target }}
 
     steps:
       - task: AzureCLI@2

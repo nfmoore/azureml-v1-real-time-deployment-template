@@ -35,6 +35,7 @@ stages:
           service_name: $(aci_service_endpoint_name)
           deployment_config: $(aci_deployment_config)
           inference_config: $(inference_config)
+          compute_target: ""
 
   - stage: deploy_production
     displayName: Production Deployment
