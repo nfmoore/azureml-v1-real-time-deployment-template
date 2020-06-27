@@ -12,9 +12,9 @@ jobs:
         value: ${{ parameters.deployment_config }}
       - name: compute_target
         value: ${{ parameters.compute_target }}
-        ${{ if ne( parameters.compute_target, '' ) }}:
-          - name: compute_target_cli
-            value: --compute-target ${{ parameters.compute_target }}
+
+        # ${{ if ne( parameters.compute_target, '' ) }}:
+        #   compute_target_cli: --compute-target ${{ parameters.compute_target }}
 
     steps:
       - task: AzureCLI@2
@@ -39,7 +39,6 @@ jobs:
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
-            echo $(compute_target_cli)
             az ml model deploy \
             --name $SERVICE_NAME \
             --compute-type "$(compute_type)" \
