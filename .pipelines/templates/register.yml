@@ -4,6 +4,7 @@ parameters:
 jobs:
   - job: register_model
     displayName: Register Model
+    dependsOn: train_model
 
     steps:
       - task: AzureCLI@2

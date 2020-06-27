@@ -1,6 +1,7 @@
 jobs:
   - job: train_model
     displayName: Train Model
+    dependsOn: code_quality
 
     steps:
       - task: AzureCLI@2
