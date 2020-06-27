@@ -6,10 +6,13 @@ jobs:
       - template: ./variables.yml
       - name: service_name
         value: ${{ parameters.service_name }}
+
       - name: compute_type
         value: ${{ parameters.compute_type }}
+
       - name: deployment_config
         value: ${{ parameters.deployment_config }}
+
       - name: compute_target
         value: ${{ parameters.compute_target }}
 
