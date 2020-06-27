@@ -12,9 +12,9 @@ jobs:
         value: ${{ parameters.deployment_config }}
       - name: inference_config
         value: ${{ parameters.inference_config }}
-      - ${{ if ne( parameters.compute_target, '' ) }}:
-          name: compute_target_cli
-          value: --compute-target ${{ parameters.compute_target }}
+      - name: compute_target
+        value: --compute-target ${{ parameters.compute_target }}
+        default: ""
 
     steps:
       - task: AzureCLI@2
@@ -47,5 +47,5 @@ jobs:
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
             --workspace-name $WORKSPACE_NAME \
             --resource-group $RESOURCE_GROUP \
-            $(compute_target_cli) \
+            --compute-target $COMPUTE_TARGET \
             --overwrite
