@@ -41,12 +41,12 @@ def test_run():
 
     # Return prediction
     result = run([payload])
-    prediction_probabilities = [[0.7581071779416333, 0.24189282205836665]]
+    prediction_probabilities = [0.24189282205836665]
 
     # Should return a dictionary
     assert type(result) == dict
 
     # Should return valid response payload
-    assert 'predict_proba' in result.keys()
-    assert type(result['predict_proba']) == list
-    assert result['predict_proba'] == prediction_probabilities
+    assert 'probability' in result.keys()
+    assert type(result['probability']) == list
+    assert result['probability'] == prediction_probabilities
