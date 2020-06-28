@@ -16,7 +16,7 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            pip3 install -r $(dependencies_tests)
+            pip3 install -r $(dependencies_test)
 
       - task: Bash@3
         displayName: Run Linting
