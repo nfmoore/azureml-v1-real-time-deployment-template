@@ -1,4 +1,6 @@
+import json
 import os
+import time
 
 import joblib
 import numpy as np
@@ -10,21 +12,12 @@ from inference_schema.schema_decorators import input_schema, output_schema
 
 model = None
 
-input_sample = [{
-    'age': 50.391780821917806,
-    'gender': 'female',
-    'systolic': 110,
-    'diastolic': 80,
-    'height': 168,
-    'weight': 62.0,
-    'cholesterol': 'normal',
-    'glucose': 'normal',
-    'smoker': 'non-smoker',
-    'alcoholic': 'not-alcoholic',
-    'active': 'active',
-    'bmi': 21.9671201814059
-}]
-output_sample = {'predict_proba': [[0.7581071779416333, 0.24189282205836665]]}
+input_sample = [{'age': 50, 'gender': 'female', 'systolic': 110,
+                 'diastolic': 80, 'height': 175, 'weight': 80,
+                 'cholesterol': 'normal', 'glucose': 'normal',
+                 'smoker': 'non-smoker', 'alcoholic': 'not-alcoholic',
+                 'active': 'active'}]
+output_sample = {'probability': [0.26883566156891225]}
 
 
 def init():
@@ -32,7 +25,7 @@ def init():
 
     # Retreive path to model folder
     model_path = Model.get_model_path(
-        os.getenv('AZUREML_MODEL_DIR').split('/')[-2])
+        os.getenv('AZUREML_MODEL_DIR'), 'model.pkl')
 
     # Deserialize the model file back into a sklearn model
     model = joblib.load(model_path)
@@ -59,15 +52,29 @@ def process_data(input_df):
 
 @input_schema('data', StandardPythonParameterType(input_sample))
 @output_schema(StandardPythonParameterType(output_sample))
-def run(data):
+def run(data, header):
     try:
+        # Log input and prediction to appinsights
+        print(json.dumps({'type': 'header', 'header': header,
+                          'time': time.strftime("%H:%M:%S")}))
+
         # Preprocess payload and get model prediction
         input_df = pd.DataFrame(data)
         X = process_data(input_df)
         proba = model.predict_proba(X)
+        result = proba[:, 1].tolist()
 
-        # Return model prediction in response body
-        result = {'predict_proba': proba.tolist()}
-        return result
-    except Exception as error:
-        return {'error': str(error)}
+        # Log input and prediction to appinsights
+        print(json.dumps({'type': 'prediction', 'input': data,
+                          'probability': result,
+                          'time': time.strftime("%H:%M:%S")}))
+
+        return {'probability': result}
+
+    except Exception as e:
+        # Log exception to appinsights
+        print(json.dumps({'type': 'exception', 'error': str(
+            e), 'time': time.strftime("%H:%M:%S")}))
+
+        # Retern exception
+        return {'error': str(e)}

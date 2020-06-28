@@ -7,7 +7,7 @@ containerResourceRequirements:
 location: Australia East
 authEnabled: False
 sslEnabled: False
-appInsightsEnabled: False
+appInsightsEnabled: True
 sslCertificate:
 sslKey:
 cname:

@@ -66,7 +66,7 @@ def preprocess_data(df):
     return df
 
 
-def train_model(df, log_results=True):
+def train_model(df):
     # Define categorical / numeric features
     categorical_features = ['gender', 'cholesterol',
                             'glucose', 'smoker', 'alcoholic', 'active']
