@@ -5,6 +5,8 @@ jobs:
 
     variables:
       - template: ./variables.yml
+      - name: input_data
+        value:
 
     steps:
       - task: AzureCLI@2
@@ -16,10 +18,10 @@ jobs:
           inlineScript: az extension add -n azure-cli-ml
 
       - task: DownloadBuildArtifacts@0
-        displayName: Download Run Metadata Artifact
+        displayName: Download Model Metadata Artifact
         inputs:
           source: current
-          artifactName: run-metadata
+          artifactName: model-metadata
           downloadPath: $(Pipeline.Workspace)
 
       - task: AzureCLI@2
@@ -29,17 +31,17 @@ jobs:
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
-            az ml model register \
-            --name $(project_name)-model \
-            --asset-path outputs/model.pkl \
-            --experiment-name $(project_name)_experiment \
-            --output-metadata-file model.json \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group) \
-            --run-metadata-file $(Pipeline.Workspace)/run-metadata/run.json
+            az ml model profile \
+            --name model-profile-test \
+            --conda-file environments/conda_dependencies_score.yml \
+            --inference-config-file config/inference_config.yml \
+            --model-metadata-file model-2.json \
+            --resource-group sandbox-real-time-deployment-template \
+            --workspace-name amlworkspace \
+            --input-data
 
       - task: PublishBuildArtifacts@1
-        displayName: Publish Model Metadata Artifact
+        displayName: Publish Profile Metadata Artifact
         inputs:
           pathToPublish: $(System.DefaultWorkingDirectory)/model.json
-          artifactName: model-metadata
+          artifactName: profile-metadata

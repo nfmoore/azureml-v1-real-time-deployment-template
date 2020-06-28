@@ -14,13 +14,13 @@ variables:
 
   # CONFIG
   - name: aks_deployment_config
-    value: $(Build.SourcesDirectory)/config/aks_deployment_config.yml
+    value: config/aks_deployment_config.yml
 
   - name: aci_deployment_config
-    value: $(Build.SourcesDirectory)/config/aci_deployment_config.yml
+    value: config/aci_deployment_config.yml
 
   - name: inference_config
-    value: $(Build.SourcesDirectory)/config/inference_config.yml
+    value: config/inference_config.yml
 
   # ENVIRONMENTS
   - name: dependencies_train
@@ -38,6 +38,7 @@ variables:
 
   - name: compute_target_name
     value: computecluster
+
   # DEPLOY
   - name: aci_compute_target
     value: amlaci
