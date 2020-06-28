@@ -10,7 +10,7 @@ variables:
     value: amlworkspace
 
   - name: project_name
-    value: cardiovascular-disease
+    value: cardiovascular_disease
 
   # CONFIG
   - name: aks_deployment_config

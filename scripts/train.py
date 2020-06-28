@@ -1,5 +1,5 @@
-import argparse
 import os
+from argparse import ArgumentParser
 
 import joblib
 import numpy as np
@@ -11,9 +11,10 @@ from sklearn.model_selection import cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+run = None
 
-def load_data(dataset_name, run):
 
+def load_data(dataset_name):
     # Retreive dataset
     if run._run_id.startswith('OfflineRun'):
         workspace = Workspace.from_config()
@@ -48,8 +49,7 @@ def load_data(dataset_name, run):
     return df
 
 
-def preprocess_data(df, run):
-
+def preprocess_data(df):
     # Remove missing values
     df.dropna(inplace=True)
 
@@ -66,7 +66,7 @@ def preprocess_data(df, run):
     return df
 
 
-def train_model(df, run, log_results=True):
+def train_model(df, log_results=True):
     # Define categorical / numeric features
     categorical_features = ['gender', 'cholesterol',
                             'glucose', 'smoker', 'alcoholic', 'active']
@@ -93,24 +93,23 @@ def train_model(df, run, log_results=True):
     pipeline = Pipeline(
         steps=[('preprocessor', preprocessor), ('classifier', classifier)])
 
-    if log_results:
-        # Train / evaluate performance of logistic regression classifier
-        cv_results = cross_validate(
-            pipeline, X, y, cv=10, return_train_score=True)
+    # Train / evaluate performance of logistic regression classifier
+    cv_results = cross_validate(
+        pipeline, X, y, cv=10, return_train_score=True)
 
-        # Log average train / test accuracy
-        run.log('Average Train Acccuracy',
-                round(cv_results['train_score'].mean(), 4))
-        run.log('Average Test Acccuracy',
-                round(cv_results['test_score'].mean(), 4))
+    # Log average train / test accuracy
+    run.log('Average Train Acccuracy',
+            round(cv_results['train_score'].mean(), 4))
+    run.log('Average Test Acccuracy',
+            round(cv_results['test_score'].mean(), 4))
 
-        # Log performance metrics for data
-        for metric in cv_results.keys():
-            run.log_row(
-                "K-Fold CV Metrics",
-                metric=metric.replace('_', ' '),
-                mean='{:.2%}'.format(cv_results[metric].mean()),
-                std='{:.2%}'.format(cv_results[metric].std()))
+    # Log performance metrics for data
+    for metric in cv_results.keys():
+        run.log_row(
+            "K-Fold CV Metrics",
+            metric=metric.replace('_', ' '),
+            mean='{:.2%}'.format(cv_results[metric].mean()),
+            std='{:.2%}'.format(cv_results[metric].std()))
 
     # Fit model
     pipeline.fit(X, y)
@@ -120,7 +119,7 @@ def train_model(df, run, log_results=True):
 
 def parse_args():
     # Parse command line arguments
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument('--DATASET_NAME', required=True)
     args = parser.parse_args()
 
@@ -128,20 +127,25 @@ def parse_args():
 
 
 def main():
-    # Retrieve current service context for logging metrics and uploading files
-    run = Run.get_context(allow_offline=True)
+    try:
+        # Retrieve current service context
+        global run
+        run = Run.get_context()
 
-    # Retrieve model name and dataset name from runtime arguments
-    dataset_name = parse_args()
+        # Retrieve model name and dataset name from runtime arguments
+        dataset_name = parse_args()
 
-    # Load data, pre-process data, train and evaluate model
-    df = load_data(dataset_name, run)
-    df = preprocess_data(df, run)
-    model = train_model(df, run)
+        # Load data, pre-process data, train and evaluate model
+        df = load_data(dataset_name)
+        df = preprocess_data(df)
+        model = train_model(df)
 
-    # Save the model to the outputs directory for capture
-    os.makedirs('./outputs', exist_ok=True)
-    joblib.dump(value=model, filename='./outputs/model')
+        # Save the model to the outputs directory for capture
+        os.makedirs('./outputs', exist_ok=True)
+        joblib.dump(value=model, filename='./outputs/model.pkl')
+
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

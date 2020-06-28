@@ -1,3 +1,5 @@
+import numpy as np
+
 data_raw = [{'age': 18393.0,
              'gender': 2.0,
              'height': 168.0,
@@ -239,3 +241,8 @@ data_intermediate = [{'age': 50.391780821917806,
                       'alcoholic': 'not-alcoholic',
                       'active': 'not-active',
                       'cardiovascular_disease': 0}]
+
+cv_results = {
+    'train_score': np.array([0.74, 0.70, 0.72, 0.71]),
+    'test_score': np.array([0.73, 0.71, 0.73, 0.72])
+}

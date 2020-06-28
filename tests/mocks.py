@@ -26,7 +26,7 @@ class MockRunContext:
         pass
 
     @staticmethod
-    def log_table(name, value, description=''):
+    def log(name, value, description=''):
         pass
 
 
