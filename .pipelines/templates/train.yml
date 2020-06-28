@@ -39,8 +39,6 @@ jobs:
             --target $(compute_target_name) \
             --source-directory scripts \
             --output-metadata-file run.json train.py \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group) \
             --DATASET_NAME $(dataset_name)
 
       - task: PublishBuildArtifacts@1
