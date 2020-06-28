@@ -23,6 +23,17 @@ jobs:
           downloadPath: $(Pipeline.Workspace)
 
       - task: AzureCLI@2
+        displayName: Set Default Workspace
+        inputs:
+          scriptType: bash
+          azureSubscription: $(service_connection)
+          scriptLocation: inlineScript
+          inlineScript: |
+            az ml folder attach \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group)
+
+      - task: AzureCLI@2
         displayName: Register Model
         inputs:
           scriptType: bash
@@ -34,8 +45,6 @@ jobs:
             --asset-path outputs/model.pkl \
             --experiment-name $(project_name)_experiment \
             --output-metadata-file model.json \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group) \
             --run-metadata-file $(Pipeline.Workspace)/run-metadata/run.json
 
       - task: PublishBuildArtifacts@1

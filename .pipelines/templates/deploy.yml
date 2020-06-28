@@ -33,6 +33,17 @@ jobs:
           downloadPath: $(Pipeline.Workspace)
 
       - task: AzureCLI@2
+        displayName: Set Default Workspace
+        inputs:
+          scriptType: bash
+          azureSubscription: $(service_connection)
+          scriptLocation: inlineScript
+          inlineScript: |
+            az ml folder attach \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group)
+
+      - task: AzureCLI@2
         displayName: Deploy to ${{ upper( parameters.compute_type ) }}
         inputs:
           scriptType: bash
@@ -46,6 +57,4 @@ jobs:
             --inference-config-file $(inference_config) \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
             --compute-target $[compute_target] \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group) \
             --overwrite
