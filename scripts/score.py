@@ -23,8 +23,7 @@ def init():
     global model
 
     # Retreive path to model folder
-    model_path = Model.get_model_path(
-        os.getenv('AZUREML_MODEL_DIR').split('/')[-2])
+    model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'model.pkl')
 
     # Deserialize the model file back into a sklearn model
     model = joblib.load(model_path)
