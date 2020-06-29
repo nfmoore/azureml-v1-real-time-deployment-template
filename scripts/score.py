@@ -5,7 +5,6 @@ import time
 import joblib
 import numpy as np
 import pandas as pd
-from azureml.core.model import Model
 from inference_schema.parameter_types.standard_py_parameter_type import \
     StandardPythonParameterType
 from inference_schema.schema_decorators import input_schema, output_schema

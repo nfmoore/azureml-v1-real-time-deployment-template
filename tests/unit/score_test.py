@@ -3,8 +3,8 @@ from unittest.mock import patch
 import pandas as pd
 
 from scripts.score import process_data, run
-from tests.fixtures import data_intermediate
-from tests.mocks import MockModel
+from tests.unit.fixtures import data_intermediate
+from tests.unit.mocks import MockModel
 
 
 def test_process_data():

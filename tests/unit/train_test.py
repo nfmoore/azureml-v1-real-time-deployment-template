@@ -5,8 +5,8 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 
 from scripts.train import load_data, main, preprocess_data, train_model
-from tests.fixtures import cv_results, data_intermediate
-from tests.mocks import MockDataset, MockRunContext, MockWorkspace
+from tests.unit.fixtures import cv_results, data_intermediate
+from tests.unit.mocks import MockDataset, MockRunContext, MockWorkspace
 
 
 @patch('scripts.train.run', MockRunContext())

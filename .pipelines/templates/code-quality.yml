@@ -30,7 +30,7 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            python3 -m pytest tests \
+            python3 -m pytest tests/unit \
             --cov scripts \
             --cov-report xml \
             --junitxml junit/test-results.xml

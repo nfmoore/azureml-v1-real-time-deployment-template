@@ -43,7 +43,7 @@ jobs:
             az ml model register \
             --name $(project_name)-model \
             --asset-path outputs/model.pkl \
-            --experiment-name $(project_name)_experiment \
+            --experiment-name $(project_name)-experiment \
             --output-metadata-file model.json \
             --run-metadata-file $(Pipeline.Workspace)/run-metadata/run.json
 

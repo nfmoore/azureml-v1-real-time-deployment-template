@@ -34,7 +34,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml run submit-script \
-            --experiment-name $(project_name)_experiment \
+            --experiment-name $(project_name)-experiment \
             --conda-dependencies $(dependencies_train) \
             --target $(compute_target_name) \
             --source-directory scripts \

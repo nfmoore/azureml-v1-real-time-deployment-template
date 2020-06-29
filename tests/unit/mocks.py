@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from tests.fixtures import data_raw
+from tests.unit.fixtures import data_raw
 
 
 class MockModel:
