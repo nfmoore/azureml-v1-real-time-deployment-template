@@ -17,17 +17,17 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: az extension add -n azure-cli-ml
 
+      - task: UsePythonVersion@0
+        displayName: Use Python 3.7.*
+        inputs:
+          versionSpec: 3.7.*
+
       - task: Bash@3
         displayName: Install Dependencies
         inputs:
           targetType: "inline"
           script: |
             pip3 install -r $(dependencies_test)
-
-      - task: UsePythonVersion@0
-        displayName: Use Python 3.7.*
-        inputs:
-          versionSpec: 3.7.*
 
       - task: AzureCLI@2
         displayName: Run Smoke Test
