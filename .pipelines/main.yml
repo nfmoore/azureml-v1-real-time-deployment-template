@@ -40,7 +40,7 @@ stages:
 
   - stage: deploy_production
     displayName: Production Deployment
-    dependsOn: model_build
+    # dependsOn: model_build
     jobs:
       - deployment: Approval
         displayName: Production Deployment Approval
