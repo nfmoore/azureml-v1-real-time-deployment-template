@@ -15,32 +15,15 @@ trigger:
       - README.md
 
 stages:
-  - stage: model_build
+  - stage:
     displayName: Model Build
     jobs:
       - template: ./templates/code-quality.yml
       - template: ./templates/train.yml
       - template: ./templates/register.yml
 
-  # - stage: deploy_test
-  #   displayName: Test Deployment
-  #   dependsOn: model_build
-  #   jobs:
-  #     - deployment: Approval
-  #       displayName: Test Deployment Approval
-  #       environment: Test
-  #     - template: ./templates/deploy.yml
-  #       parameters:
-  #         compute_type: aci
-  #         service_name: $(aci_service_endpoint_name)
-  #         deployment_config: $(aci_deployment_config)
-  #     - template: ./templates/smoke-test.yml
-  #       parameters:
-  #         service_name: $(aci_service_endpoint_name)
-
-  - stage: deploy_production
+  - stage:
     displayName: Production Deployment
-    # dependsOn: model_build
     jobs:
       - deployment: Approval
         displayName: Production Deployment Approval
