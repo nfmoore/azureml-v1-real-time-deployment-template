@@ -1,0 +1,40 @@
+jobs:
+  - job: smoke_test_service
+    dependsOn: deploy_model
+    displayName: Smoke Test ${{ upper( parameters.compute_type ) }} Deployment
+
+    variables:
+      - template: ./variables.yml
+      - name: service_name
+        value: ${{ parameters.service_name }}
+
+    steps:
+      - task: AzureCLI@2
+        displayName: Install Azure ML CLI
+        inputs:
+          scriptType: bash
+          azureSubscription: $(service_connection)
+          scriptLocation: inlineScript
+          inlineScript: az extension add -n azure-cli-ml
+
+      - task: UsePythonVersion@0
+        displayName: Use Python 3.7.*
+        inputs:
+          versionSpec: 3.7.*
+
+      - task: AzureCLI@2
+        displayName: Run Smoke Test
+        inputs:
+          scriptType: bash
+          azureSubscription: $(service_connection)
+          scriptLocation: inlineScript
+          inlineScript: |
+            set -e # fail on error
+
+            export SCORING_URI=$(az ml endpoint realtime show \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group) \
+            --name $(service_name) \
+            | jq ".scoringUri" --raw-output)
+
+            python3 tests/integration/smoke_test_web_service.py --scoring-uri $SCORING_URI
