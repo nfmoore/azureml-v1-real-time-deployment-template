@@ -58,3 +58,4 @@ jobs:
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
             --compute-target $[compute_target] \
             --overwrite
+            --verbose
