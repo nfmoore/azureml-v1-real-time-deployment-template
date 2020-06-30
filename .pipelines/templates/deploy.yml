@@ -12,6 +12,10 @@ parameters:
     type: string
     default: "''"
 
+  - name: location
+    type: string
+    default: "''"
+
 jobs:
   - job: deploy_model
     displayName: ${{ upper( parameters.compute_type ) }} Deployment
@@ -76,5 +80,6 @@ jobs:
             --inference-config-file $(inference_config) \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
             --compute-target $(compute_target) \
+            --location $(location) \
             --overwrite \
             --debug
