@@ -34,6 +34,9 @@ jobs:
       - name: compute_target
         value: ${{ parameters.compute_target }}
 
+      - name: location
+        value: ${{ parameters.location }}
+
     steps:
       - script: echo ${{ parameters.compute_target }}
       - script: echo ${{ variables.compute_target }}
