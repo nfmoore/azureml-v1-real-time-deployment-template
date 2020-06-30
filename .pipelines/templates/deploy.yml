@@ -10,7 +10,7 @@ parameters:
 
   - name: compute_target
     type: string
-    default: ""
+    default: "test"
 
 jobs:
   - job: deploy_model
