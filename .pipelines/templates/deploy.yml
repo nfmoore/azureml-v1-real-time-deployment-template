@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - script: echo ${{ parameters.compute_target }}
-      - script: echo ${{ compute_target }}
+      - script: echo ${{ variables.compute_target }}
       - script: echo $(compute_target)
       - script: echo $[compute_target]
 
