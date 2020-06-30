@@ -13,14 +13,13 @@ jobs:
       - name: deployment_config
         value: ${{ parameters.deployment_config }}
 
-      # - name: compute_target
-      #   value: ${{ parameters.compute_target }}
-
-    ${{ if ne( parameters.compute_target, '' )  }}:
       - name: compute_target
         value: ${{ parameters.compute_target }}
 
     steps:
+      - script: echo ${{ parameters.compute_target }}
+      - script: echo ${{ variables.compute_target }}
+
       - task: AzureCLI@2
         displayName: Install Azure ML CLI
         inputs:
@@ -60,6 +59,6 @@ jobs:
             --deploy-config-file $(deployment_config) \
             --inference-config-file $(inference_config) \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
-            --compute-target ${{ variables.compute_target }} \
+            --compute-target $[variables.compute_target] }} \
             --overwrite \
             --debug
