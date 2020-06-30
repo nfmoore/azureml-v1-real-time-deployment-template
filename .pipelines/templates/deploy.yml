@@ -13,6 +13,10 @@ jobs:
       - name: deployment_config
         value: ${{ parameters.deployment_config }}
 
+      # - name: compute_target
+      #   value: ${{ parameters.compute_target }}
+
+    ${{ if ne( parameters.compute_target, '' )  }}:
       - name: compute_target
         value: ${{ parameters.compute_target }}
 
@@ -56,6 +60,6 @@ jobs:
             --deploy-config-file $(deployment_config) \
             --inference-config-file $(inference_config) \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
-            --compute-target ${{ compute_target }} \
+            --compute-target ${{ variables.compute_target }} \
             --overwrite \
             --debug
