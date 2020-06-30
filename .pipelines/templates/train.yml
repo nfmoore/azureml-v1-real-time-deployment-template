@@ -15,17 +15,6 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: "az extension add -n azure-cli-ml"
 
-      # - task: AzureCLI@2
-      #   displayName: Set Default Workspace
-      #   inputs:
-      #     scriptType: bash
-      #     azureSubscription: $(service_connection)
-      #     scriptLocation: inlineScript
-      #     inlineScript: |
-      #       az ml folder attach \
-      #       --workspace-name $(workspace_name) \
-      #       --resource-group $(resource_group)
-
       - task: AzureCLI@2
         displayName: "Train Model"
         inputs:

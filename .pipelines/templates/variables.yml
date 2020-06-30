@@ -40,9 +40,6 @@ variables:
     value: computecluster
 
   # DEPLOY
-  - name: aci_compute_target
-    value: amlaci
-
   - name: aks_compute_target
     value: amlaks
 

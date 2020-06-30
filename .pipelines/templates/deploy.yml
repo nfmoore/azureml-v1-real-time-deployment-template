@@ -12,10 +12,6 @@ parameters:
     type: string
     default: "''"
 
-  - name: location
-    type: string
-    default: "''"
-
 jobs:
   - job: deploy_model
     displayName: ${{ upper( parameters.compute_type ) }} Deployment
@@ -34,9 +30,6 @@ jobs:
       - name: compute_target
         value: ${{ parameters.compute_target }}
 
-      - name: location
-        value: ${{ parameters.location }}
-
     steps:
       - task: AzureCLI@2
         displayName: Install Azure ML CLI
@@ -53,17 +46,6 @@ jobs:
           artifactName: model-metadata
           downloadPath: $(Pipeline.Workspace)
 
-      # - task: AzureCLI@2
-      #   displayName: Set Default Workspace
-      #   inputs:
-      #     scriptType: bash
-      #     azureSubscription: $(service_connection)
-      #     scriptLocation: inlineScript
-      #     inlineScript: |
-      #       az ml folder attach \
-      #       --workspace-name $(workspace_name) \
-      #       --resource-group $(resource_group) \
-
       - task: AzureCLI@2
         displayName: Deploy to ${{ upper( parameters.compute_type ) }}
         inputs:
@@ -72,7 +54,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml model deploy \
-            --name $(service_name)-2 \
+            --name $(service_name) \
             --compute-type $(compute_type) \
             --deploy-config-file $(deployment_config) \
             --inference-config-file $(inference_config) \
@@ -81,4 +63,3 @@ jobs:
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group) \
             --overwrite
-            # --location $(location) \
