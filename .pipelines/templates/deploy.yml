@@ -18,7 +18,9 @@ jobs:
 
     steps:
       - script: echo ${{ parameters.compute_target }}
-      - script: echo ${{ variables.compute_target }}
+      - script: echo ${{ compute_target }}
+      - script: echo $(compute_target)
+      - script: echo $[compute_target]
 
       - task: AzureCLI@2
         displayName: Install Azure ML CLI
@@ -59,6 +61,6 @@ jobs:
             --deploy-config-file $(deployment_config) \
             --inference-config-file $(inference_config) \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
-            --compute-target $[variables.compute_target] }} \
+            --compute-target $[compute_target] }} \
             --overwrite \
             --debug
