@@ -56,6 +56,6 @@ jobs:
             --deploy-config-file $(deployment_config) \
             --inference-config-file $(inference_config) \
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
-            --compute-target $(compute_target) \
-            --overwrite
-            --verbose
+            --compute-target $[compute_target] \
+            --overwrite \
+            --debug
