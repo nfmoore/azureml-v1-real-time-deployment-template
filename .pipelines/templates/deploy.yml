@@ -2,6 +2,20 @@ jobs:
   - job: deploy_model
     displayName: ${{ upper( parameters.compute_type ) }} Deployment
 
+    parameters:
+      - name: service_name
+        type: string
+
+      - name: compute_type
+        type: string
+
+      - name: deployment_config
+        type: string
+
+      - name: compute_target
+        type: string
+        default: ""
+
     variables:
       - template: ./variables.yml
       - name: service_name
