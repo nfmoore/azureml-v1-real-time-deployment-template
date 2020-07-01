@@ -29,17 +29,11 @@ jobs:
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
-            export INPUT_DATASET=$(az ml dataset show \
-            --name $(dataset_name) \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group) | jq ".registration.id" --raw-output)
-
             az ml model register \
             --name $(project_name)-model \
             --asset-path outputs/model.pkl \
             --experiment-name $(project_name)-experiment \
             --output-metadata-file model.json \
-            --sample-input-dataset-id $INPUT_DATASET \
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group) \
             --run-metadata-file $(Pipeline.Workspace)/run-metadata/run.json
