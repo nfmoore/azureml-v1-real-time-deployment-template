@@ -6,7 +6,7 @@ import requests
 input_sample = [{'age': 50, 'gender': 'female', 'systolic': 110,
                  'diastolic': 80, 'height': 175, 'weight': 80,
                  'cholesterol': 'normal', 'glucose': 'normal',
-                 'smoker': 'non-smoker', 'alcoholic': 'not-alcoholic',
+                 'smoker': 'not-smoker', 'alcoholic': 'not-alcoholic',
                  'active': 'active'}]
 
 output_sample = {'probability': [0.26883566156891225]}
