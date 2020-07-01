@@ -40,7 +40,7 @@ def test_run():
     payload.pop('cardiovascular_disease', None)
 
     # Return prediction
-    result = run([payload])
+    result = run([payload], None)
     prediction_probabilities = [0.24189282205836665]
 
     # Should return a dictionary
