@@ -4,10 +4,10 @@ variables:
     value: azure-service-connection
 
   - name: resource_group
-    value: sandbox-real-time-deployment-template
+    value: sandbox-amlplatform-rg
 
   - name: workspace_name
-    value: amlworkspace
+    value: mlwsandboxamlplatform
 
   - name: project_name
     value: cardiovascular-disease
@@ -37,11 +37,11 @@ variables:
     value: cardiovascular_disease_dataset
 
   - name: compute_target_name
-    value: computecluster
+    value: cpu-cluster
 
   # DEPLOY
   - name: aks_compute_target
-    value: amlaks
+    value: aks-cluster
 
   - name: aci_service_endpoint_name
     value: cardiovascular-disease-aci
