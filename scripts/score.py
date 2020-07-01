@@ -50,12 +50,8 @@ def process_data(input_df):
 
 @input_schema('data', StandardPythonParameterType(input_sample))
 @output_schema(StandardPythonParameterType(output_sample))
-def run(data, header):
+def run(data):
     try:
-        # Log input and prediction to appinsights
-        print(json.dumps({'type': 'header', 'header': header,
-                          'time': time.strftime("%H:%M:%S")}))
-
         # Preprocess payload and get model prediction
         input_df = pd.DataFrame(data)
         X = process_data(input_df)
@@ -75,4 +71,4 @@ def run(data, header):
             e), 'time': time.strftime("%H:%M:%S")}))
 
         # Retern exception
-        return {'error': str(e)}
+        return {'error': "Internal server error"}
