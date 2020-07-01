@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from tests.unit.fixtures import data_raw
+from tests.unit.fixtures import data
 
 
 class MockModel:
@@ -15,7 +15,7 @@ class MockPandasDataFrameDataset:
 
     @staticmethod
     def to_pandas_dataframe():
-        return pd.DataFrame(data_raw)
+        return pd.DataFrame(data)
 
 
 class MockRunContext:
