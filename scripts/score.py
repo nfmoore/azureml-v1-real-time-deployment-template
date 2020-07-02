@@ -35,10 +35,10 @@ def init():
     # Initialize data collectors
     inputs_dc = ModelDataCollector(
         model_name="cardiovascular_disease_model",
-        feature_names=input_sample[0].keys())
+        feature_names=list(input_sample[0].keys()))
     prediction_dc = ModelDataCollector(
         model_name="cardiovascular_disease_model",
-        feature_names=output_sample[0].keys())
+        feature_names=list(output_sample[0].keys()))
 
 
 def process_data(input_df):
