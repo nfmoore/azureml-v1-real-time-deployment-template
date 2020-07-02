@@ -78,7 +78,7 @@ def run(data):
         # Collect features and prediction data
         inputs_dc.collect(data)
         prediction_dc.collect(
-            (np.array(result['probability']) > 0.5).astype(int))
+            (np.array(result) > 0.5).astype(int))
 
         return {'probability': result}
 
