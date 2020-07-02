@@ -35,10 +35,12 @@ def init():
     # Initialize data collectors
     inputs_dc = ModelDataCollector(
         model_name="cardiovascular_disease_model",
-        feature_names=list(input_sample[0].keys()))
+        feature_names=['age', 'gender', 'systolic', 'diastolic', 'height',
+                       'weight', 'cholesterol', 'glucose', 'smoker',
+                       'alcoholic', 'active', ])
     prediction_dc = ModelDataCollector(
         model_name="cardiovascular_disease_model",
-        feature_names=list(output_sample[0].keys()))
+        feature_names=['cardiovascular_disease'])
 
 
 def process_data(input_df):
@@ -75,7 +77,8 @@ def run(data):
 
         # Collect features and prediction data
         inputs_dc.collect(data)
-        prediction_dc.collect(result)
+        prediction_dc.collect(
+            (np.array(result['probability']) > 0.5).astype(int))
 
         return {'probability': result}
 
