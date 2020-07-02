@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
@@ -33,6 +33,8 @@ def test_process_data():
     assert X.iloc[0].bmi == payload_bmi
 
 
+@patch('scripts.score.inputs_dc', MagicMock())
+@patch('scripts.score.prediction_dc', MagicMock())
 @patch('scripts.score.model', MockModel())
 def test_run():
     # Generate payload

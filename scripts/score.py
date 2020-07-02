@@ -4,10 +4,13 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
-from azureml.monitoring import ModelDataCollector
 from inference_schema.parameter_types.standard_py_parameter_type import \
     StandardPythonParameterType
 from inference_schema.schema_decorators import input_schema, output_schema
+
+model = None
+inputs_dc = None
+prediction_dc = None
 
 input_sample = [{'age': 50, 'gender': 'female', 'systolic': 110,
                  'diastolic': 80, 'height': 175, 'weight': 80,
@@ -18,6 +21,8 @@ output_sample = {'probability': [0.26883566156891225]}
 
 
 def init():
+    from azureml.monitoring import ModelDataCollector
+
     global model
     global inputs_dc, prediction_dc
 
