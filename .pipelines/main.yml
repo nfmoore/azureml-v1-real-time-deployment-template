@@ -1,6 +1,7 @@
 name: build_release - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r) -
 pool:
   vmImage: ubuntu-latest
+
 variables:
   - template: ./templates/variables.yml
 
@@ -8,7 +9,6 @@ trigger:
   branches:
     include:
       - master
-      - release-*
     exclude:
       - docs/*
       - LICENSE
