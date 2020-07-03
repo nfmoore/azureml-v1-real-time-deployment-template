@@ -1,28 +1,43 @@
 variables:
   # COMMON
-  SERVICE_CONNECTION: azure-service-connection
-  RESOURCE_GROUP: sandbox-real-time-deployment-template
-  WORKSPACE: amlworkspace
-  MODEL_NAME: cardiovascular-disease-model
-  EXPERIMENT_NAME: cardiovascular-disease-experiment
-  RUN_METADATA_ARTIFACT: run-metadata
-  MODEL_METADATA_ARTIFACT: model-metadata
-  LOCATION: australiaeast
+  - group: aml-deployment-templates
+
+  - name: resource_group_name
+    value: $(environment)-$(namespace)-rg
+
+  - name: workspace_name
+    value: mlw$(environment)$(namespace)
+
+  - name: project_name
+    value: cardiovascular-disease
+
   # CONFIG
-  AKS_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aks_deployment_config.yml
-  ACI_DEPLOYMENT_CONFIG: $(Build.SourcesDirectory)/config/aci_deployment_config.yml
-  INFERENCE_CONFIG: $(Build.SourcesDirectory)/config/inference_config.yml
+  - name: aks_deployment_config
+    value: config/aks_deployment_config.yml
+
+  - name: aci_deployment_config
+    value: config/aci_deployment_config.yml
+
+  - name: inference_config
+    value: config/inference_config.yml
+
   # ENVIRONMENTS
-  CONDA_DEPENDENCIES_TRAIN_FILE: environments/conda_dependencies_train.yml
-  CONDA_DEPENDENCIES_SCORE_FILE: environments/conda_dependencies_score.yml
-  DEPENDENCIES_TEST_FILE: environments/dependencies_test.txt
+  - name: dependencies_train
+    value: environments/conda_dependencies_train.yml
+
+  - name: dependencies_score
+    value: environments/conda_dependencies_score.yml
+
+  - name: dependencies_test
+    value: environments/dependencies_test.txt
+
   # TRAIN
-  DATASET_NAME: cardiovascular_disease_dataset
-  AML_COMPUTE_CLUSTER: computecluster
-  SOURCE_DIRECTORY: scripts
-  ENTRY_SCRIPT: train.py
+  - name: dataset_name
+    value: cardiovascular_disease_dataset
+
   # DEPLOY
-  ACI_COMPUTE_TARGET: amlaci
-  AKS_COMPUTE_TARGET: amlaks
-  ACI_SERVICE_ENDPOINT_NAME: cardiovascular-disease-aci
-  AKS_SERVICE_ENDPOINT_NAME: cardiovascular-disease-aks
+  - name: aci_service_endpoint_name
+    value: cardiovascular-disease-aci
+
+  - name: aks_service_endpoint_name
+    value: cardiovascular-disease-aks

@@ -1,13 +1,17 @@
 jobs:
-  - job: TrainModel
-    displayName: AML Model Training
+  - job: train_model
+    displayName: Train Model
+    dependsOn: code_quality
+
+    variables:
+      - template: ./variables.yml
 
     steps:
       - task: AzureCLI@2
         displayName: Install Azure ML CLI
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.service_connection }}
+          azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: "az extension add -n azure-cli-ml"
 
@@ -15,21 +19,21 @@ jobs:
         displayName: "Train Model"
         inputs:
           scriptType: bash
-          azureSubscription: ${{ parameters.service_connection }}
+          azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
             az ml run submit-script \
-            --workspace-name ${{ parameters.workspace_name }} \
-            --resource-group ${{ parameters.resource_group }} \
-            --experiment-name ${{ parameters.experiment_name }} \
-            --conda-dependencies ${{ parameters.conda_dependencies_file }} \
-            --target ${{ parameters.aml_compute_cluster }} \
-            --source-directory ${{ parameters.source_directory }} \
-            --output-metadata-file run.json ${{ parameters.entry_script }} \
-            --DATASET_NAME ${{ parameters.dataset_name }}
+            --experiment-name $(project_name)-experiment \
+            --conda-dependencies $(dependencies_train) \
+            --target $(compute_cluster_name) \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group_name) \
+            --source-directory scripts \
+            --output-metadata-file run.json train.py \
+            --DATASET_NAME $(dataset_name)
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Run Metadata Artifact
         inputs:
           pathToPublish: $(System.DefaultWorkingDirectory)/run.json
-          artifactName: ${{ parameters.run_metadata_artifact }}
+          artifactName: run-metadata

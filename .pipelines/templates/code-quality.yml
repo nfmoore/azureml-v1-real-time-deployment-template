@@ -1,6 +1,9 @@
 jobs:
-  - job: CodeQuality
-    displayName: Run Linting, Unit Tests and Code Coverage
+  - job: code_quality
+    displayName: Code Quality
+
+    variables:
+      - template: ./variables.yml
 
     steps:
       - task: UsePythonVersion@0
@@ -13,7 +16,7 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            pip3 install -r ${{ parameters.dependencies_file }}
+            pip3 install -r $(dependencies_test)
 
       - task: Bash@3
         displayName: Run Linting
@@ -27,8 +30,8 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            python3 -m pytest tests \
-            --cov ${{ parameters.source_directory}} \
+            python3 -m pytest tests/unit \
+            --cov scripts \
             --cov-report xml \
             --junitxml junit/test-results.xml
 

@@ -3,39 +3,45 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
-from azureml.core.model import Model
 from inference_schema.parameter_types.standard_py_parameter_type import \
     StandardPythonParameterType
 from inference_schema.schema_decorators import input_schema, output_schema
 
 model = None
+inputs_dc = None
+prediction_dc = None
 
-input_sample = [{
-    'age': 50.391780821917806,
-    'gender': 'female',
-    'systolic': 110,
-    'diastolic': 80,
-    'height': 168,
-    'weight': 62.0,
-    'cholesterol': 'normal',
-    'glucose': 'normal',
-    'smoker': 'non-smoker',
-    'alcoholic': 'not-alcoholic',
-    'active': 'active',
-    'bmi': 21.9671201814059
-}]
-output_sample = {'predict_proba': [[0.7581071779416333, 0.24189282205836665]]}
+input_sample = [{'age': 50, 'gender': 'female', 'systolic': 110,
+                 'diastolic': 80, 'height': 175, 'weight': 80,
+                 'cholesterol': 'normal', 'glucose': 'normal',
+                 'smoker': 'not-smoker', 'alcoholic': 'not-alcoholic',
+                 'active': 'active'}]
+output_sample = {'probability': [0.26883566156891225]}
 
 
 def init():
+    from azureml.monitoring import ModelDataCollector
+
     global model
+    global inputs_dc, prediction_dc
 
     # Retreive path to model folder
-    model_path = Model.get_model_path(
-        os.getenv('AZUREML_MODEL_DIR').split('/')[-2])
+    model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'model.pkl')
 
     # Deserialize the model file back into a sklearn model
     model = joblib.load(model_path)
+
+    # Initialize data collectors
+    inputs_dc = ModelDataCollector(
+        model_name='cardiovascular_disease_model',
+        designation='inputs',
+        feature_names=['age', 'gender', 'systolic', 'diastolic', 'height',
+                       'weight', 'cholesterol', 'glucose', 'smoker',
+                       'alcoholic', 'active'])
+    prediction_dc = ModelDataCollector(
+        model_name="cardiovascular_disease_model",
+        designation='predictions',
+        feature_names=['cardiovascular_disease'])
 
 
 def process_data(input_df):
@@ -65,9 +71,22 @@ def run(data):
         input_df = pd.DataFrame(data)
         X = process_data(input_df)
         proba = model.predict_proba(X)
+        result = proba[:, 1].tolist()
 
-        # Return model prediction in response body
-        result = {'predict_proba': proba.tolist()}
-        return result
-    except Exception as error:
-        return {'error': str(error)}
+        # Log input and prediction to appinsights
+        print('Request Payload', data)
+        print('Response Payload', result)
+
+        # Collect features and prediction data
+        inputs_dc.collect(input_df)
+        prediction_dc.collect(pd.DataFrame((proba[:, 1] >= 0.5).astype(int),
+                                           columns=['cardiovascular_disease']))
+
+        return {'probability': result}
+
+    except Exception as e:
+        # Log exception to appinsights
+        print('Error', str(e))
+
+        # Retern exception
+        return {'error': "Internal server error"}

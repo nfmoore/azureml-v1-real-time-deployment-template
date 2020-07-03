@@ -15,3 +15,4 @@ dependencies:
       - azureml-sdk==1.6.*
       - azureml-defaults==1.6.*
       - inference-schema[numpy-support]==1.0.*
+      - azureml-monitoring==0.1.0a18

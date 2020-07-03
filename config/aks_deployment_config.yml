@@ -8,7 +8,7 @@ autoScaler:
   targetUtilization: 70
 
 dataCollection:
-  storageEnabled: False
+  storageEnabled: True
 
 authEnabled: False
 
@@ -16,7 +16,7 @@ containerResourceRequirements:
   cpu: 1
   memoryInGB: 0.5
 
-appInsightsEnabled: False
+appInsightsEnabled: True
 scoringTimeoutMs: 60000
 maxConcurrentRequestsPerContainer: 1
 maxQueueWaitMs: 500
