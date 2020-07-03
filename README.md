@@ -1,5 +1,7 @@
 # AML Real Time Deployment Template
 
+[![Build Status](https://dev.azure.com/nfmoore-projects/AML%20Deployment%20Templates/_apis/build/status/nfmoore.aml-real-time-deployment-template?branchName=master)](https://dev.azure.com/nfmoore-projects/AML%20Deployment%20Templates/_build/latest?definitionId=12&branchName=master)
+
 Machine Learning Operations (MLOps) is based on DevOps principles and practices that increase the efficiency of Machine Learning workflows. It aims to facilitate faster experimentation, development and production deployment of Machine Learning models while ensuring high quality standards. A standard end-to-end MLOps workflow will consist of model training, registration, deployment and monitoring.
 
 ![ML lifecycle](/docs/images/ml-lifecycle.png)
