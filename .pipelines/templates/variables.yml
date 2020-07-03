@@ -1,13 +1,12 @@
 variables:
   # COMMON
-  - name: service_connection
-    value: azure-service-connection
+  - group: aml-deployment-templates
 
-  - name: resource_group
-    value: sandbox-amlplatform-rg
+  - name: resource_group_name
+    value: $(environment)-$(namespace)-rg
 
   - name: workspace_name
-    value: mlwsandboxamlplatform
+    value: mlw$(environment)$(namespace)
 
   - name: project_name
     value: cardiovascular-disease
@@ -36,13 +35,7 @@ variables:
   - name: dataset_name
     value: cardiovascular_disease_dataset
 
-  - name: compute_target_name
-    value: cpu-cluster
-
   # DEPLOY
-  - name: aks_compute_target
-    value: aks-cluster
-
   - name: aci_service_endpoint_name
     value: cardiovascular-disease-aci
 

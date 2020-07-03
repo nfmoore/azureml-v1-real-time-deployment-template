@@ -48,6 +48,6 @@ stages:
       - template: ./templates/deploy.yml
         parameters:
           compute_type: aks
-          compute_target: $(aks_compute_target)
+          compute_target: $(aks_cluster_name)
           service_name: $(aks_service_endpoint_name)
           deployment_config: $(aks_deployment_config)
