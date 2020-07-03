@@ -4,7 +4,25 @@ Machine Learning Operations (MLOps) is based on DevOps principles and practices 
 
 ![ML lifecycle](/docs/images/ml-lifecycle.png)
 
-This deployment template uses [Azure Machine Learning](https://docs.microsoft.com/en-us/azure/machine-learning/overview-what-is-azure-ml) and [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines) (part of Azure DevOps). The template contains code and DevOps pipeline definitions to automate an end-to-end deployment of a real time Machine Learning solution using MLOps principles and practices. The template includes: unit tests and code coverage, model training and registration, controlled deployments (via approvals) to ACI in a test environment and AKS in a production environment with model monitoring.
+This deployment template uses [Azure Machine Learning](https://docs.microsoft.com/en-us/azure/machine-learning/overview-what-is-azure-ml) and [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines) (part of Azure DevOps). The template contains code and DevOps pipeline definitions to automated end-to-end deployment of machine learning models as a web service for real-time inferencing using MLOps principles and practices. The template includes: unit tests and code coverage, model training and registration, controlled deployments (via approvals) to ACI in a test environment and AKS in a production environment with model monitoring.
+
+## Prerequisites
+
+- Azure subscription (contributor or owner)
+- Azure DevOps project
+- GitHub account
+
+## Getting Started
+
+Follow the instructions in the [getting started](docs/getting_started.md) doc to deploy this solution in your own Azure subscription. You can find the details of the files and folders in the repository [here](/docs/repository_details.md).
+
+Note: the dataset used in this deployment template is the [Cardiovascular Disease dataset](https://www.kaggle.com/sulianova/cardiovascular-disease-dataset) available on Kaggle.
+
+## Related Projects
+
+Check out these related projects:
+
+- [AML Platform Deployment Template](https://github.com/nfmoore/aml-platform-deployment-template) - automated deployment of a machine learning platform using Azure DevOps
 
 ## References
 
