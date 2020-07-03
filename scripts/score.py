@@ -1,4 +1,3 @@
-import json
 import os
 
 import joblib
@@ -34,12 +33,14 @@ def init():
 
     # Initialize data collectors
     inputs_dc = ModelDataCollector(
-        model_name="cardiovascular_disease_model",
+        model_name='cardiovascular_disease_model',
+        designation='inputs',
         feature_names=['age', 'gender', 'systolic', 'diastolic', 'height',
                        'weight', 'cholesterol', 'glucose', 'smoker',
-                       'alcoholic', 'active', ])
+                       'alcoholic', 'active'])
     prediction_dc = ModelDataCollector(
         model_name="cardiovascular_disease_model",
+        designation='predictions',
         feature_names=['cardiovascular_disease'])
 
 
@@ -73,18 +74,19 @@ def run(data):
         result = proba[:, 1].tolist()
 
         # Log input and prediction to appinsights
-        print(json.dumps({'input': data, 'probability': result}))
+        print('Request Payload', data)
+        print('Response Payload', result)
 
         # Collect features and prediction data
-        inputs_dc.collect(data)
-        prediction_dc.collect(
-            (np.array(result) > 0.5).astype(int))
+        inputs_dc.collect(input_df)
+        prediction_dc.collect(pd.DataFrame((proba[:, 1] >= 0.5).astype(int),
+                                           columns=['cardiovascular_disease']))
 
         return {'probability': result}
 
     except Exception as e:
         # Log exception to appinsights
-        print(json.dumps({'error': str(e)}))
+        print('Error', str(e))
 
         # Retern exception
         return {'error': "Internal server error"}
