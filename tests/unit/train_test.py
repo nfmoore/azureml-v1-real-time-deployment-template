@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 
 from scripts.train import load_data, main, preprocess_data, train_model
-from tests.unit.fixtures import cv_results, data_intermediate
+from tests.unit.fixtures import cv_results, data
 from tests.unit.mocks import MockDataset, MockRunContext, MockWorkspace
 
 
@@ -14,25 +14,20 @@ from tests.unit.mocks import MockDataset, MockRunContext, MockWorkspace
 @patch('scripts.train.Dataset', MockDataset())
 def test_load_data():
     # Define target dataframe and returned dataframe after loading data
-    target_df = pd.DataFrame(data_intermediate)
+    target_df = pd.DataFrame(data.copy())
     return_df = load_data(None)
 
     # Should return desired number of columns
     assert len(return_df.columns) == len(target_df.columns)
 
-    # Should contain all desired renamed columns
+    # Should contain all desired columns
     assert set(return_df.columns) == set(target_df.columns)
-
-    # Should change values of categorical columns
-    for column in target_df.columns:
-        assert set(return_df[column].unique().tolist()) <= set(
-            target_df[column].unique().tolist())
 
 
 @patch('scripts.train.run', MockRunContext())
 def test_preprocess_data():
     # Return dataframe after processing data
-    input_df = pd.DataFrame(data_intermediate.copy())
+    input_df = pd.DataFrame(data.copy())
     df = preprocess_data(input_df)
 
     # Should return a dataframe with the same rows and an additional columns
@@ -45,7 +40,7 @@ def test_preprocess_data():
 @patch('scripts.train.run', MockRunContext())
 def test_preprocess_data_nulls():
     # Create dataset with additional record with null
-    data_with_null = data_intermediate.copy()
+    data_with_null = data.copy()
     null_record = data_with_null[0]
     null_record['age'] = np.nan
     data_with_null.append(null_record)
@@ -64,7 +59,7 @@ def test_preprocess_data_nulls():
 @patch('scripts.train.run', MockRunContext())
 def test_preprocess_data_duplicates():
     # Create dataset with additional duplicate record
-    data_with_dup = data_intermediate.copy()
+    data_with_dup = data.copy()
     data_with_dup.append(data_with_dup[0])
 
     # Return dataframe after processing data
@@ -85,7 +80,7 @@ def test_train_model(mock_cross_validate):
     mock_cross_validate.return_value = cv_results
 
     # Train model
-    input_df = pd.DataFrame(data_intermediate.copy())
+    input_df = pd.DataFrame(data.copy())
     df = preprocess_data(input_df)
     model = train_model(df)
 
@@ -103,7 +98,7 @@ def test_main(mock_dump, mock_cross_validate, mock_load_data, mock_parse_args):
     # Mock retuirn values
     mock_parse_args.return_value = 'dataset_name'
     mock_cross_validate.return_value = cv_results
-    mock_load_data.return_value = pd.DataFrame(data_intermediate.copy())
+    mock_load_data.return_value = pd.DataFrame(data.copy())
 
     # Execute main
     main()

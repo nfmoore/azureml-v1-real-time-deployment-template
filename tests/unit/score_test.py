@@ -1,15 +1,15 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
 from scripts.score import process_data, run
-from tests.unit.fixtures import data_intermediate
+from tests.unit.fixtures import data
 from tests.unit.mocks import MockModel
 
 
 def test_process_data():
     # Generate payload
-    payload = data_intermediate[0]
+    payload = data[0]
     payload.pop('cardiovascular_disease', None)
 
     # Apply preprocessing
@@ -33,10 +33,12 @@ def test_process_data():
     assert X.iloc[0].bmi == payload_bmi
 
 
+@patch('scripts.score.inputs_dc', MagicMock())
+@patch('scripts.score.prediction_dc', MagicMock())
 @patch('scripts.score.model', MockModel())
 def test_run():
     # Generate payload
-    payload = data_intermediate[0]
+    payload = data[0]
     payload.pop('cardiovascular_disease', None)
 
     # Return prediction

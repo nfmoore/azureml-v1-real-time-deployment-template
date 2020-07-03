@@ -5,6 +5,7 @@ jobs:
 
     variables:
       - template: ./variables.yml
+
       - name: service_name
         value: ${{ parameters.service_name }}
 
@@ -40,7 +41,7 @@ jobs:
 
             export SCORING_URI=$(az ml endpoint realtime show \
             --workspace-name $(workspace_name) \
-            --resource-group $(resource_group) \
+            --resource-group $(resource_group_name) \
             --name $(service_name) \
             | jq ".scoringUri" --raw-output)
 

@@ -1,6 +1,4 @@
-import json
 import os
-import time
 
 import joblib
 import numpy as np
@@ -10,23 +8,40 @@ from inference_schema.parameter_types.standard_py_parameter_type import \
 from inference_schema.schema_decorators import input_schema, output_schema
 
 model = None
+inputs_dc = None
+prediction_dc = None
 
 input_sample = [{'age': 50, 'gender': 'female', 'systolic': 110,
                  'diastolic': 80, 'height': 175, 'weight': 80,
                  'cholesterol': 'normal', 'glucose': 'normal',
-                 'smoker': 'non-smoker', 'alcoholic': 'not-alcoholic',
+                 'smoker': 'not-smoker', 'alcoholic': 'not-alcoholic',
                  'active': 'active'}]
 output_sample = {'probability': [0.26883566156891225]}
 
 
 def init():
+    from azureml.monitoring import ModelDataCollector
+
     global model
+    global inputs_dc, prediction_dc
 
     # Retreive path to model folder
     model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'model.pkl')
 
     # Deserialize the model file back into a sklearn model
     model = joblib.load(model_path)
+
+    # Initialize data collectors
+    inputs_dc = ModelDataCollector(
+        model_name='cardiovascular_disease_model',
+        designation='inputs',
+        feature_names=['age', 'gender', 'systolic', 'diastolic', 'height',
+                       'weight', 'cholesterol', 'glucose', 'smoker',
+                       'alcoholic', 'active'])
+    prediction_dc = ModelDataCollector(
+        model_name="cardiovascular_disease_model",
+        designation='predictions',
+        feature_names=['cardiovascular_disease'])
 
 
 def process_data(input_df):
@@ -52,10 +67,6 @@ def process_data(input_df):
 @output_schema(StandardPythonParameterType(output_sample))
 def run(data):
     try:
-        # Log input and prediction to appinsights
-        # print(json.dumps({'type': 'header', 'header': header,
-        #                   'time': time.strftime("%H:%M:%S")}))
-
         # Preprocess payload and get model prediction
         input_df = pd.DataFrame(data)
         X = process_data(input_df)
@@ -63,16 +74,19 @@ def run(data):
         result = proba[:, 1].tolist()
 
         # Log input and prediction to appinsights
-        print(json.dumps({'type': 'prediction', 'input': data,
-                          'probability': result,
-                          'time': time.strftime("%H:%M:%S")}))
+        print('Request Payload', data)
+        print('Response Payload', result)
+
+        # Collect features and prediction data
+        inputs_dc.collect(input_df)
+        prediction_dc.collect(pd.DataFrame((proba[:, 1] >= 0.5).astype(int),
+                                           columns=['cardiovascular_disease']))
 
         return {'probability': result}
 
     except Exception as e:
         # Log exception to appinsights
-        print(json.dumps({'type': 'exception', 'error': str(
-            e), 'time': time.strftime("%H:%M:%S")}))
+        print('Error', str(e))
 
         # Retern exception
-        return {'error': str(e)}
+        return {'error': "Internal server error"}

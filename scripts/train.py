@@ -26,25 +26,11 @@ def load_data(dataset_name):
     # Convert dataset to pandas dataframe
     df = dataset.to_pandas_dataframe()
 
-    # Rename features
-    df.rename(
-        columns={'ap_hi': 'systolic', 'ap_lo': 'diastolic', 'gluc': 'glucose',
-                 'smoke': 'smoker', 'alco': 'alcoholic',
-                 'cardio': 'cardiovascular_disease'}, inplace=True)
-
-    # Convert age to years
-    df.age = df.age.apply(lambda x: x / 365)
-
-    # Convert categorical data values
-    df.gender.replace({1: 'male', 2: 'female'}, inplace=True)
-    df.cholesterol.replace({1: 'normal', 2: 'above-normal', 3:
-                            'well-above-normal'}, inplace=True)
-    df.glucose.replace({1: 'normal', 2: 'above-normal',
-                        3: 'well-above-normal'},  inplace=True)
-    df.gender.replace({1: 'male', 2: 'female'}, inplace=True)
-    df.smoker.replace({0: 'non-smoker', 1: 'smoker'}, inplace=True)
-    df.alcoholic.replace({0: 'not-alcoholic', 1: 'alcoholic'}, inplace=True)
-    df.active.replace({0: 'not-active', 1: 'active'}, inplace=True)
+    # Convert strings to float
+    df = df.astype({
+        'age': np.float64, 'height': np.float64, 'weight': np.float64,
+        'systolic': np.float64, 'diastolic': np.float64,
+        'cardiovascular_disease': np.float64})
 
     return df
 

@@ -18,6 +18,7 @@ jobs:
 
     variables:
       - template: ./variables.yml
+
       - name: service_name
         value: ${{ parameters.service_name }}
 
@@ -61,5 +62,5 @@ jobs:
             --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
             --compute-target $(compute_target) \
             --workspace-name $(workspace_name) \
-            --resource-group $(resource_group) \
+            --resource-group $(resource_group_name) \
             --overwrite
