@@ -57,7 +57,7 @@ See [these](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/vari
 
 ### 4. Deploy the solution
 
-1. In your GitHub repository, edit the any variables in the [`variables.yml`](../.pipelines/templates/variables.yml) you wish to change for your deployment. Remember to change the values for `service_connection` or `resource_group_name` if you have selected something different in section 2 step 2 above.
+1. In your GitHub repository, edit any variables in the [`variables.yml`](../.pipelines/templates/variables.yml) you wish to change for your deployment. Remember to change the values for `service_connection` or `resource_group_name` if you have selected something different in section 2 step 2 above.
 
 2. In your Azure DevOps project, create a pipeline from your repository.
 
