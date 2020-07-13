@@ -1,4 +1,4 @@
-# AML Real Time Deployment Template
+# AML Real-Time Scoring Deployment Template
 
 [![Build Status](https://dev.azure.com/nfmoore-projects/AML%20Deployment%20Templates/_apis/build/status/nfmoore.aml-real-time-deployment-template?branchName=master)](https://dev.azure.com/nfmoore-projects/AML%20Deployment%20Templates/_build/latest?definitionId=12&branchName=master)
 
@@ -25,6 +25,7 @@ Note: the dataset used in this deployment template is the [Cardiovascular Diseas
 Check out these related projects:
 
 - [AML Platform Deployment Template](https://github.com/nfmoore/aml-platform-deployment-template) - automated deployment of a machine learning platform using Azure DevOps
+- [AML Batch Scoring Deployment Template](https://github.com/nfmoore/aml-batch-deployment-template) - automated end-to-end deployment of machine learning models as an AML Pipeline for batch inferencing
 
 ## References
 
