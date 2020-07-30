@@ -10,7 +10,7 @@ High level directory structure for this repository:
 | `config`       | Configuration settings for the web service   |
 | `docs`         | Markdown documentation for this project      |
 | `environments` | Python dependencies for this project         |
-| `scripts`      | Python scripts to train / score model        |
+| `src`          | Python source to train / score model         |
 | `tests`        | Unit and integration tests for this project  |
 | `.gitignore`   | A gitignore file specifying un-tracked files |
 | `LICENSE`      | License for this project                     |

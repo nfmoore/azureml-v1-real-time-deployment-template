@@ -28,7 +28,7 @@ jobs:
             --target $(compute_cluster_name) \
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group_name) \
-            --source-directory scripts \
+            --source-directory src \
             --output-metadata-file run.json train.py \
             --DATASET_NAME $(dataset_name)
 
