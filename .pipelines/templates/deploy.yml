@@ -33,10 +33,10 @@ jobs:
 
     steps:
       - task: AzureCLI@2
-        displayName: Install Azure ML CLI
+        displayName: Install azure-cli-ml
         inputs:
-          scriptType: bash
           azureSubscription: $(service_connection)
+          scriptType: bash
           scriptLocation: inlineScript
           inlineScript: az extension add -n azure-cli-ml
 

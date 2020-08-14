@@ -1,51 +1,56 @@
 jobs:
   - job: code_quality
-    displayName: Code Quality
+    displayName: Linting, security and unit tests
 
     variables:
-      - template: ./variables.yml
+      - template: ../variables.yml
+      - name: unit_test_result_files
+        value: unittest-results.xml
+      - name: coverage_result_files
+        value: "**/coverage.xml"
 
     steps:
-      - task: UsePythonVersion@0
-        displayName: Use Python 3.7.*
+      - task: CmdLine@2
+        displayName: Create anaconda environment
         inputs:
-          versionSpec: 3.7.*
-
-      - task: Bash@3
-        displayName: Install Dependencies
-        inputs:
-          targetType: "inline"
           script: |
-            pip3 install -r $(dependencies_test)
+            echo "##vso[task.prependpath]$CONDA/bin"
+            conda env create --file $(dependencies_ci)
 
-      - task: Bash@3
-        displayName: Run Linting
+      - task: CmdLine@2
+        displayName: Run linting
         inputs:
-          targetType: "inline"
           script: |
-            python3 -m flake8 .
+            source activate ci_env
+            python3 -m flake8 . --ignore E501
 
-      - task: Bash@3
-        displayName: Run Unit Tests and  Code Coverage
-        inputs:
-          targetType: "inline"
-          script: |
-            python3 -m pytest tests/unit \
-            --cov src \
-            --cov-report xml \
-            --junitxml junit/test-results.xml
-
-      - task: PublishTestResults@2
-        displayName: Publish Test Results
+      - task: CmdLine@2
+        displayName: Run security checks
         condition: succeededOrFailed()
         inputs:
-          testResultsFiles: $(System.DefaultWorkingDirectory)/**/test-*.xml
-          testRunTitle: Publish test results for Python $(python.version)
+          script: |
+            source activate ci_env
+            python3 -m bandit -r $(source_directory)
+
+      - task: CmdLine@2
+        displayName: Run unit tests and code coverage
+        condition: succeededOrFailed()
+        inputs:
+          script: |
+            source activate ci_env
+            python3 -m pytest $(unit_test_directory) --cov $(source_directory) --cov-report xml --junitxml $(unit_test_result_files)
+
+      - task: PublishTestResults@2
+        displayName: Publish unit test results
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFiles: $(unit_test_result_files)
+          testRunTitle: Test Results
 
       - task: PublishCodeCoverageResults@1
-        displayName: Publish Coverage Report
+        displayName: Publish coverage report
         condition: succeededOrFailed()
         inputs:
           codeCoverageTool: Cobertura
-          summaryFileLocation: $(System.DefaultWorkingDirectory)/**/coverage.xml
+          summaryFileLocation: $(coverage_result_files)
           failIfCoverageEmpty: true

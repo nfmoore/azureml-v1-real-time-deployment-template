@@ -1,0 +1,37 @@
+{
+  "script": "train.py",
+  "target": "cpu-cluster",
+  "framework": "Python",
+  "communicator": "None",
+  "nodeCount": 1,
+  "environment": {
+    "python": {
+      "userManagedDependencies": false,
+      "interpreterPath": "python",
+      "condaDependenciesFile": "environments/train_dependencies.yml"
+    },
+    "docker": {
+      "enabled": true,
+      "baseImage": "mcr.microsoft.com/azureml/base:0.2.4"
+    }
+  },
+  "history": {
+    "outputCollection": true,
+    "snapshotProject": true,
+    "directoriesToWatch": [
+      "logs"
+    ]
+  },
+  "data": {
+    "InputDataset": {
+      "dataLocation": {
+        "dataset": {},
+        "dataPath": null
+      },
+      "mechanism": "Direct",
+      "environmentVariableName": "InputDataset",
+      "pathOnCompute": null,
+      "overwrite": false
+    }
+  }
+}

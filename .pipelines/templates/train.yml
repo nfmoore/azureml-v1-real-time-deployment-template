@@ -1,3 +1,8 @@
+parameters:
+  - name: service_connection
+  - name: resource_group_name
+  - name: workspace_name
+
 jobs:
   - job: train_model
     displayName: Train Model
@@ -8,32 +13,52 @@ jobs:
 
     steps:
       - task: AzureCLI@2
-        displayName: Install Azure ML CLI
+        displayName: Install azure-cli-ml
         inputs:
-          scriptType: bash
           azureSubscription: $(service_connection)
+          scriptType: bash
           scriptLocation: inlineScript
-          inlineScript: "az extension add -n azure-cli-ml"
+          inlineScript: az extension add -n azure-cli-ml
 
       - task: AzureCLI@2
-        displayName: "Train Model"
+        displayName: Attach workspace
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: az ml folder attach --workspace-name $(workspace_name) --resource-group $(resource_group_name)
+
+      - task: AzureCLI@2
+        displayName: Create run config
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            # Fail on error
+            set -e
+
+            # Get dataset metadata
+            DATASET_METADATA=$(az ml dataset show --name $(dataset_name) --query registration) 
+
+            # Create run configuration to use for training script
+            cat $(train_run_config) | jq -r ".data.InputDataset.dataLocation.dataset |= $DATASET_METADATA" > $(generated_train_run_config)
+
+      - task: AzureCLI@2
+        displayName: Train model
         inputs:
           scriptType: bash
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
             az ml run submit-script \
-            --experiment-name $(project_name)-experiment \
-            --conda-dependencies $(dependencies_train) \
-            --target $(compute_cluster_name) \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group_name) \
-            --source-directory src \
-            --output-metadata-file run.json train.py \
-            --DATASET_NAME $(dataset_name)
+            --run-configuration-name $(generated_train_run_config) \
+            --source-directory $(source_directory) \
+            --experiment-name $(train_experiment_name) \
+            --output-metadata-file $(run_metadata_file) $(train_script)
 
       - task: PublishBuildArtifacts@1
-        displayName: Publish Run Metadata Artifact
+        displayName: Publish run metadata artifact
         inputs:
-          pathToPublish: $(System.DefaultWorkingDirectory)/run.json
-          artifactName: run-metadata
+          pathToPublish: $(run_metadata_file)
+          artifactName: $(run_artifact_name)

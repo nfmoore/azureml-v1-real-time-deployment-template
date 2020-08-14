@@ -3,13 +3,23 @@ from argparse import ArgumentParser
 
 import requests
 
-input_sample = [{'age': 50, 'gender': 'female', 'systolic': 110,
-                 'diastolic': 80, 'height': 175, 'weight': 80,
-                 'cholesterol': 'normal', 'glucose': 'normal',
-                 'smoker': 'not-smoker', 'alcoholic': 'not-alcoholic',
-                 'active': 'active'}]
+input_sample = [
+    {
+        "age": 50,
+        "gender": "female",
+        "systolic": 110,
+        "diastolic": 80,
+        "height": 175,
+        "weight": 80,
+        "cholesterol": "normal",
+        "glucose": "normal",
+        "smoker": "not-smoker",
+        "alcoholic": "not-alcoholic",
+        "active": "active",
+    }
+]
 
-output_sample = {'probability': [0.26883566156891225]}
+output_sample = {"probability": [0.26883566156891225]}
 
 
 def main():
@@ -19,7 +29,7 @@ def main():
         try:
             # Get service uri and payload
             scoring_uri = parse_args()
-            request_payload = {'data': input_sample}
+            request_payload = {"data": input_sample}
 
             # Make request
             response = requests.post(scoring_uri, json=request_payload)
@@ -27,9 +37,9 @@ def main():
 
             # Should return valid response payload
             assert response.status_code == 200
-            assert 'probability' in response_payload.keys()
-            assert type(response_payload['probability']) == list
-            assert type(response_payload['probability'][0]) == float
+            assert "probability" in response_payload.keys()
+            assert type(response_payload["probability"]) == list
+            assert type(response_payload["probability"][0]) == float
 
             return response_payload
 
@@ -44,9 +54,9 @@ def main():
 def parse_args():
     # Parse command line arguments
     ap = ArgumentParser()
-    ap.add_argument('--scoring-uri', required=True)
+    ap.add_argument("--scoring-uri", required=True)
     args = vars(ap.parse_args())
-    return args['scoring_uri']
+    return args["scoring_uri"]
 
 
 if __name__ == "__main__":

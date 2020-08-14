@@ -1,0 +1,72 @@
+variables:
+  # COMMON
+
+  - name: source_directory
+    value: src
+
+  - name: unit_test_directory
+    value: tests/unit
+
+  - name: train_experiment_name
+    value: cardiovascular-disease-experiment
+
+  # CONFIG
+  - name: aks_deployment_config
+    value: configuration/aks_deployment_config.yml
+
+  - name: aci_deployment_config
+    value: configuration/aci_deployment_config.yml
+
+  - name: inference_config
+    value: configuration/inference_config.yml
+
+  # ENVIRONMENTS
+  - name: dependencies_train
+    value: environments/train_dependencies.yml
+
+  - name: dependencies_score
+    value: environments/score_dependencies.yml
+
+  - name: dependencies_test
+    value: environments/ci_dependencies.yml
+
+  # TRAIN
+  - name: dataset_name
+    value: cardiovascular_disease_train_dataset
+
+  - name: train_run_config
+    value: configuration/train.runconfig
+
+  - name: generated_train_run_config
+    value: train_gen.runconfig
+
+  - name: run_artifact_name
+    value: run-metadata
+
+  - name: run_metadata_file
+    value: run.json
+
+  - name: train_script
+    value: train.py
+
+  - name: model_metadata_file
+    value: model.json
+
+  - name: model_artifact_name
+    value: model-metadata
+
+  - name: run_metadata_file_path
+    value: $(System.ArtifactsDirectory)/$(run_artifact_name)/$(run_metadata_file)
+
+  - name: model_name
+    value: cardiovascular_disease_model
+
+  - name: model_asset_path
+    value: outputs/model.pkl
+
+  # DEPLOY
+  - name: aci_service_endpoint_name
+    value: cardiovascular-disease-aci
+
+  - name: aks_service_endpoint_name
+    value: cardiovascular-disease-aks

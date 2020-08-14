@@ -10,28 +10,23 @@ jobs:
         value: ${{ parameters.service_name }}
 
     steps:
-      - task: AzureCLI@2
-        displayName: Install Azure ML CLI
+      - task: CmdLine@2
+        displayName: Create anaconda environment
         inputs:
-          scriptType: bash
+          script: |
+            echo "##vso[task.prependpath]$CONDA/bin"
+            conda env create --file $(dependencies_ci)
+
+      - task: AzureCLI@2
+        displayName: Install azure-cli-ml
+        inputs:
           azureSubscription: $(service_connection)
+          scriptType: bash
           scriptLocation: inlineScript
           inlineScript: az extension add -n azure-cli-ml
 
-      - task: UsePythonVersion@0
-        displayName: Use Python 3.7.*
-        inputs:
-          versionSpec: 3.7.*
-
-      - task: Bash@3
-        displayName: Install Dependencies
-        inputs:
-          targetType: "inline"
-          script: |
-            pip3 install -r $(dependencies_test)
-
       - task: AzureCLI@2
-        displayName: Run Smoke Test
+        displayName: Run smoke test
         inputs:
           scriptType: bash
           azureSubscription: $(service_connection)
@@ -45,4 +40,5 @@ jobs:
             --name $(service_name) \
             | jq ".scoringUri" --raw-output)
 
+            source activate ci_env
             python3 tests/integration/smoke_test_web_service.py --scoring-uri $SCORING_URI

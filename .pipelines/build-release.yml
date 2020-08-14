@@ -1,0 +1,69 @@
+name: build_release - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r) -
+pool:
+  vmImage: ubuntu-latest
+
+trigger:
+  branches:
+    include:
+      - master
+    exclude:
+      - docs/*
+      - LICENSE
+      - README.md
+
+variables:
+  - group: aml-deployment-templates
+  - template: variables.yml
+  - name: resource_group_name
+    value: $(environment)-$(namespace)-rg
+  - name: workspace_name
+    value: mlw$(environment)$(namespace)
+
+stages:
+  - stage: code_quality
+    displayName: Code Quality
+    jobs:
+      - template: ./templates/code-quality.yml
+
+  - stage: model_build
+    displayName: Model Build
+    jobs:
+      - template: ./templates/train.yml
+        parameters:
+          service_connection: ${{ variables.service_connection }}
+          resource_group_name: ${{ variables.resource_group_name }}
+          workspace_name: ${{ variables.workspace_name }}
+
+      - template: ./templates/register.yml
+        parameters:
+          service_connection: ${{ variables.service_connection }}
+          resource_group_name: ${{ variables.resource_group_name }}
+          workspace_name: ${{ variables.workspace_name }}
+  # - stage: deploy_test
+  #   displayName: Test Deployment
+  #   dependsOn: model_build
+  #   jobs:
+  #     - deployment: Approval
+  #       displayName: Test Deployment Approval
+  #       environment: Test
+  #     - template: ./templates/deploy.yml
+  #       parameters:
+  #         compute_type: aci
+  #         service_name: $(aci_service_endpoint_name)
+  #         deployment_config: $(aci_deployment_config)
+  #     - template: ./templates/smoke-test.yml
+  #       parameters:
+  #         service_name: $(aci_service_endpoint_name)
+  # - stage: deploy_production
+  #   displayName: Production Deployment
+  #   dependsOn: deploy_test
+  #   jobs:
+  #     - deployment: Approval
+  #       displayName: Production Deployment Approval
+  #       environment: Production
+  #     - template: ./templates/deploy.yml
+  #       parameters:
+  #         compute_type: aks
+  #         compute_target: $(aks_cluster_name)
+  #         service_name: $(aks_service_endpoint_name)
+  #         deployment_config: $(aks_deployment_config)
