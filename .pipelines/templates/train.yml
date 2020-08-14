@@ -41,7 +41,7 @@ jobs:
             DATASET_METADATA=$(az ml dataset show --name $(dataset_name) --query registration) 
 
             # Create run configuration to use for training script
-            cat $(train_run_config) | jq -r ".data.InputDataset.dataLocation.dataset |= $DATASET_METADATA" > $(generated_train_run_config)
+            cat $(train_run_config) | jq -r ".data.InputDataset.dataLocation.dataset |= $DATASET_METADATA" > $(generated_train_run_config).runconfig
 
       - task: AzureCLI@2
         displayName: Train model
