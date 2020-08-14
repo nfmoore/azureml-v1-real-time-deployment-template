@@ -4,10 +4,6 @@ jobs:
 
     variables:
       - template: ../variables.yml
-      - name: unit_test_result_files
-        value: unittest-results.xml
-      - name: coverage_result_files
-        value: "**/coverage.xml"
 
     steps:
       - task: CmdLine@2

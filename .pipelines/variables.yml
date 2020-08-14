@@ -70,3 +70,12 @@ variables:
 
   - name: aks_service_endpoint_name
     value: cardiovascular-disease-aks
+
+  - name: unit_test_result_files
+    value: unittest-results.xml
+
+  - name: coverage_result_files
+    value: "**/coverage.xml"
+
+  - name: source_directory
+    value: src
