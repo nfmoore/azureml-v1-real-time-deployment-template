@@ -13,4 +13,4 @@ dependencies:
   - joblib=0.14.*
   - pip=20.0.*
   - pip:
-      - azureml-sdk==1.6.*
+      - azureml-sdk==1.8.*

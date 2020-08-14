@@ -12,7 +12,7 @@ dependencies:
   - joblib=0.14.*
   - pip=20.0.*
   - pip:
-      - azureml-sdk==1.6.*
-      - azureml-defaults==1.6.*
+      - azureml-sdk==1.8.*
+      - azureml-defaults==1.8.*
       - inference-schema[numpy-support]==1.0.*
       - azureml-monitoring==0.1.0a18

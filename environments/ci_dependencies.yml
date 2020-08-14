@@ -14,8 +14,9 @@ dependencies:
   - pip=20.0.*
   - pip:
       - azureml-core==1.8.*
-      - azureml-pipeline==1.8.*
-      - opencensus-ext-azure==1.0.*
+      - azureml-defaults==1.8.*
+      - inference-schema[numpy-support]==1.0.*
+      - azureml-monitoring==0.1.0a18
       - pytest==5.4.*
       - pytest-cov==2.10.*
       - flake8==3.8.*
