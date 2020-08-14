@@ -1,4 +1,5 @@
 import os
+import traceback
 
 import joblib
 import numpy as np
@@ -93,18 +94,17 @@ def train_model(df):
     cv_results = cross_validate(pipeline, X, y, cv=10, return_train_score=True)
 
     # Log average train / test accuracy
-    for run_context in [run, run.parent]:
-        run_context.log("train_acccuracy", round(cv_results["train_score"].mean(), 4))
-        run_context.log("test_acccuracy", round(cv_results["test_score"].mean(), 4))
+    run.log("Average Train Acccuracy", round(cv_results["train_score"].mean(), 4))
+    run.log("Average Test Acccuracy", round(cv_results["test_score"].mean(), 4))
 
-        # Log performance metrics for data
-        for metric in cv_results.keys():
-            run_context.log_row(
-                "K-Fold CV Metrics",
-                metric=metric.replace("_", " "),
-                mean="{:.2%}".format(cv_results[metric].mean()),
-                std="{:.2%}".format(cv_results[metric].std()),
-            )
+    # Log performance metrics for data
+    for metric in cv_results.keys():
+        run.log_row(
+            "K-Fold CV Metrics",
+            metric=metric.replace("_", " "),
+            mean="{:.2%}".format(cv_results[metric].mean()),
+            std="{:.2%}".format(cv_results[metric].std()),
+        )
 
     # Fit model
     pipeline.fit(X, y)
@@ -128,8 +128,10 @@ def main():
         os.makedirs("./outputs", exist_ok=True)
         joblib.dump(value=model, filename="./outputs/model.pkl")
 
-    except Exception as e:
-        print(e)
+    except Exception:
+        exception = f"Exception: train.py\n{traceback.format_exc()}"
+        print(exception)
+        exit(1)
 
 
 if __name__ == "__main__":
