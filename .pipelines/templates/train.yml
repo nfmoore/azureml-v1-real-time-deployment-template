@@ -6,7 +6,6 @@ parameters:
 jobs:
   - job: train_model
     displayName: Train Model
-    dependsOn: code_quality
 
     variables:
       - template: ../variables.yml
