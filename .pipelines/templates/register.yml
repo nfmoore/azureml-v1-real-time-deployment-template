@@ -9,7 +9,7 @@ jobs:
     dependsOn: train_model
 
     variables:
-      - template: ./variables.yml
+      - template: ../variables.yml
 
     steps:
       - task: AzureCLI@2
