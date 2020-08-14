@@ -38,7 +38,7 @@ variables:
     value: configuration/train.runconfig
 
   - name: generated_train_run_config
-    value: train_gen.runconfig
+    value: train_gen
 
   - name: run_artifact_name
     value: run-metadata
