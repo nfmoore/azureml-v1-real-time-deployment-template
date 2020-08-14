@@ -27,7 +27,7 @@ variables:
   - name: dependencies_score
     value: environments/score_dependencies.yml
 
-  - name: dependencies_test
+  - name: dependencies_ci
     value: environments/ci_dependencies.yml
 
   # TRAIN
