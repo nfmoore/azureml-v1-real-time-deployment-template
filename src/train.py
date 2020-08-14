@@ -1,9 +1,8 @@
 import os
-from argparse import ArgumentParser
 
 import joblib
 import numpy as np
-from azureml.core import Dataset, Run, Workspace
+from azureml.core import Run
 from scipy import stats
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
