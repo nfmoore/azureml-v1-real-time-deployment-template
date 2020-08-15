@@ -140,7 +140,7 @@ def register_model(model_name, build_id):
     print("Variable [model_tags]:", model_tags)
 
     # Register the model
-    model = run.parent.register_model(
+    model = run.register_model(
         model_name=model_name,
         model_path=model_file_name,
         model_framework=Model.Framework.SCIKITLEARN,
@@ -189,9 +189,7 @@ def main():
 
         # Register model if performance is better than threshold or cancel run
         if model_metric > evaluation_metric_threshold:
-            register_model(
-                args.model_name, args.dataset_name, args.build_id,
-            )
+            register_model(args.model_name, args.build_id)
         else:
             run.cancel()
 

@@ -4,7 +4,14 @@ import numpy as np
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
-from src.train import load_data, main, preprocess_data, train_model
+from src.train import (
+    load_data,
+    main,
+    parse_args,
+    preprocess_data,
+    register_model,
+    train_model,
+)
 
 
 @patch("azureml.data.TabularDataset")
@@ -87,12 +94,44 @@ def test_train_model(mock_cross_validate, input_df, cv_results):
     assert type(model) == Pipeline
 
 
+@patch("src.train.run")
+def test_register_model(mock_run):
+    # Register model
+    register_model("model_name", "build_id")
+
+    # Should have called run once to register model
+    mock_run.register_model.assert_called_once()
+
+
+def test_parse_args():
+    mock_arguments = [
+        "--MODEL_NAME",
+        "model_name_value",
+        "--BUILD_ID",
+        "build_id_value",
+    ]
+
+    args = parse_args(mock_arguments)
+
+    assert args.model_name is mock_arguments[1]
+    assert args.build_id is mock_arguments[3]
+
+
 @patch("src.train.Run", MagicMock())
 @patch("src.train.os.makedirs", MagicMock())
+@patch("src.train.parse_args", MagicMock())
+@patch("src.train.register_model")
 @patch("src.train.load_data")
 @patch("src.train.cross_validate")
 @patch("src.train.joblib.dump")
-def test_main(mock_dump, mock_cross_validate, mock_load_data, input_df, cv_results):
+def test_main(
+    mock_dump,
+    mock_cross_validate,
+    mock_load_data,
+    mock_register_model,
+    input_df,
+    cv_results,
+):
     # Mock retuirn values
     mock_cross_validate.return_value = cv_results
     mock_load_data.return_value = input_df
@@ -102,3 +141,6 @@ def test_main(mock_dump, mock_cross_validate, mock_load_data, input_df, cv_resul
 
     # Should have made a call to write model
     mock_dump.assert_called_once()
+
+    # Should have made a call to register model
+    mock_register_model.assert_called_once()
