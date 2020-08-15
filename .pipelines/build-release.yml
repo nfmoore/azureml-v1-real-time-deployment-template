@@ -20,23 +20,23 @@ variables:
     value: mlw$(environment)$(namespace)
 
 stages:
-  # - stage: code_quality
-  #   displayName: Code Quality
-  #   jobs:
-  #     - template: ./templates/code-quality.yml
+  - stage: code_quality
+    displayName: Code Quality
+    jobs:
+      - template: ./templates/code-quality.yml
 
-  # - stage: model_build
-  #   displayName: Model Build
-  #   jobs:
-  #     - template: ./templates/train-register.yml
-  #       parameters:
-  #         service_connection: ${{ variables.service_connection }}
-  #         resource_group_name: ${{ variables.resource_group_name }}
-  #         workspace_name: ${{ variables.workspace_name }}
+  - stage: model_build
+    displayName: Model Build
+    jobs:
+      - template: ./templates/train-register.yml
+        parameters:
+          service_connection: ${{ variables.service_connection }}
+          resource_group_name: ${{ variables.resource_group_name }}
+          workspace_name: ${{ variables.workspace_name }}
 
   - stage: deploy_test
     displayName: Test Deployment
-    # dependsOn: model_build
+    dependsOn: model_build
     jobs:
       - deployment: Approval
         displayName: Test deployment approval
@@ -49,6 +49,7 @@ stages:
           service_name: ${{ variables.aci_service_endpoint_name }}
           deployment_config: ${{ variables.aci_deployment_config }}
           compute_type: aci
+          environment: test
       - template: ./templates/smoke-test.yml
         parameters:
           service_connection: ${{ variables.service_connection }}
@@ -72,3 +73,4 @@ stages:
           service_name: ${{ variables.aks_service_endpoint_name }}
           deployment_config: ${{ variables.aks_deployment_config }}
           compute_type: aks
+          environment: production
