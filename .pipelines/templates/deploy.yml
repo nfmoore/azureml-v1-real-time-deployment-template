@@ -48,7 +48,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml model deploy \
-            --name $(service_name) \
+            --name ${{ parameters.service_name }} \
             --compute-type $(compute_type) \
             --deploy-config-file $(deployment_config) \
             --inference-config-file $(inference_config) \
