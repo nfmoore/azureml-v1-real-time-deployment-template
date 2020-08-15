@@ -71,7 +71,11 @@ def train_model(df):
     numeric_features = ["age", "systolic", "diastolic", "bmi"]
 
     # Get model features / target
-    X = df.drop(labels=["height", "weight", "cardiovascular_disease"], axis=1)
+    X = df.drop(
+        labels=["height", "weight", "cardiovascular_disease", "datetime"],
+        axis=1,
+        errors="ignore",
+    )
     y = df.cardiovascular_disease
 
     # Convert data types of model features

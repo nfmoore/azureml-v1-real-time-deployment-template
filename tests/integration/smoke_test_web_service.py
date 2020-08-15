@@ -22,6 +22,14 @@ input_sample = [
 output_sample = {"probability": [0.26883566156891225]}
 
 
+def parse_args():
+    # Parse command line arguments
+    ap = ArgumentParser("smoke_test_web_service")
+    ap.add_argument("--scoring-uri", required=True)
+    args = vars(ap.parse_args())
+    return args["scoring_uri"]
+
+
 def main():
     retries = 100
 
@@ -34,6 +42,8 @@ def main():
             # Make request
             response = requests.post(scoring_uri, json=request_payload)
             response_payload = response.json()
+
+            print("Variable [response_payload]:", response_payload)
 
             # Should return valid response payload
             assert response.status_code == 200
@@ -49,14 +59,6 @@ def main():
             print("Retrying...")
             print(e)
             time.sleep(1)
-
-
-def parse_args():
-    # Parse command line arguments
-    ap = ArgumentParser()
-    ap.add_argument("--scoring-uri", required=True)
-    args = vars(ap.parse_args())
-    return args["scoring_uri"]
 
 
 if __name__ == "__main__":
