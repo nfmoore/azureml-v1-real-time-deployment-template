@@ -34,17 +34,17 @@ jobs:
           artifactName: $(model_artifact_name)
 
       - task: AzureCLI@2
-        displayName: Deploy to ${{ upper( parameters.compute_type ) }} ( ${{ lower( parameters.environment ) }} )
+        displayName: Deploy to ${{ upper( parameters.compute_type ) }} (${{ lower( parameters.environment ) }})
         inputs:
           scriptType: bash
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
-            ls $(workspace_name)
-            ls $(resource_group_name)
+            echo $(workspace_name)
+            echo $(resource_group_name)
 
-            ls ${{ parameters.workspace_name }}
-            ls ${{ parameters.resource_group_name }}
+            echo ${{ parameters.workspace_name }}
+            echo ${{ parameters.resource_group_name }}
 
             az ml model deploy \
             --inference-config-file $(inference_config) \
@@ -55,6 +55,7 @@ jobs:
             --compute-target ${{ parameters.compute_target }} \
             --tag build_id=$(Build.BuildId) \
             --tag environment=${{ parameters.environment }} \
-            --workspace-name ${{ parameters.workspace_name }} \
-            --resource-group ${{ parameters.resource_group_name }} \
             --overwrite
+
+            # --workspace-name ${{ parameters.workspace_name }} \
+            # --resource-group ${{ parameters.resource_group_name }} \

@@ -50,7 +50,7 @@ stages:
           service_name: ${{ variables.test_service_endpoint_name }}
           deployment_config: ${{ variables.aks_deployment_config }}
           compute_type: aks
-          environment: Production
+          environment: Test
 
       - template: ./templates/smoke-test.yml
         parameters:
