@@ -121,12 +121,9 @@ def train_model(df):
     return pipeline, test_accuracy
 
 
-def register_model(model_name, build_id, test_acccuracy):
+def register_model(model_name, build_id, test_acccuracy, model_path):
     # Retreive train datasets
     train_dataset = run.input_datasets["InputDataset"]
-
-    # Define model file name
-    model_file_name = "model.pkl"
 
     # Define model tags
     model_tags = {
@@ -139,7 +136,7 @@ def register_model(model_name, build_id, test_acccuracy):
     # Register the model
     model = run.register_model(
         model_name=model_name,
-        model_path=model_file_name,
+        model_path=model_path,
         model_framework=Model.Framework.SCIKITLEARN,
         model_framework_version=sklearn.__version__,
         datasets=train_dataset,
@@ -177,13 +174,17 @@ def main():
         df = preprocess_data(df)
         model, test_accuracy = train_model(df)
 
+        # Define output directory and model name
+        output_dir = "./outputs"
+        model_path = f"{output_dir}/model.pkl"
+
         # Save the model to the outputs directory for capture
-        os.makedirs("./outputs", exist_ok=True)
-        joblib.dump(value=model, filename="./outputs/model.pkl")
+        os.makedirs(output_dir, exist_ok=True)
+        joblib.dump(value=model, filename=model_path)
 
         # Register model if performance is better than threshold or cancel run
         if test_accuracy > evaluation_metric_threshold:
-            register_model(args.model_name, args.build_id, test_accuracy)
+            register_model(args.model_name, args.build_id, test_accuracy, model_path)
         else:
             run.cancel()
 
