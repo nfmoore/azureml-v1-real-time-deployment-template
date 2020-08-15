@@ -1,9 +1,13 @@
 import os
+import sys
 import traceback
+from argparse import ArgumentParser
 
 import joblib
 import numpy as np
+import sklearn
 from azureml.core import Run
+from azureml.core.model import Model
 from scipy import stats
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
@@ -12,6 +16,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 run = None
+evaluation_metric = "test_acccuracy"
+evaluation_metric_threshold = 0.7
 
 
 def load_data():
@@ -94,13 +100,13 @@ def train_model(df):
     cv_results = cross_validate(pipeline, X, y, cv=10, return_train_score=True)
 
     # Log average train / test accuracy
-    run.log("Average Train Acccuracy", round(cv_results["train_score"].mean(), 4))
-    run.log("Average Test Acccuracy", round(cv_results["test_score"].mean(), 4))
+    run.log("train_acccuracy", round(cv_results["train_score"].mean(), 4))
+    run.log("test_acccuracy", round(cv_results["test_score"].mean(), 4))
 
     # Log performance metrics for data
     for metric in cv_results.keys():
         run.log_row(
-            "K-Fold CV Metrics",
+            "k_fold_cv_metrics",
             metric=metric.replace("_", " "),
             mean="{:.2%}".format(cv_results[metric].mean()),
             std="{:.2%}".format(cv_results[metric].std()),
@@ -112,12 +118,62 @@ def train_model(df):
     return pipeline
 
 
+def register_model(model_name, build_id):
+    # Retreive dataset
+    workspace = run.experiment.workspace
+
+    # Retreive train datasets
+    train_dataset = run.input_datasets["InputDataset"]
+
+    # Get evaluation metric for model
+    run_metrics = run.get_metrics()
+
+    # Define model file name
+    model_file_name = "model.pkl"
+
+    # Define model tags
+    model_tags = {
+        "build_id": build_id,
+        "test_acccuracy": run_metrics.get(evaluation_metric),
+    }
+
+    print("Variable [model_tags]:", model_tags)
+
+    # Register the model
+    model = run.parent.register_model(
+        model_name=model_name,
+        model_path=model_file_name,
+        model_framework=Model.Framework.SCIKITLEARN,
+        model_framework_version=sklearn.__version__,
+        datasets=train_dataset,
+        tags=model_tags,
+    )
+
+    print("Variable [model]:", model.serialize())
+
+
+def parse_args(argv):
+    ap = ArgumentParser("train")
+    ap.add_argument("--BUILD_ID", dest="build_id", required=True)
+    ap.add_argument("--MODEL_NAME", dest="model_name", required=True)
+
+    args, _ = ap.parse_known_args(argv)
+    return args
+
+
 def main():
     try:
         global run
 
         # Retrieve current service context
         run = Run.get_context()
+
+        # Parse command line arguments
+        args = parse_args(sys.argv[1:])
+
+        # Print argument values
+        print("Argument [build_id]:", args.build_id)
+        print("Argument [model_name]:", args.model_name)
 
         # Load data, pre-process data, train and evaluate model
         df = load_data()
@@ -127,6 +183,17 @@ def main():
         # Save the model to the outputs directory for capture
         os.makedirs("./outputs", exist_ok=True)
         joblib.dump(value=model, filename="./outputs/model.pkl")
+
+        model_metric = float(run.get_metrics().get(evaluation_metric))
+        print("Variable [model_metric]:", model_metric)
+
+        # Register model if performance is better than threshold or cancel run
+        if model_metric > evaluation_metric_threshold:
+            register_model(
+                args.model_name, args.dataset_name, args.build_id,
+            )
+        else:
+            run.cancel()
 
     except Exception:
         exception = f"Exception: train.py\n{traceback.format_exc()}"

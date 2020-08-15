@@ -28,17 +28,16 @@ stages:
   - stage: model_build
     displayName: Model Build
     jobs:
-      - template: ./templates/train.yml
+      - template: ./templates/train-register.yml
         parameters:
           service_connection: ${{ variables.service_connection }}
           resource_group_name: ${{ variables.resource_group_name }}
           workspace_name: ${{ variables.workspace_name }}
-
-      - template: ./templates/register.yml
-        parameters:
-          service_connection: ${{ variables.service_connection }}
-          resource_group_name: ${{ variables.resource_group_name }}
-          workspace_name: ${{ variables.workspace_name }}
+      # - template: ./templates/register.yml
+      #   parameters:
+      #     service_connection: ${{ variables.service_connection }}
+      #     resource_group_name: ${{ variables.resource_group_name }}
+      #     workspace_name: ${{ variables.workspace_name }}
   # - stage: deploy_test
   #   displayName: Test Deployment
   #   dependsOn: model_build
