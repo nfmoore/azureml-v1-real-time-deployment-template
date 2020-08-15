@@ -98,7 +98,7 @@ def test_train_model(mock_cross_validate, input_df, cv_results):
 @patch("src.train.run")
 def test_register_model(mock_run):
     # Register model
-    register_model("model_name", "build_id", "test_accuracy")
+    register_model("model_name", "build_id", "test_accuracy", "model_path")
 
     # Should have called run once to register model
     mock_run.register_model.assert_called_once()
