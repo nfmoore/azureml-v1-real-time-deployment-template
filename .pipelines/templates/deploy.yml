@@ -41,16 +41,16 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml model deploy \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group_name) \
             --inference-config-file $(inference_config) \
-            --model-metadata-file $(model_metadata_file_path) \
+            --model cardiovascular_disease_model:3 \
             --name ${{ parameters.service_name }} \
             --compute-type ${{ parameters.compute_type }} \
             --deploy-config-file ${{ parameters.deployment_config }} \
             --compute-target ${{ parameters.compute_target }} \
             --tag build_id=$(Build.BuildId) \
             --tag environment=${{ parameters.environment }} \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group_name) \
             --overwrite
 
-# --model-metadata-file $(model_metadata_file_path) \ --model cardiovascular_disease_model:2 \
+# --model-metadata-file $(model_metadata_file_path) \ --model cardiovascular_disease_model:3 \
