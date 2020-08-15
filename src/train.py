@@ -181,7 +181,13 @@ def main():
         os.makedirs("./outputs", exist_ok=True)
         joblib.dump(value=model, filename="./outputs/model.pkl")
 
-        model_metric = float(run.get_metrics().get(evaluation_metric))
+        print(run.get_metrics())
+        print(run.get_metrics().get(evaluation_metric))
+
+        # Get evaluation metric for model
+        run_metrics = run.get_metrics()
+
+        model_metric = float(run_metrics.get(evaluation_metric))
         print("Variable [model_metric]:", model_metric)
 
         # Register model if performance is better than threshold or cancel run
