@@ -34,6 +34,14 @@ jobs:
           artifactName: $(model_artifact_name)
 
       - task: AzureCLI@2
+        displayName: Attach workspace
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: az ml folder attach --workspace-name $(workspace_name) --resource-group $(resource_group_name)
+
+      - task: AzureCLI@2
         displayName: Deploy to ${{ upper( parameters.compute_type ) }} (${{ lower( parameters.environment ) }})
         inputs:
           scriptType: bash
@@ -47,8 +55,6 @@ jobs:
             echo ${{ parameters.resource_group_name }}
 
             az ml model deploy \
-            --workspace-name $(workspace_name) \
-            --resource-group $(resource_group_name) \
             --inference-config-file $(inference_config) \
             --model-metadata-file $(model_metadata_file_path) \
             --name ${{ parameters.service_name }} \
