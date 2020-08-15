@@ -42,7 +42,7 @@ jobs:
           inlineScript: |
             az ml model deploy \
             --inference-config-file $(inference_config) \
-            --model cardiovascular_disease_model:3 \
+            --model cardiovascular_disease_model:6 \
             --name ${{ parameters.service_name }} \
             --compute-type ${{ parameters.compute_type }} \
             --deploy-config-file ${{ parameters.deployment_config }} \
