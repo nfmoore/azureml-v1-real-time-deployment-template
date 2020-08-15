@@ -123,7 +123,7 @@ def train_model(df):
 
 def register_model(model_name, build_id, test_acccuracy, model_path):
     # Retreive train datasets
-    train_dataset = run.input_datasets["InputDataset"]
+    train_dataset = [("InputDataset", run.input_datasets["InputDataset"])]
 
     # Define model tags
     model_tags = {
@@ -178,9 +178,9 @@ def main():
         model_file_name = "model.pkl"
         output_path = os.path.join("outputs", model_file_name)
 
-        # Upload model file to run outputs for history
-        os.makedirs("outputs", exist_ok=True)
-        joblib.dump(value=model, filename=output_path)
+        # # Upload model file to run outputs for history
+        # os.makedirs("outputs", exist_ok=True)
+        # joblib.dump(value=model, filename=output_path)
 
         # Upload model to run
         run.upload_file(name=model_file_name, path_or_stream=output_path)
