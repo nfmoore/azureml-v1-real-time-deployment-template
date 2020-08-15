@@ -47,6 +47,8 @@ jobs:
             echo ${{ parameters.resource_group_name }}
 
             az ml model deploy \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group_name) \
             --inference-config-file $(inference_config) \
             --model-metadata-file $(model_metadata_file_path) \
             --name ${{ parameters.service_name }} \
@@ -56,6 +58,3 @@ jobs:
             --tag build_id=$(Build.BuildId) \
             --tag environment=${{ parameters.environment }} \
             --overwrite
-
-            # --workspace-name ${{ parameters.workspace_name }} \
-            # --resource-group ${{ parameters.resource_group_name }} \
