@@ -174,19 +174,26 @@ def main():
         df = preprocess_data(df)
         model, test_accuracy = train_model(df)
 
-        # Define output directory and model name
-        output_dir = "./outputs"
-        model_path = f"{output_dir}/model.pkl"
+        # Define model file name
+        model_file_name = "model.pkl"
+        output_path = os.path.join("outputs", model_file_name)
 
-        # Save the model to the outputs directory for capture
-        os.makedirs(output_dir, exist_ok=True)
-        joblib.dump(value=model, filename=model_path)
+        # Upload model file to run outputs for history
+        os.makedirs("outputs", exist_ok=True)
+        joblib.dump(value=model, filename=output_path)
+
+        # Upload model to run
+        run.upload_file(name=model_file_name, path_or_stream=output_path)
 
         # Register model if performance is better than threshold or cancel run
         if test_accuracy > evaluation_metric_threshold:
-            register_model(args.model_name, args.build_id, test_accuracy, model_path)
+            register_model(
+                args.model_name, args.build_id, test_accuracy, model_file_name
+            )
         else:
             run.cancel()
+
+        run.complete()
 
     except Exception:
         exception = f"Exception: train.py\n{traceback.format_exc()}"
