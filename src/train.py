@@ -16,7 +16,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 run = None
-evaluation_metric = "test_acccuracy"
 evaluation_metric_threshold = 0.7
 
 
@@ -99,31 +98,32 @@ def train_model(df):
     # Train / evaluate performance of logistic regression classifier
     cv_results = cross_validate(pipeline, X, y, cv=10, return_train_score=True)
 
+    # Get average train / test accuracy
+    train_accuracy = round(cv_results["train_score"].mean(), 4)
+    test_accuracy = round(cv_results["test_score"].mean(), 4)
+
     # Log average train / test accuracy
-    run.log("train_acccuracy", round(cv_results["train_score"].mean(), 4))
-    run.log("test_acccuracy", round(cv_results["test_score"].mean(), 4))
+    run.log("train_acccuracy", train_accuracy)
+    run.log("test_acccuracy", test_accuracy)
 
     # Log performance metrics for data
     for metric in cv_results.keys():
         run.log_row(
             "k_fold_cv_metrics",
             metric=metric.replace("_", " "),
-            mean="{:.2%}".format(cv_results[metric].mean()),
-            std="{:.2%}".format(cv_results[metric].std()),
+            mean="{:.2}".format(cv_results[metric].mean()),
+            std="{:.2}".format(cv_results[metric].std()),
         )
 
     # Fit model
     pipeline.fit(X, y)
 
-    return pipeline
+    return pipeline, test_accuracy
 
 
-def register_model(model_name, build_id):
+def register_model(model_name, build_id, test_acccuracy):
     # Retreive train datasets
     train_dataset = run.input_datasets["InputDataset"]
-
-    # Get evaluation metric for model
-    run_metrics = run.get_metrics()
 
     # Define model file name
     model_file_name = "model.pkl"
@@ -131,7 +131,7 @@ def register_model(model_name, build_id):
     # Define model tags
     model_tags = {
         "build_id": build_id,
-        "test_acccuracy": run_metrics.get(evaluation_metric),
+        "test_acccuracy": test_acccuracy,
     }
 
     print("Variable [model_tags]:", model_tags)
@@ -175,24 +175,15 @@ def main():
         # Load data, pre-process data, train and evaluate model
         df = load_data()
         df = preprocess_data(df)
-        model = train_model(df)
+        model, test_accuracy = train_model(df)
 
         # Save the model to the outputs directory for capture
         os.makedirs("./outputs", exist_ok=True)
         joblib.dump(value=model, filename="./outputs/model.pkl")
 
-        print(run.get_metrics())
-        print(run.get_metrics().get(evaluation_metric))
-
-        # Get evaluation metric for model
-        run_metrics = run.get_metrics()
-
-        model_metric = float(run_metrics.get(evaluation_metric))
-        print("Variable [model_metric]:", model_metric)
-
         # Register model if performance is better than threshold or cancel run
-        if model_metric > evaluation_metric_threshold:
-            register_model(args.model_name, args.build_id)
+        if test_accuracy > evaluation_metric_threshold:
+            register_model(args.model_name, args.build_id, test_accuracy)
         else:
             run.cancel()
 

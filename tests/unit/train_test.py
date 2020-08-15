@@ -88,16 +88,17 @@ def test_train_model(mock_cross_validate, input_df, cv_results):
 
     # Train model
     df = preprocess_data(input_df)
-    model = train_model(df)
+    model, test_accuracy = train_model(df)
 
-    # Should return an sklearn pipeline
+    # Should return an sklearn pipeline and test accuracy
     assert type(model) == Pipeline
+    assert type(test_accuracy) == np.float64
 
 
 @patch("src.train.run")
 def test_register_model(mock_run):
     # Register model
-    register_model("model_name", "build_id")
+    register_model("model_name", "build_id", "test_accuracy")
 
     # Should have called run once to register model
     mock_run.register_model.assert_called_once()
