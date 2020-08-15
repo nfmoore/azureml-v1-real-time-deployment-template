@@ -6,7 +6,7 @@ parameters:
 jobs:
   - job: smoke_test_service
     dependsOn: deploy_model
-    displayName: Smoke Test
+    displayName: Smoke test
 
     variables:
       - template: ../variables.yml

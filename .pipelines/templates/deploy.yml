@@ -13,18 +13,10 @@ parameters:
 
 jobs:
   - job: deploy_model
-    displayName: ${{ upper( parameters.compute_type ) }} Deployment
+    displayName: ${{ upper( parameters.compute_type ) }} deployment
 
     variables:
       - template: ../variables.yml
-      # - name: service_name
-      #   value: ${{ parameters.service_name }}
-      # - name: compute_type
-      #   value: ${{ parameters.compute_type }}
-      # - name: deployment_config
-      #   value: ${{ parameters.deployment_config }}
-      # - name: compute_target
-      #   value: ${{ parameters.compute_target }}
 
     steps:
       - task: AzureCLI@2
@@ -51,7 +43,8 @@ jobs:
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group_name) \
             --inference-config-file $(inference_config) \
-            --model-metadata-file $(model_metadata_file_path) \
+            --model cardiovascular_disease_model:2 \
+            # --model-metadata-file $(model_metadata_file_path) \
             --name ${{ parameters.service_name }} \
             --compute-type ${{ parameters.compute_type }} \
             --deploy-config-file ${{ parameters.deployment_config }} \

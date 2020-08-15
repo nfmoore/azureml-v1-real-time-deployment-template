@@ -5,7 +5,7 @@ parameters:
 
 jobs:
   - job: train_model
-    displayName: Train Model
+    displayName: Train and register model
 
     variables:
       - template: ../variables.yml
