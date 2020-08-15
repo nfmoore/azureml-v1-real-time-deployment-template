@@ -3,14 +3,13 @@ parameters:
   - name: resource_group_name
   - name: workspace_name
   - name: service_name
-  - name: compute_type
   - name: deployment_config
-  - name: compute_target
-    default: "''"
+  - name: compute_type
     values:
-      - "''"
       - aci
       - aks
+  - name: compute_target
+    default: "''"
 
 jobs:
   - job: deploy_model
