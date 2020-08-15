@@ -28,7 +28,7 @@ stages:
   - stage: model_build
     displayName: Model Build
     jobs:
-      - template: ./templates/train-register.yml
+      - template: ./templates/build-model.yml
         parameters:
           service_connection: ${{ variables.service_connection }}
           resource_group_name: ${{ variables.resource_group_name }}

@@ -119,9 +119,6 @@ def train_model(df):
 
 
 def register_model(model_name, build_id):
-    # Retreive dataset
-    workspace = run.experiment.workspace
-
     # Retreive train datasets
     train_dataset = run.input_datasets["InputDataset"]
 
