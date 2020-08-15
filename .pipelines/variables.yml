@@ -58,6 +58,9 @@ variables:
   - name: run_metadata_file_path
     value: $(System.ArtifactsDirectory)/$(run_artifact_name)/$(run_metadata_file)
 
+  - name: model_metadata_file_path
+    value: $(System.ArtifactsDirectory)/$(model_artifact_name)/$(model_metadata_file)
+
   - name: model_name
     value: cardiovascular_disease_model
 

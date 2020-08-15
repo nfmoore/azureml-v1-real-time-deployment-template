@@ -1,13 +1,15 @@
+parameters:
+  - name: service_connection
+  - name: resource_group_name
+  - name: workspace_name
+  - name: service_name
 jobs:
   - job: smoke_test_service
     dependsOn: deploy_model
     displayName: Smoke Test
 
     variables:
-      - template: ./variables.yml
-
-      - name: service_name
-        value: ${{ parameters.service_name }}
+      - template: ../variables.yml
 
     steps:
       - task: CmdLine@2
@@ -38,7 +40,7 @@ jobs:
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group_name) \
             --name $(service_name) \
-            | jq ".scoringUri" --raw-output)
+            --query scoringUri -o tsv)
 
             source activate ci_env
             python3 tests/integration/smoke_test_web_service.py --scoring-uri $SCORING_URI

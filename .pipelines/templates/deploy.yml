@@ -1,35 +1,31 @@
 parameters:
+  - name: service_connection
+  - name: resource_group_name
+  - name: workspace_name
   - name: service_name
-    type: string
-
   - name: compute_type
-    type: string
-
   - name: deployment_config
-    type: string
-
   - name: compute_target
-    type: string
     default: "''"
+    values:
+      - "''"
+      - aci
+      - aks
 
 jobs:
   - job: deploy_model
     displayName: ${{ upper( parameters.compute_type ) }} Deployment
 
     variables:
-      - template: ./variables.yml
-
-      - name: service_name
-        value: ${{ parameters.service_name }}
-
-      - name: compute_type
-        value: ${{ parameters.compute_type }}
-
-      - name: deployment_config
-        value: ${{ parameters.deployment_config }}
-
-      - name: compute_target
-        value: ${{ parameters.compute_target }}
+      - template: ../variables.yml
+      # - name: service_name
+      #   value: ${{ parameters.service_name }}
+      # - name: compute_type
+      #   value: ${{ parameters.compute_type }}
+      # - name: deployment_config
+      #   value: ${{ parameters.deployment_config }}
+      # - name: compute_target
+      #   value: ${{ parameters.compute_target }}
 
     steps:
       - task: AzureCLI@2
@@ -41,11 +37,9 @@ jobs:
           inlineScript: az extension add -n azure-cli-ml
 
       - task: DownloadBuildArtifacts@0
-        displayName: Download Model Metadata Artifact
+        displayName: Download model metadata artifact
         inputs:
-          source: current
-          artifactName: model-metadata
-          downloadPath: $(Pipeline.Workspace)
+          artifactName: $(model_artifact_name)
 
       - task: AzureCLI@2
         displayName: Deploy to ${{ upper( parameters.compute_type ) }}
@@ -59,7 +53,7 @@ jobs:
             --compute-type $(compute_type) \
             --deploy-config-file $(deployment_config) \
             --inference-config-file $(inference_config) \
-            --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
+            --model-metadata-file $(model_metadata_file_path) \
             --compute-target $(compute_target) \
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group_name) \
