@@ -18,6 +18,11 @@ jobs:
 
     variables:
       - template: ../variables.yml
+      - group: aml-deployment-templates
+      - name: resource_group_name
+        value: $(environment)-$(namespace)-rg
+      - name: workspace_name
+        value: mlw$(environment)$(namespace)
 
       - name: service_name
         value: ${{ parameters.service_name }}
