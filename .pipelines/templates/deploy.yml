@@ -44,9 +44,10 @@ jobs:
             --resource-group $(resource_group_name) \
             --inference-config-file $(inference_config) \
             --model cardiovascular_disease_model:2 \
-            # --model-metadata-file $(model_metadata_file_path) \
             --name ${{ parameters.service_name }} \
             --compute-type ${{ parameters.compute_type }} \
             --deploy-config-file ${{ parameters.deployment_config }} \
             --compute-target ${{ parameters.compute_target }} \
             --overwrite
+
+# --model-metadata-file $(model_metadata_file_path) \
