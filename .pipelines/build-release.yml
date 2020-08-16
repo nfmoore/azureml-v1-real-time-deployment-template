@@ -46,9 +46,9 @@ stages:
           service_connection: ${{ variables.service_connection }}
           resource_group_name: ${{ variables.resource_group_name }}
           workspace_name: ${{ variables.workspace_name }}
-          compute_target: ${{ variables.aks_cluster_name }}
+          compute_target: $(aks_cluster_name)
           deployment_config: ${{ variables.aks_deployment_config }}
-          service_name: ${{ variables.service_endpoint_name_production }}
+          service_name: ${{ variables.service_endpoint_name_test }}
           environment: Test
           compute_type: aks
       - template: ./templates/smoke-test.yml
