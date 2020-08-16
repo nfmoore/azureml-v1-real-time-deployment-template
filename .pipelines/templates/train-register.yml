@@ -54,7 +54,7 @@ jobs:
             --run-configuration-name $(generated_train_run_config) \
             --source-directory $(source_directory) \
             --experiment-name $(train_experiment_name) \
-            --output-metadata-file run.py train.py \
+            --output-metadata-file $(run_metadata_file) $(train_script) \
             --MODEL_NAME $(model_name) \
             --BUILD_ID $(Build.BuildId)
 
@@ -67,6 +67,12 @@ jobs:
           inlineScript: |
             # Retreive model for this build from workspace
             az ml model list --tag build_id=$(Build.BuildId) --query '[0]' > $(model_metadata_file)
+
+      - task: PublishBuildArtifacts@1
+        displayName: Publish run metadata artifact
+        inputs:
+          pathToPublish: $(run_metadata_file)
+          artifactName: $(run_artifact_name)
 
       - task: PublishBuildArtifacts@1
         displayName: Publish model metadata artifact

@@ -40,6 +40,12 @@ variables:
   - name: model_metadata_file_path
     value: $(System.ArtifactsDirectory)/$(model_artifact_name)/$(model_metadata_file)
 
+  - name: run_metadata_file
+    value: run.json
+
+  - name: run_artifact_name
+    value: run-metadata
+
   # DEPLOY
   - name: inference_config
     value: configuration/inference_config.yml
