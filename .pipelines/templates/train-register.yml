@@ -19,13 +19,13 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: az extension add -n azure-cli-ml
 
-      - task: AzureCLI@2
-        displayName: Attach workspace
-        inputs:
-          azureSubscription: $(service_connection)
-          scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: az ml folder attach --workspace-name $(workspace_name) --resource-group $(resource_group_name)
+      # - task: AzureCLI@2
+      #   displayName: Attach workspace
+      #   inputs:
+      #     azureSubscription: $(service_connection)
+      #     scriptType: bash
+      #     scriptLocation: inlineScript
+      #     inlineScript: az ml folder attach --workspace-name $(workspace_name) --resource-group $(resource_group_name)
 
       - task: AzureCLI@2
         displayName: Create run config
@@ -51,9 +51,11 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az ml run submit-script \
-            --run-configuration-name $(generated_train_run_config) \
-            --source-directory $(source_directory) \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group_name) \
             --experiment-name $(train_experiment_name) \
+            --source-directory $(source_directory) \
+            --run-configuration-name $(generated_train_run_config) \
             --MODEL_NAME $(model_name) \
             --BUILD_ID $(Build.BuildId) \
 
