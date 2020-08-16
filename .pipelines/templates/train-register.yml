@@ -54,6 +54,7 @@ jobs:
             --run-configuration-name $(generated_train_run_config) \
             --source-directory $(source_directory) \
             --experiment-name $(train_experiment_name) \
+            --output-metadata-file run.py train.py \
             --MODEL_NAME $(model_name) \
             --BUILD_ID $(Build.BuildId)
 
