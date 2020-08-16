@@ -56,10 +56,6 @@ jobs:
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
-            echo ${{ parameters.compute_target }}
-            echo $(compute_target)
-            echo ${{ variables.aks_cluster_name }}
-
             az ml model deploy \
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group_name) \

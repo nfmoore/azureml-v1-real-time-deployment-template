@@ -11,7 +11,7 @@ jobs:
         inputs:
           script: |
             echo "##vso[task.prependpath]$CONDA/bin"
-            conda env create --file $(dependencies_ci)
+            conda env create --file $(dependencies_ci_cd)
 
       - task: CmdLine@2
         displayName: Run linting

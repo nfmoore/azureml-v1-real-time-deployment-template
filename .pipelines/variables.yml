@@ -1,6 +1,5 @@
 variables:
-  # COMMON
-
+  # CODE QUALITY
   - name: source_directory
     value: src
 
@@ -10,41 +9,27 @@ variables:
   - name: train_experiment_name
     value: cardiovascular-disease-experiment
 
-  # CONFIG
-  - name: aks_deployment_config
-    value: configuration/aks_deployment_config.yml
+  - name: unit_test_result_files
+    value: unittest-results.xml
 
-  - name: aci_deployment_config
-    value: configuration/aci_deployment_config.yml
+  - name: coverage_result_files
+    value: "**/coverage.xml"
 
-  - name: inference_config
-    value: configuration/inference_config.yml
+  - name: dependencies_ci_cd
+    value: environments/ci_cd_dependencies.yml
 
-  # ENVIRONMENTS
-  - name: dependencies_train
-    value: environments/train_dependencies.yml
-
-  - name: dependencies_score
-    value: environments/score_dependencies.yml
-
-  - name: dependencies_ci
-    value: environments/ci_dependencies.yml
-
-  # TRAIN
+  # TRAIN REGISTER
   - name: dataset_name
     value: cardiovascular_disease_train_dataset
+
+  - name: model_name
+    value: cardiovascular_disease_model
 
   - name: train_run_config
     value: configuration/train.runconfig
 
   - name: generated_train_run_config
     value: train_gen
-
-  - name: run_artifact_name
-    value: run-metadata
-
-  - name: run_metadata_file
-    value: run.json
 
   - name: train_script
     value: train.py
@@ -55,35 +40,18 @@ variables:
   - name: model_artifact_name
     value: model-metadata
 
-  - name: run_metadata_file_path
-    value: $(System.ArtifactsDirectory)/$(run_artifact_name)/$(run_metadata_file)
-
   - name: model_metadata_file_path
     value: $(System.ArtifactsDirectory)/$(model_artifact_name)/$(model_metadata_file)
 
-  - name: model_name
-    value: cardiovascular_disease_model
-
-  - name: model_asset_path
-    value: outputs/model.pkl
-
   # DEPLOY
-  - name: aci_service_endpoint_name
-    value: cardiovascular-disease-aci
+  - name: inference_config
+    value: configuration/inference_config.yml
 
-  - name: aks_service_endpoint_name
-    value: cardiovascular-disease-aks
+  - name: aks_deployment_config
+    value: configuration/aks_deployment_config.yml
 
-  - name: unit_test_result_files
-    value: unittest-results.xml
-
-  - name: coverage_result_files
-    value: "**/coverage.xml"
-
-  - name: source_directory
-    value: src
+  - name: aci_deployment_config
+    value: configuration/aci_deployment_config.yml
 
   - name: service_endpoint_name
     value: cardiovascular-disease-endpoint
-  # - name: service_endpoint_name
-  #   value: cardiovascular-disease-endpoint-production

@@ -69,12 +69,6 @@ jobs:
             az ml model list --tag build_id=$(Build.BuildId) --query '[0]' > $(model_metadata_file)
 
       - task: PublishBuildArtifacts@1
-        displayName: Publish run metadata artifact
-        inputs:
-          pathToPublish: $(run_metadata_file)
-          artifactName: $(run_artifact_name)
-
-      - task: PublishBuildArtifacts@1
         displayName: Publish model metadata artifact
         inputs:
           pathToPublish: $(model_metadata_file)
