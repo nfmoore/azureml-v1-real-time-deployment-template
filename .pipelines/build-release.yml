@@ -53,7 +53,10 @@ stages:
           compute_type: aks
       - template: ./templates/smoke-test.yml
         parameters:
-          service_name: $(aci_service_endpoint_name)
+          service_connection: ${{ variables.service_connection }}
+          resource_group_name: ${{ variables.resource_group_name }}
+          workspace_name: ${{ variables.workspace_name }}
+          service_name: ${{ variables.service_endpoint_name_test }}
 
   - stage: deploy_production
     displayName: Production Deployment
@@ -69,6 +72,6 @@ stages:
           workspace_name: ${{ variables.workspace_name }}
           compute_target: ${{ variables.aks_cluster_name }}
           deployment_config: ${{ variables.aks_deployment_config }}
-          service_name: ${{ variables.service_endpoint_name_test }}
+          service_name: ${{ variables.service_endpoint_name_production }}
           environment: Production
           compute_type: aks
