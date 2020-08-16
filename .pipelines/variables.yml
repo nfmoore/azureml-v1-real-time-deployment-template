@@ -31,9 +31,6 @@ variables:
   - name: generated_train_run_config
     value: train_gen
 
-  - name: train_script
-    value: train.py
-
   - name: model_metadata_file
     value: model.json
 
