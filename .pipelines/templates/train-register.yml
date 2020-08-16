@@ -54,10 +54,9 @@ jobs:
             --experiment-name $(train_experiment_name) \
             --source-directory $(source_directory) \
             --run-configuration-name $(generated_train_run_config) \
+            --output-metadata-file $(run_metadata_file) $(train_script) \
             --MODEL_NAME $(model_name) \
             --BUILD_ID $(Build.BuildId) \
-
-            # --output-metadata-file $(run_metadata_file) $(train_script) \
 
       - task: AzureCLI@2
         displayName: Get model metadata
