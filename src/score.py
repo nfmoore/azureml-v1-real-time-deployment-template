@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import joblib
 import numpy as np
@@ -83,7 +84,7 @@ def process_data(input_df):
     input_df["bmi"] = input_df.weight / (input_df.height / 100) ** 2
 
     # Get model features / target
-    X = input_df.drop(labels=["height", "weight"], axis=1)
+    X = input_df.drop(labels=["height", "weight", "datetime"], axis=1)
 
     # Convert data types of model features
     X[categorical_features] = X[categorical_features].astype(np.object)
@@ -96,8 +97,11 @@ def process_data(input_df):
 @output_schema(StandardPythonParameterType(output_sample))
 def run(data):
     try:
-        # Preprocess payload and get model prediction
+        # Append datetime column to predictions
         input_df = pd.DataFrame(data)
+        input_df["datetime"] = datetime.now()
+
+        # Preprocess payload and get model prediction
         X = process_data(input_df)
         proba = model.predict_proba(X)
         result = proba[:, 1].tolist()
