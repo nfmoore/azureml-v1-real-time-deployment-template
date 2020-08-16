@@ -83,8 +83,7 @@ variables:
   - name: source_directory
     value: src
 
-  - name: service_endpoint_name_test
-    value: cardiovascular-disease-endpoint-test
-
-  - name: service_endpoint_name_production
-    value: cardiovascular-disease-endpoint-production
+  - name: service_endpoint_name
+    value: cardiovascular-disease-endpoint
+  # - name: service_endpoint_name
+  #   value: cardiovascular-disease-endpoint-production
