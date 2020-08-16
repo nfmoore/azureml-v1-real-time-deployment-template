@@ -1,138 +1,70 @@
 parameters:
+  - name: service_connection
+  - name: resource_group_name
+  - name: workspace_name
   - name: service_name
-    type: string
-
-  - name: compute_type
-    type: string
-
   - name: deployment_config
-    type: string
-
+  - name: environment
+  - name: compute_type
+    values:
+      - aci
+      - aks
   - name: compute_target
-    type: string
     default: "''"
 
 jobs:
   - job: deploy_model
-    displayName: ${{ upper( parameters.compute_type ) }} Deployment
+    displayName: ${{ upper( parameters.compute_type ) }} deployment
 
     variables:
       - template: ../variables.yml
-      - group: aml-deployment-templates
-      - name: resource_group_name
-        value: $(environment)-$(namespace)-rg
-      - name: workspace_name
-        value: mlw$(environment)$(namespace)
-
-      - name: service_name
-        value: ${{ parameters.service_name }}
-
-      - name: compute_type
-        value: ${{ parameters.compute_type }}
-
-      - name: deployment_config
-        value: ${{ parameters.deployment_config }}
-
-      - name: compute_target
-        value: ${{ parameters.compute_target }}
 
     steps:
       - task: AzureCLI@2
-        displayName: Install Azure ML CLI
+        displayName: Install azure-cli-ml
         inputs:
-          scriptType: bash
           azureSubscription: $(service_connection)
+          scriptType: bash
           scriptLocation: inlineScript
           inlineScript: az extension add -n azure-cli-ml
 
       - task: DownloadBuildArtifacts@0
-        displayName: Download Model Metadata Artifact
+        displayName: Download model metadata artifact
         inputs:
-          source: current
-          artifactName: model-metadata
-          downloadPath: $(Pipeline.Workspace)
+          artifactName: $(model_artifact_name)
 
       - task: AzureCLI@2
-        displayName: Deploy to ${{ upper( parameters.compute_type ) }}
+        displayName: Set subscription
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            # Fail on error
+            set -e
+
+            # Get subscription id
+            MODEL_ID=$(jq ".id" $(model_metadata_file_path) --raw-output)
+
+            # Set variable for pipeline
+            echo "##vso[task.setvariable variable=model_id]$MODEL_ID"
+
+      - task: AzureCLI@2
+        displayName: Deploy to ${{ upper( parameters.compute_type ) }} (${{ lower( parameters.environment ) }})
         inputs:
           scriptType: bash
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
             az ml model deploy \
-            --name $(service_name) \
-            --compute-type $(compute_type) \
-            --deploy-config-file $(deployment_config) \
-            --inference-config-file $(inference_config) \
-            --model-metadata-file $(Pipeline.Workspace)/model-metadata/model.json \
-            --compute-target $(compute_target) \
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group_name) \
+            --inference-config-file $(inference_config) \
+            --model $(model_id) \
+            --name ${{ parameters.service_name }} \
+            --compute-type ${{ parameters.compute_type }} \
+            --deploy-config-file ${{ parameters.deployment_config }} \
+            --compute-target ${{ parameters.compute_target }} \
+            --tag build_id=$(Build.BuildId) \
+            --tag environment=${{ parameters.environment }} \
             --overwrite
-
-# parameters:
-#   - name: service_connection
-#   - name: resource_group_name
-#   - name: workspace_name
-#   - name: service_name
-#   - name: deployment_config
-#   - name: environment
-#   - name: compute_type
-#     values:
-#       - aci
-#       - aks
-#   - name: compute_target
-#     default: "''"
-
-# jobs:
-#   - job: deploy_model
-#     displayName: ${{ upper( parameters.compute_type ) }} deployment
-
-#     variables:
-#       - template: ../variables.yml
-
-#     steps:
-#       - task: AzureCLI@2
-#         displayName: Install azure-cli-ml
-#         inputs:
-#           azureSubscription: $(service_connection)
-#           scriptType: bash
-#           scriptLocation: inlineScript
-#           inlineScript: az extension add -n azure-cli-ml
-
-#       - task: DownloadBuildArtifacts@0
-#         displayName: Download model metadata artifact
-#         inputs:
-#           artifactName: $(model_artifact_name)
-
-#       - task: AzureCLI@2
-#         displayName: Attach workspace
-#         inputs:
-#           azureSubscription: $(service_connection)
-#           scriptType: bash
-#           scriptLocation: inlineScript
-#           inlineScript: az ml folder attach --workspace-name $(workspace_name) --resource-group $(resource_group_name)
-
-#       - task: AzureCLI@2
-#         displayName: Deploy to ${{ upper( parameters.compute_type ) }} (${{ lower( parameters.environment ) }})
-#         inputs:
-#           scriptType: bash
-#           azureSubscription: $(service_connection)
-#           scriptLocation: inlineScript
-#           inlineScript: |
-#             echo $(workspace_name)
-#             echo $(resource_group_name)
-
-#             echo ${{ parameters.workspace_name }}
-#             echo ${{ parameters.resource_group_name }}
-
-#             az ml model deploy \
-#             --inference-config-file $(inference_config) \
-#             --model-metadata-file $(model_metadata_file_path) \
-#             --name ${{ parameters.service_name }} \
-#             --compute-type ${{ parameters.compute_type }} \
-#             --deploy-config-file ${{ parameters.deployment_config }} \
-#             --compute-target ${{ parameters.compute_target }} \
-#             --tag build_id=$(Build.BuildId) \
-#             --tag environment=${{ parameters.environment }} \
-#             --overwrite

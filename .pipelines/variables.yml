@@ -74,9 +74,6 @@ variables:
   - name: aks_service_endpoint_name
     value: cardiovascular-disease-aks
 
-  - name: aks_cluster_name
-    value: aks-cluster
-
   - name: unit_test_result_files
     value: unittest-results.xml
 
@@ -86,8 +83,8 @@ variables:
   - name: source_directory
     value: src
 
-  - name: test_service_endpoint_name
-    value: cardiovascular-disease-endpoint
+  - name: service_endpoint_name_test
+    value: cardiovascular-disease-endpoint-test
 
-  - name: test_service_endpoint_name
-    value: cardiovascular-disease-endpoint
+  - name: service_endpoint_name_production
+    value: cardiovascular-disease-endpoint-production
