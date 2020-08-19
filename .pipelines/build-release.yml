@@ -39,7 +39,7 @@ stages:
     dependsOn: model_build
     jobs:
       - deployment: Approval
-        displayName: Test Deployment Approval
+        displayName: Test deployment approval
         environment: Test
       - template: ./templates/deploy.yml
         parameters:
@@ -63,7 +63,7 @@ stages:
     dependsOn: deploy_test
     jobs:
       - deployment: Approval
-        displayName: Production Deployment Approval
+        displayName: Production deployment approval
         environment: Production
       - template: ./templates/deploy.yml
         parameters:
