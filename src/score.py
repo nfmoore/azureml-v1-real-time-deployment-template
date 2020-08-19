@@ -84,7 +84,7 @@ def process_data(input_df):
     input_df["bmi"] = input_df.weight / (input_df.height / 100) ** 2
 
     # Get model features / target
-    X = input_df.drop(labels=["height", "weight", "datetime"], axis=1)
+    X = input_df.drop(labels=["height", "weight", "datetime"], errors="ignore", axis=1)
 
     # Convert data types of model features
     X[categorical_features] = X[categorical_features].astype(np.object)
