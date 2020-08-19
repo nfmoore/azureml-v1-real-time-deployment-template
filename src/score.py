@@ -110,6 +110,9 @@ def run(data):
         print("Request Payload", data)
         print("Response Payload", result)
 
+        # Add datetime to output
+        input_df["datetime"] = datetime.now()
+
         # Collect features and prediction data
         inputs_dc.collect(input_df)
         prediction_dc.collect(

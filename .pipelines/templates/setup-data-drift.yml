@@ -5,6 +5,7 @@ parameters:
 
 jobs:
   - job:
+    dependsOn: deploy_model
     displayName: Setup data drift
 
     variables:

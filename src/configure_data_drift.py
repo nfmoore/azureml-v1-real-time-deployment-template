@@ -59,7 +59,10 @@ def main():
     target_dataset = Dataset.get_by_name(workspace, target_dataset_name)
     baseline_dataset = Dataset.get_by_name(workspace, args.baseline_dataset_name)
 
-    print("Variable [target_dataset]:", target_dataset_name)
+    # Assign timestamp column for Tabular Dataset to activate Time Series related APIs
+    target_dataset = target_dataset.with_timestamp_columns(timestamp="datetime")
+
+    print("Variable [target_dataset]:", target_dataset)
     print("Variable [baseline_dataset]:", baseline_dataset)
 
     # Define features to monitor
