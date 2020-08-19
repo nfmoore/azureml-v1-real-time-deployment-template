@@ -75,3 +75,8 @@ stages:
           service_name: $(service_endpoint_name)
           environment: Production
           compute_type: aks
+      - template: ./templates/setup-data-drift.yml
+        parameters:
+          service_connection: $(service_connection)
+          resource_group_name: $(resource_group_name)
+          workspace_name: $(workspace_name)

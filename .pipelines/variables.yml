@@ -61,3 +61,18 @@ variables:
 
   - name: service_endpoint_name
     value: cardiovascular-disease-endpoint
+
+  - name: data_drift_monitor_name
+    value: cardiovascular-disease-drift-monitor
+
+  - name: data_drift_setup_script
+    value: src/configure_data_drift.py
+
+  - name: compute_cluster_name
+    value: cpu-compute
+
+  - name: data_drift_frequency
+    value: Day
+
+  - name: data_drift_feature_list
+    value: age,gender,height,weight,systolic,diastolic,cholesterol,glucose,smoker,alcoholic,active

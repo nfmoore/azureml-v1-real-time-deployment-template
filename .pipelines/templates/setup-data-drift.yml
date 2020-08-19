@@ -1,0 +1,87 @@
+parameters:
+  - name: service_connection
+  - name: resource_group_name
+  - name: workspace_name
+
+jobs:
+  - job:
+    displayName: Setup data drift
+
+    variables:
+      - template: ../variables.yml
+
+    steps:
+      - task: CmdLine@2
+        displayName: Create anaconda environment
+        inputs:
+          script: |
+            echo "##vso[task.prependpath]$CONDA/bin"
+            conda env create --file $(dependencies_ci_cd)
+
+      - task: AzureCLI@2
+        displayName: Install azure-cli-ml
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: az extension add -n azure-cli-ml
+
+      - task: DownloadBuildArtifacts@0
+        displayName: Download model metadata artifact
+        inputs:
+          artifactName: $(model_artifact_name)
+
+      - task: AzureCLI@2
+        displayName: Set subscription
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            # Fail on error
+            set -e
+
+            # Get subscription id
+            SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+
+            # Set variable for pipeline
+            echo "##vso[task.setvariable variable=subscription_id]$SUBSCRIPTION_ID"
+
+      - task: AzureCLI@2
+        displayName: Set subscription
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            # Fail on error
+            set -e
+
+            # Get subscription id
+            MODEL_ID=$(jq ".id" $(model_metadata_file_path) --raw-output)
+
+            # Set variable for pipeline
+            echo "##vso[task.setvariable variable=model_id]$MODEL_ID"
+
+      - task: AzureCLI@2
+        displayName: Publish pipeline
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            # Activate conda environment
+            source activate ci_env
+
+            # Run script to setup data drift
+            python3 -m $(data_drift_setup_script) \
+            --subscription_id $(subscription_id) \
+            --resource_group $(resource_group_name) \
+            --workspace_name $(workspace_name) \
+            --model_id $(model_id) \
+            --endpoint_name $(service_endpoint_name) \
+            --baseline_dataset_name $(dataset_name) \
+            --data_drift_monitor_name $(data_drift_monitor_name) \
+            --compute_target $(compute_cluster_name) \
+            --frequency $(data_drift_frequency) \
+            --feature_list $(data_drift_feature_list) \
