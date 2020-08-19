@@ -11,14 +11,13 @@ def parse_args(argv):
     ap.add_argument("--subscription_id", required=True)
     ap.add_argument("--resource_group", required=True)
     ap.add_argument("--workspace_name", required=True)
-    ap.add_argument("--compute_target", required=True)
     ap.add_argument("--model_id", required=True)
     ap.add_argument("--endpoint_name", required=True)
     ap.add_argument("--baseline_dataset_name", required=True)
     ap.add_argument("--data_drift_monitor_name", required=True)
     ap.add_argument("--compute_target", required=True)
-    ap.add_argument("--frequency", default="Week")
     ap.add_argument("--feature_list", required=True)
+    ap.add_argument("--frequency", default="Week")
 
     args, _ = ap.parse_known_args(argv)
 
@@ -60,8 +59,8 @@ def main():
     target_dataset = Dataset.get_by_name(workspace, target_dataset_name)
     baseline_dataset = Dataset.get_by_name(workspace, args.baseline_dataset_name)
 
-    print("Variable [target_dataset]:", args.target_dataset)
-    print("Variable [baseline_dataset]:", args.baseline_dataset)
+    print("Variable [target_dataset]:", target_dataset_name)
+    print("Variable [baseline_dataset]:", baseline_dataset)
 
     # Define features to monitor
     feature_list = args.feature_list.split(",")
@@ -80,6 +79,9 @@ def main():
     )
 
     print("Variable [monitor]:", monitor)
+
+    # Enable the pipeline schedule for the data drift detector
+    monitor.enable_schedule()
 
 
 if __name__ == "__main__":
