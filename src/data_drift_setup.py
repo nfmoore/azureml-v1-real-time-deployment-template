@@ -80,6 +80,7 @@ def main():
     target_dataset = Dataset.Tabular.from_delimited_files(
         path=(target_dataset_datastore, target_dataset_datastore_path),
         validate=False,
+        infer_column_types=False,
         set_column_types={
             "age": DataType.to_float(decimal_mark="."),
             "gender": DataType.to_string(),
