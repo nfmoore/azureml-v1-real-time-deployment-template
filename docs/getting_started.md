@@ -66,7 +66,15 @@ See [these](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/vari
    3. Select `GitHub` (authenticate if necessary).
    4. Select your GitHub repository from the list of repositories (authenticate if necessary).
    5. Select `Existing Azure Pipelines YAML File`.
-   6. Select the `master` branch and enter `/.pipeline/main.yml` as the path or select it from the dropdown and click `Continue`.
+   6. Select the `master` branch and enter `/.pipeline/build-release.yml` as the path or select it from the dropdown and click `Continue`.
    7. Select `Run` from the top-right of the protal to execute the pipeline and deploy the platform.
 
    See [these](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) instructions for more details about creating a pipeline in Azure DevOps.
+
+### 5. Use data drift
+
+1. When you call your web service endpoint all telemetry is collected and stored in the workspace storage account in a container called `modeldata`. The path to the `inputs` and `predictions` output data in the blob follows this syntax: `/modeldata/<subscriptionid>/<resourcegroup>/<workspace>/<webservice>/<model>/<version>/<designation>/<year>/<month>/<day>/data.csv`. Read more information [here](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-enable-data-collection).
+
+2. This stored telemetry will be accessable via a dataset in the following form: `inference-data-<model_name>-<model_version>-<endpoint_name>`. A data drift monitor will be configured using this dataset as a target data and the training dataset as a baseline. This means the web service telemetry will be compared against the training (baseline) dataset to determine if model drift is present.
+
+3. The model data drift detector will automatically execute every week to determine if drift is present. Read more about model drift [here](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-monitor-datasets).
