@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import joblib
 import numpy as np
@@ -58,6 +59,7 @@ def init():
             "smoker",
             "alcoholic",
             "active",
+            "datetime",
         ],
     )
     prediction_dc = ModelDataCollector(
@@ -98,23 +100,25 @@ def run(data):
     try:
         # Append datetime column to predictions
         input_df = pd.DataFrame(data)
+        input_df["datetime"] = datetime.now()
 
         # Preprocess payload and get model prediction
         X = process_data(input_df)
-        proba = model.predict_proba(X)
-        result = proba[:, 1].tolist()
+        probability = model.predict_proba(X)
+        result = probability[:, 1].tolist()
 
         # Log input and prediction to appinsights
         print("Request Payload", data)
         print("Response Payload", result)
 
+        # Get predicted class
+        prediction = pd.DataFrame(
+            (probability[:, 1] >= 0.5).astype(int), columns=["cardiovascular_disease"]
+        )
+
         # Collect features and prediction data
         inputs_dc.collect(input_df)
-        prediction_dc.collect(
-            pd.DataFrame(
-                (proba[:, 1] >= 0.5).astype(int), columns=["cardiovascular_disease"]
-            )
-        )
+        prediction_dc.collect(prediction)
 
         return {"probability": result}
 

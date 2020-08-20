@@ -65,7 +65,7 @@ jobs:
             echo "##vso[task.setvariable variable=model_id]$MODEL_ID"
 
       - task: AzureCLI@2
-        displayName: Publish pipeline
+        displayName: Configure data drift monitor
         inputs:
           azureSubscription: $(service_connection)
           scriptType: bash

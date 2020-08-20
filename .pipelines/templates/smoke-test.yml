@@ -43,4 +43,4 @@ jobs:
             --query scoringUri -o tsv)
 
             source activate ci_env
-            python3 tests/integration/smoke_test_web_service.py --scoring-uri $SCORING_URI
+            python3 tests/integration/web_service.py --scoring-uri $SCORING_URI

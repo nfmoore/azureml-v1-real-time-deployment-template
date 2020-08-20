@@ -6,7 +6,7 @@ from azureml.core import Dataset, Datastore, Workspace
 from azureml.data.dataset_factory import DataType
 from azureml.datadrift import DataDriftDetector
 
-target_dataset_timestamp_column = "$aml_system_partition_date"
+target_dataset_timestamp_column = "datetime"
 
 
 def parse_args(argv):
@@ -81,18 +81,18 @@ def main():
         path=(target_dataset_datastore, target_dataset_datastore_path),
         validate=False,
         set_column_types={
-            "age": DataType.to_float(),
+            "age": DataType.to_float(decimal_mark="."),
             "gender": DataType.to_string(),
-            "height": DataType.to_float(),
-            "weight": DataType.to_float(),
-            "systolic": DataType.to_float(),
-            "diastolic": DataType.to_float(),
+            "height": DataType.to_float(decimal_mark="."),
+            "weight": DataType.to_float(decimal_mark="."),
+            "systolic": DataType.to_float(decimal_mark="."),
+            "diastolic": DataType.to_float(decimal_mark="."),
             "cholesterol": DataType.to_string(),
             "glucose": DataType.to_string(),
             "smoker": DataType.to_string(),
             "alcoholic": DataType.to_string(),
             "active": DataType.to_string(),
-            "cardiovascular_disease": DataType.to_string(),
+            "datetime": DataType.to_datetime(),
         },
     )
 
