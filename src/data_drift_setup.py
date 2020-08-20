@@ -21,7 +21,7 @@ def parse_args(argv):
     ap.add_argument("--data_drift_monitor_name", required=True)
     ap.add_argument("--compute_target", required=True)
     ap.add_argument("--feature_list", required=True)
-    ap.add_argument("--frequency", default="Week")
+    ap.add_argument("--frequency", default="Day")
 
     args, _ = ap.parse_known_args(argv)
 
@@ -38,15 +38,6 @@ def main():
         resource_group=args.resource_group,
         name=args.workspace_name,
     )
-
-    # List data drift detectors
-    drift_detector_list = DataDriftDetector.list(workspace)
-
-    # Delete existing data drift detector
-    for drift_monitor in drift_detector_list:
-        if drift_monitor.name == args.data_drift_monitor_name:
-            print("Deleteing existing data drift monitor...")
-            drift_monitor.delete()
 
     # Retreive compute cluster
     compute_target = workspace.compute_targets[args.compute_target]
@@ -97,14 +88,14 @@ def main():
         },
     )
 
-    # Register updated dataset version
-    target_dataset.register(
-        workspace, name=target_dataset_name, create_new_version=True
-    )
-
     # Assign timestamp column for Tabular Dataset to activate time series related APIs
     target_dataset = target_dataset.with_timestamp_columns(
         timestamp=target_dataset_timestamp_column
+    )
+
+    # Register updated dataset version
+    target_dataset.register(
+        workspace, name=target_dataset_name, create_new_version=True
     )
 
     # Get baseline dataset
@@ -117,6 +108,15 @@ def main():
     feature_list = args.feature_list.split(",")
 
     print("Variable [feature_list]:", args.feature_list)
+
+    # List data drift detectors
+    drift_detector_list = DataDriftDetector.list(workspace)
+
+    # Delete existing data drift detector
+    for drift_monitor in drift_detector_list:
+        if drift_monitor.name == args.data_drift_monitor_name:
+            print("Deleteing existing data drift monitor...")
+            drift_monitor.delete()
 
     # Define data drift detector
     monitor = DataDriftDetector.create_from_datasets(
