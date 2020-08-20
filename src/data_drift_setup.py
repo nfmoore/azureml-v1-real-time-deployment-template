@@ -1,14 +1,16 @@
+import json
 import sys
 from argparse import ArgumentParser
 
-from azureml.core import Dataset, Workspace
+from azureml.core import Dataset, Datastore, Workspace
+from azureml.data.dataset_factory import DataType
 from azureml.datadrift import DataDriftDetector
 
 target_dataset_timestamp_column = "$aml_system_partition_date"
 
 
 def parse_args(argv):
-    ap = ArgumentParser("upload_dataset")
+    ap = ArgumentParser("data_drift_setup")
 
     ap.add_argument("--subscription_id", required=True)
     ap.add_argument("--resource_group", required=True)
@@ -57,14 +59,54 @@ def main():
         f"inference-data-{model_name}-{model_version}-{args.endpoint_name}"
     )
 
-    # Get target and baseline datasets
-    target_dataset = Dataset.get_by_name(workspace, target_dataset_name)
-    baseline_dataset = Dataset.get_by_name(workspace, args.baseline_dataset_name)
+    # Get current registered target dataset definition
+    current_target_dataset = Dataset.get_by_name(workspace, name=target_dataset_name)
+    current_target_dataset_definition = json.loads(current_target_dataset._definition)
 
-    # Assign timestamp column for Tabular Dataset to activate Time Series related APIs
+    # Get current registered target dataset datasetore definition
+    current_target_dataset_datastore_definition = current_target_dataset_definition[
+        "blocks"
+    ][0]["arguments"]["datastores"][0]
+
+    # Define current registered target dataset datasetore
+    target_dataset_datastore = Datastore(
+        workspace, current_target_dataset_datastore_definition["datastoreName"]
+    )
+
+    # Define current registered target dataset datasetore path
+    target_dataset_datastore_path = current_target_dataset_datastore_definition["path"]
+
+    # Create updated target dataset with non-string feature data types
+    target_dataset = Dataset.Tabular.from_delimited_files(
+        path=(target_dataset_datastore, target_dataset_datastore_path),
+        set_column_types={
+            "age": DataType.to_float(),
+            "gender": DataType.to_string(),
+            "height": DataType.to_float(),
+            "weight": DataType.to_float(),
+            "systolic": DataType.to_float(),
+            "diastolic": DataType.to_float(),
+            "cholesterol": DataType.to_string(),
+            "glucose": DataType.to_string(),
+            "smoker": DataType.to_string(),
+            "alcoholic": DataType.to_string(),
+            "active": DataType.to_string(),
+            "cardiovascular_disease": DataType.to_string(),
+        },
+    )
+
+    # Register updated dataset version
+    target_dataset.register(
+        workspace, name=target_dataset_name, create_new_version=True
+    )
+
+    # Assign timestamp column for Tabular Dataset to activate time series related APIs
     target_dataset = target_dataset.with_timestamp_columns(
         timestamp=target_dataset_timestamp_column
     )
+
+    # Get baseline dataset
+    baseline_dataset = Dataset.get_by_name(workspace, args.baseline_dataset_name)
 
     print("Variable [target_dataset]:", target_dataset)
     print("Variable [baseline_dataset]:", baseline_dataset)
