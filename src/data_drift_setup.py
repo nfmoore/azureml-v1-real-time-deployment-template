@@ -4,6 +4,8 @@ from argparse import ArgumentParser
 from azureml.core import Dataset, Workspace
 from azureml.datadrift import DataDriftDetector
 
+target_dataset_timestamp_column = "$aml_system_partition_date"
+
 
 def parse_args(argv):
     ap = ArgumentParser("upload_dataset")
@@ -60,7 +62,9 @@ def main():
     baseline_dataset = Dataset.get_by_name(workspace, args.baseline_dataset_name)
 
     # Assign timestamp column for Tabular Dataset to activate Time Series related APIs
-    target_dataset = target_dataset.with_timestamp_columns(timestamp="datetime")
+    target_dataset = target_dataset.with_timestamp_columns(
+        timestamp=target_dataset_timestamp_column
+    )
 
     print("Variable [target_dataset]:", target_dataset)
     print("Variable [baseline_dataset]:", baseline_dataset)

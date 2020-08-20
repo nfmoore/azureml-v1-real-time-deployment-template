@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 
 import joblib
 import numpy as np
@@ -99,7 +98,6 @@ def run(data):
     try:
         # Append datetime column to predictions
         input_df = pd.DataFrame(data)
-        input_df["datetime"] = datetime.now()
 
         # Preprocess payload and get model prediction
         X = process_data(input_df)
@@ -109,9 +107,6 @@ def run(data):
         # Log input and prediction to appinsights
         print("Request Payload", data)
         print("Response Payload", result)
-
-        # Add datetime to output
-        input_df["datetime"] = datetime.now()
 
         # Collect features and prediction data
         inputs_dc.collect(input_df)
