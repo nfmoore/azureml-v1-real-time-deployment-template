@@ -79,6 +79,7 @@ def main():
     # Create updated target dataset with non-string feature data types
     target_dataset = Dataset.Tabular.from_delimited_files(
         path=(target_dataset_datastore, target_dataset_datastore_path),
+        validate=False,
         set_column_types={
             "age": DataType.to_float(),
             "gender": DataType.to_string(),
