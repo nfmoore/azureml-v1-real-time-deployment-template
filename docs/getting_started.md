@@ -77,4 +77,4 @@ See [these](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/vari
 
 2. This stored telemetry will be accessable via a dataset in the following form: `inference-data-<model_name>-<model_version>-<endpoint_name>`. A data drift monitor will be configured using this dataset as a target data and the training dataset as a baseline. This means the web service telemetry will be compared against the training (baseline) dataset to determine if model drift is present.
 
-3. The model data drift detector will automatically execute every week to determine if drift is present. Read more about model drift [here](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-monitor-datasets).
+3. The model data drift detector (as configured in this template) will automatically execute every day to determine if drift is present. Read more about model drift [here](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-monitor-datasets).
