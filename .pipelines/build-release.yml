@@ -1,0 +1,82 @@
+name: build_release - $(SourceBranchName) - $(Date:yyyyMMdd)$(Rev:.r) -
+pool:
+  vmImage: ubuntu-latest
+
+trigger:
+  branches:
+    include:
+      - master
+    exclude:
+      - docs/*
+      - LICENSE
+      - README.md
+
+variables:
+  - group: aml-deployment-templates
+  - template: variables.yml
+  - name: resource_group_name
+    value: $(environment)-$(namespace)-rg
+  - name: workspace_name
+    value: mlw$(environment)$(namespace)
+
+stages:
+  - stage: code_quality
+    displayName: Code Quality
+    jobs:
+      - template: ./templates/code-quality.yml
+
+  - stage: model_build
+    displayName: Model Build
+    jobs:
+      - template: ./templates/train-register.yml
+        parameters:
+          service_connection: $(service_connection)
+          resource_group_name: $(resource_group_name)
+          workspace_name: $(workspace_name)
+
+  - stage: deploy_test
+    displayName: Test Deployment
+    dependsOn: model_build
+    jobs:
+      - deployment: Approval
+        displayName: Test deployment approval
+        environment: Test
+      - template: ./templates/deploy.yml
+        parameters:
+          service_connection: $(service_connection)
+          resource_group_name: $(resource_group_name)
+          workspace_name: $(workspace_name)
+          compute_target: $(aks_cluster_name)
+          deployment_config: $(aks_deployment_config)
+          service_name: $(service_endpoint_name)
+          environment: Test
+          compute_type: aks
+      - template: ./templates/web-service-test.yml
+        parameters:
+          service_connection: $(service_connection)
+          resource_group_name: $(resource_group_name)
+          workspace_name: $(workspace_name)
+          service_name: $(service_endpoint_name)
+
+  - stage: deploy_production
+    displayName: Production Deployment
+    dependsOn: deploy_test
+    jobs:
+      - deployment: Approval
+        displayName: Production deployment approval
+        environment: Production
+      - template: ./templates/deploy.yml
+        parameters:
+          service_connection: $(service_connection)
+          resource_group_name: $(resource_group_name)
+          workspace_name: $(workspace_name)
+          compute_target: $(aks_cluster_name)
+          deployment_config: $(aks_deployment_config)
+          service_name: $(service_endpoint_name)
+          environment: Production
+          compute_type: aks
+      - template: ./templates/setup-data-drift.yml
+        parameters:
+          service_connection: $(service_connection)
+          resource_group_name: $(resource_group_name)
+          workspace_name: $(workspace_name)

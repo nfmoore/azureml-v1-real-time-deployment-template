@@ -1,0 +1,46 @@
+parameters:
+  - name: service_connection
+  - name: resource_group_name
+  - name: workspace_name
+  - name: service_name
+jobs:
+  - job: web_service_test
+    dependsOn: deploy_model
+    displayName: Test web service
+
+    variables:
+      - template: ../variables.yml
+
+    steps:
+      - task: CmdLine@2
+        displayName: Create anaconda environment
+        inputs:
+          script: |
+            echo "##vso[task.prependpath]$CONDA/bin"
+            conda env create --file $(dependencies_ci_cd)
+
+      - task: AzureCLI@2
+        displayName: Install azure-cli-ml
+        inputs:
+          azureSubscription: $(service_connection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: az extension add -n azure-cli-ml
+
+      - task: AzureCLI@2
+        displayName: Run smoke test
+        inputs:
+          scriptType: bash
+          azureSubscription: $(service_connection)
+          scriptLocation: inlineScript
+          inlineScript: |
+            set -e # fail on error
+
+            export SCORING_URI=$(az ml endpoint realtime show \
+            --workspace-name $(workspace_name) \
+            --resource-group $(resource_group_name) \
+            --name ${{ parameters.service_name }} \
+            --query scoringUri -o tsv)
+
+            source activate ci_env
+            python3 $(web_service_test_script) --scoring-uri $SCORING_URI

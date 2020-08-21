@@ -1,0 +1,25 @@
+name: ci_env
+
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - python=3.7
+  - pandas=1.0.*
+  - numpy=1.18.*
+  - scipy=1.4.*
+  - scikit-learn=0.22.*
+  - joblib=0.14.*
+  - pip=20.0.*
+  - pip:
+      - azureml-core==1.8.*
+      - azureml-defaults==1.8.*
+      - azureml-datadrift==1.8.*
+      - inference-schema[numpy-support]==1.0.*
+      - azureml-monitoring==0.1.0a18
+      - pytest==5.4.*
+      - pytest-cov==2.10.*
+      - flake8==3.8.*
+      - requests==2.24.*
+      - bandit==1.6.*

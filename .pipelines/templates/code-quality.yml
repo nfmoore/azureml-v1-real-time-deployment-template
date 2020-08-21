@@ -1,0 +1,52 @@
+jobs:
+  - job: code_quality
+    displayName: Linting, security and unit tests
+
+    variables:
+      - template: ../variables.yml
+
+    steps:
+      - task: CmdLine@2
+        displayName: Create anaconda environment
+        inputs:
+          script: |
+            echo "##vso[task.prependpath]$CONDA/bin"
+            conda env create --file $(dependencies_ci_cd)
+
+      - task: CmdLine@2
+        displayName: Run linting
+        inputs:
+          script: |
+            source activate ci_env
+            python3 -m flake8 . --ignore E501
+
+      - task: CmdLine@2
+        displayName: Run security checks
+        condition: succeededOrFailed()
+        inputs:
+          script: |
+            source activate ci_env
+            python3 -m bandit -r $(source_directory)
+
+      - task: CmdLine@2
+        displayName: Run unit tests and code coverage
+        condition: succeededOrFailed()
+        inputs:
+          script: |
+            source activate ci_env
+            python3 -m pytest $(unit_test_directory) --cov $(source_directory) --cov-report xml --junitxml $(unit_test_result_files)
+
+      - task: PublishTestResults@2
+        displayName: Publish unit test results
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFiles: $(unit_test_result_files)
+          testRunTitle: Test Results
+
+      - task: PublishCodeCoverageResults@1
+        displayName: Publish coverage report
+        condition: succeededOrFailed()
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: $(coverage_result_files)
+          failIfCoverageEmpty: true

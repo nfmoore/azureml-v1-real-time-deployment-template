@@ -1,0 +1,81 @@
+variables:
+  # CODE QUALITY
+  - name: source_directory
+    value: src
+
+  - name: unit_test_directory
+    value: tests/unit
+
+  - name: train_experiment_name
+    value: cardiovascular-disease-experiment
+
+  - name: unit_test_result_files
+    value: unittest-results.xml
+
+  - name: coverage_result_files
+    value: "**/coverage.xml"
+
+  - name: dependencies_ci_cd
+    value: environments/ci_cd_dependencies.yml
+
+  # TRAIN REGISTER
+  - name: train_script
+    value: train.py
+
+  - name: dataset_name
+    value: cardiovascular_disease_train_dataset
+
+  - name: model_name
+    value: cardiovascular_disease_model
+
+  - name: train_run_config
+    value: configuration/train.runconfig
+
+  - name: generated_train_run_config
+    value: train_gen
+
+  - name: model_metadata_file
+    value: model.json
+
+  - name: model_artifact_name
+    value: model-metadata
+
+  - name: model_metadata_file_path
+    value: $(System.ArtifactsDirectory)/$(model_artifact_name)/$(model_metadata_file)
+
+  - name: run_metadata_file
+    value: run.json
+
+  - name: run_artifact_name
+    value: run-metadata
+
+  # DEPLOY
+  - name: inference_config
+    value: configuration/inference_config.yml
+
+  - name: aks_deployment_config
+    value: configuration/aks_deployment_config.yml
+
+  - name: aci_deployment_config
+    value: configuration/aci_deployment_config.yml
+
+  - name: service_endpoint_name
+    value: cardiovascular-disease-endpoint
+
+  - name: data_drift_monitor_name
+    value: cardiovascular-disease-endpoint
+
+  - name: data_drift_setup_script
+    value: src.data_drift_setup
+
+  - name: compute_cluster_name
+    value: cpu-cluster
+
+  - name: data_drift_frequency
+    value: Day
+
+  - name: data_drift_feature_list
+    value: age,gender,height,weight,systolic,diastolic,cholesterol,glucose,smoker,alcoholic,active
+
+  - name: web_service_test_script
+    value: tests/integration/web_service_test.py

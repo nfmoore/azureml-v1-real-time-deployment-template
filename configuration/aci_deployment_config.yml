@@ -1,0 +1,14 @@
+computeType: ACI
+
+containerResourceRequirements:
+  cpu: 1
+  memoryInGB: 0.5
+
+location: "Australia East"
+authEnabled: False
+sslEnabled: False
+appInsightsEnabled: True
+sslCertificate:
+sslKey:
+cname:
+dnsNameLabel:
