@@ -1,8 +1,10 @@
 import json
 import sys
+import time
 from argparse import ArgumentParser
 
 from azureml.core import Dataset, Datastore, Workspace
+from azureml.core.webservice import AksWebservice
 from azureml.data.dataset_factory import DataType
 from azureml.datadrift import DataDriftDetector
 
@@ -42,8 +44,31 @@ def main():
     # Retreive compute cluster
     compute_target = workspace.compute_targets[args.compute_target]
 
-    # Grt model id and version
+    # Get baseline dataset
+    baseline_dataset = Dataset.get_by_name(workspace, args.baseline_dataset_name)
+
+    # Get model id and version
     model_name, model_version = args.model_id.split(":")
+
+    # Get AKS Endpoint
+    aks_endpoint = AksWebservice(workspace, args.endpoint_name)
+
+    # Make call to endpoint with sample data and wait for the data to arrive in the storage account
+    # [Note: this step is required to ensure a data sample is present for validation when
+    # registering a new target dataset below - this can take up to 10 mins to appear]
+    input_record = (
+        baseline_dataset.take(1)
+        .to_pandas_dataframe()
+        .drop(["cardiovascular_disease", "datetime"], axis=1)
+        .to_dict("records")
+    )
+
+    input_data = json.dumps({"data": input_record})
+
+    print("Variable [input_data]:", input_data)
+
+    aks_endpoint.run(input_data)
+    time.sleep(600)
 
     # Define target dataset
     target_dataset_name = (
@@ -84,6 +109,7 @@ def main():
             "smoker": DataType.to_string(),
             "alcoholic": DataType.to_string(),
             "active": DataType.to_string(),
+            "datetime": DataType.to_datetime(),
         },
     )
 
@@ -96,9 +122,6 @@ def main():
     target_dataset.register(
         workspace, name=target_dataset_name, create_new_version=True
     )
-
-    # Get baseline dataset
-    baseline_dataset = Dataset.get_by_name(workspace, args.baseline_dataset_name)
 
     print("Variable [target_dataset]:", target_dataset)
     print("Variable [baseline_dataset]:", baseline_dataset)
