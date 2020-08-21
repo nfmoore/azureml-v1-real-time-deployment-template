@@ -76,3 +76,6 @@ variables:
 
   - name: data_drift_feature_list
     value: age,gender,height,weight,systolic,diastolic,cholesterol,glucose,smoker,alcoholic,active
+
+  - name: web_service_test_script
+    value: tests/integration/web_service_test.py

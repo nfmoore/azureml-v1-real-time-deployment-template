@@ -51,7 +51,7 @@ stages:
           service_name: $(service_endpoint_name)
           environment: Test
           compute_type: aks
-      - template: ./templates/smoke-test.yml
+      - template: ./templates/web-service-test.yml
         parameters:
           service_connection: $(service_connection)
           resource_group_name: $(resource_group_name)
