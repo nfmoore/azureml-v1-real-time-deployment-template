@@ -63,7 +63,7 @@ variables:
     value: cardiovascular-disease-endpoint
 
   - name: data_drift_monitor_name
-    value: cardiovascular-disease-web-service-drift-monitor
+    value: cardiovascular-disease-endpoint
 
   - name: data_drift_setup_script
     value: src.data_drift_setup
