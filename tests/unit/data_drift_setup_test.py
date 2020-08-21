@@ -48,7 +48,7 @@ def test_parse_args_draft():
 @patch("src.data_drift_setup.Workspace", MagicMock())
 @patch("src.data_drift_setup.json", MagicMock())
 @patch("src.data_drift_setup.time", MagicMock())
-@patch("src.data_drift_setup.parse_args",)
+@patch("src.data_drift_setup.parse_args")
 @patch("src.data_drift_setup.DataDriftDetector")
 def test_data_drift_setup(mock_data_drift_detector, mock_parse_args):
     # Mock data drift monitor and arguments

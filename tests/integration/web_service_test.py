@@ -24,7 +24,7 @@ output_sample = {"probability": [0.26883566156891225]}
 
 def parse_args():
     # Parse command line arguments
-    ap = ArgumentParser("smoke_test_web_service")
+    ap = ArgumentParser("web_service_test")
     ap.add_argument("--scoring-uri", required=True)
     args = vars(ap.parse_args())
     return args["scoring_uri"]

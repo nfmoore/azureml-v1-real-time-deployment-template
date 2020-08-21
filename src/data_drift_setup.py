@@ -99,11 +99,11 @@ def main():
         infer_column_types=False,
         set_column_types={
             "age": DataType.to_float(decimal_mark="."),
-            "gender": DataType.to_string(),
             "height": DataType.to_float(decimal_mark="."),
             "weight": DataType.to_float(decimal_mark="."),
             "systolic": DataType.to_float(decimal_mark="."),
             "diastolic": DataType.to_float(decimal_mark="."),
+            "gender": DataType.to_string(),
             "cholesterol": DataType.to_string(),
             "glucose": DataType.to_string(),
             "smoker": DataType.to_string(),
