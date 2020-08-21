@@ -84,7 +84,6 @@ def main():
             "smoker": DataType.to_string(),
             "alcoholic": DataType.to_string(),
             "active": DataType.to_string(),
-            "datetime": DataType.to_datetime(),
         },
     )
 
