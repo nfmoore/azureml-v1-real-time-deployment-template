@@ -4,9 +4,9 @@ parameters:
   - name: workspace_name
   - name: service_name
 jobs:
-  - job: smoke_test_service
+  - job: web_service_test
     dependsOn: deploy_model
-    displayName: Smoke test
+    displayName: Test web service
 
     variables:
       - template: ../variables.yml
