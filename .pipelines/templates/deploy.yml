@@ -56,15 +56,27 @@ jobs:
           azureSubscription: $(service_connection)
           scriptLocation: inlineScript
           inlineScript: |
+            # az ml model deploy \
+            # --workspace-name $(workspace_name) \
+            # --resource-group $(resource_group_name) \
+            # --inference-config-file $(inference_config) \
+            # --model $(model_id) \
+            # --name ${{ parameters.service_name }} \
+            # --compute-type ${{ parameters.compute_type }} \
+            # --deploy-config-file ${{ parameters.deployment_config }} \
+            # --compute-target ${{ parameters.compute_target }} \
+            # --tag build_id=$(Build.BuildId) \
+            # --tag environment=${{ parameters.environment }} \
+            # --overwrite
+
             az ml model deploy \
             --workspace-name $(workspace_name) \
             --resource-group $(resource_group_name) \
             --inference-config-file $(inference_config) \
             --model $(model_id) \
             --name ${{ parameters.service_name }} \
-            --compute-type ${{ parameters.compute_type }} \
-            --deploy-config-file ${{ parameters.deployment_config }} \
-            --compute-target ${{ parameters.compute_target }} \
+            --compute-type aci \
+            --deploy-config-file configuration/aci_deployment_config.yml \
             --tag build_id=$(Build.BuildId) \
             --tag environment=${{ parameters.environment }} \
             --overwrite

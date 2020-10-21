@@ -20,10 +20,10 @@ variables:
     value: mlw$(environment)$(namespace)
 
 stages:
-  - stage: code_quality
-    displayName: Code Quality
-    jobs:
-      - template: ./templates/code-quality.yml
+  # - stage: code_quality
+  #   displayName: Code Quality
+  #   jobs:
+  #     - template: ./templates/code-quality.yml
 
   - stage: model_build
     displayName: Model Build
@@ -57,25 +57,25 @@ stages:
           workspace_name: $(workspace_name)
           service_name: $(service_endpoint_name)
 
-  - stage: deploy_production
-    displayName: Production Deployment
-    dependsOn: deploy_test
-    jobs:
-      - deployment: Approval
-        displayName: Production deployment approval
-        environment: Production
-      - template: ./templates/deploy.yml
-        parameters:
-          service_connection: $(service_connection)
-          resource_group_name: $(resource_group_name)
-          workspace_name: $(workspace_name)
-          compute_target: $(aks_cluster_name)
-          deployment_config: $(aks_deployment_config)
-          service_name: $(service_endpoint_name)
-          environment: Production
-          compute_type: aks
-      - template: ./templates/setup-data-drift.yml
-        parameters:
-          service_connection: $(service_connection)
-          resource_group_name: $(resource_group_name)
-          workspace_name: $(workspace_name)
+  # - stage: deploy_production
+  #   displayName: Production Deployment
+  #   dependsOn: deploy_test
+  #   jobs:
+  #     - deployment: Approval
+  #       displayName: Production deployment approval
+  #       environment: Production
+  #     - template: ./templates/deploy.yml
+  #       parameters:
+  #         service_connection: $(service_connection)
+  #         resource_group_name: $(resource_group_name)
+  #         workspace_name: $(workspace_name)
+  #         compute_target: $(aks_cluster_name)
+  #         deployment_config: $(aks_deployment_config)
+  #         service_name: $(service_endpoint_name)
+  #         environment: Production
+  #         compute_type: aks
+  #     - template: ./templates/setup-data-drift.yml
+  #       parameters:
+  #         service_connection: $(service_connection)
+  #         resource_group_name: $(resource_group_name)
+  #         workspace_name: $(workspace_name)
