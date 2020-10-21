@@ -48,6 +48,7 @@ stages:
           workspace_name: $(workspace_name)
           deployment_config: $(aks_deployment_config)
           service_name: $(service_endpoint_name)
+          compute_target: $(aks_cluster_name)
           environment: Test
           compute_type: aks
       - template: ./templates/web-service-test.yml
