@@ -75,7 +75,6 @@ jobs:
             --inference-config-file $(inference_config) \
             --model $(model_id) \
             --name ${{ parameters.service_name }} \
-            --compute-type aci \
             --deploy-config-file configuration/aci_deployment_config.yml \
             --tag build_id=$(Build.BuildId) \
             --tag environment=${{ parameters.environment }} \
